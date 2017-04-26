@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Video call with" %} {{ interlocutor.username }}{% endblock title %}
+
+{% block content %}
+  <div class="jumbotron">
+      <div class="container">
+          <div class="row">
+              <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
+                  <div id="map"></div>
+              </div>
+              </div>
+          </div>
+      </div>
+  </div>
+{% endblock content %}
+{% block script %}
+    <script>
+        var mymap = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.satellite',
+            accessToken: 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg'
+        }).addTo(mymap);
+    </script>
+{% endblock script %}

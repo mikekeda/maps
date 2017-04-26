@@ -3,6 +3,6 @@ db.sqlite3
 node_modules/
 staticfiles/
 media/
-core/settings.py
+maps/settings.py
 *.pyc
 dump.rdb
