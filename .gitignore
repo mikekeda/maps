@@ -1,0 +1,8 @@
+.idea/
+db.sqlite3
+node_modules/
+staticfiles/
+media/
+core/settings.py
+*.pyc
+dump.rdb
