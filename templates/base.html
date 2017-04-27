@@ -30,7 +30,7 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item {% if request.get_full_path == user_list_url %}active{% endif %}">
-          <a class="nav-link" href="{{ user_list_url }}">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{% url 'core:homepage' %}">Home <span class="sr-only">(current)</span></a>
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
