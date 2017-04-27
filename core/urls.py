@@ -1,11 +1,12 @@
 from django.conf.urls import url
 from django.conf import settings
 
-from .views import homepage
+from .views import homepage, example
 
 
 urlpatterns = [
     url(r'^$', homepage, name='homepage'),
+    url(r'^example/(?P<example_id>.+)$', example, name='example'),
 ]
 
 if settings.DEBUG:

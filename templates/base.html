@@ -34,6 +34,8 @@
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
+        <a class="nav-link" href="{% url 'core:example' 1 %}">{% trans "Example" %} 1</a>
+        <a class="nav-link" href="{% url 'core:example' 2 %}">{% trans "Example" %} 2</a>
         {% if user.is_authenticated %}
         <li class="nav-item {% if request.get_full_path == user_url %}active{% endif %}">
           <a class="nav-link" href="{{ user_url }}">
