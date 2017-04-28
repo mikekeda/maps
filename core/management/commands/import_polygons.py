@@ -17,12 +17,14 @@ class Command(BaseCommand):
         file_name = options['file'] if options['file'] else 'frontend/src/app/countries.ts'
         self.stdout.write("Started Polygons import")
 
-        for polygon in Polygon.objects.all():
-            print(polygon.geom)
-
         with open(file_name) as f:
             data = json.load(f)
             for feature in data['features']:
-                print(feature['properties']['name'])
-                print(feature['geometry']['type'])
-                print(feature['geometry']['coordinates'])
+                polygon, created = Polygon.objects.get_or_create(
+                    title=feature['properties']['name'],
+                    defaults={'geom': feature['geometry']}
+                )
+                if created:
+                    print(feature['properties']['name'] + ' was created')
+                else:
+                    print(feature['properties']['name'] + ' already exists')
