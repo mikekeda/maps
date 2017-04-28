@@ -1,11 +1,12 @@
 from django.conf.urls import url
 from django.conf import settings
 
-from .views import homepage, example
+from .views import homepage, example, map
 
 
 urlpatterns = [
     url(r'^$', homepage, name='homepage'),
+    url(r'^map/(?P<slug>.+)$', example, name='map'),
     url(r'^example/(?P<example_id>.+)$', example, name='example'),
 ]
 

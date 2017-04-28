@@ -7,6 +7,12 @@ def homepage(request):
     return render(request, 'example1.html')
 
 
+def map(request, slug):
+    """Map."""
+
+    return render(request, 'map.html')
+
+
 def example(request, example_id):
     """Example map."""
 
