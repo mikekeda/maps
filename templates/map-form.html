@@ -24,9 +24,50 @@
                           {% endif %}
                       </div>
                   {% endfor %}
+                  <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">{% trans "Region" %}</label>
+                      <div class="col-sm-9">
+                          <select class="form-control" id="region-select">
+                              <option value="_none">- {% trans "none" %} -</option>
+                              {% for region in regions %}
+                                  <option value="{{ region.pk }}">{{ region.filename }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </div>
+                  <div id="map-elements"></div>
                   <button type="submit" class="btn btn-primary float-right">{% trans "Add Map" %}</button>
               </form>
           </div>
       </div>
   </div>
 {% endblock content %}
+
+{% block script %}
+    <script defer>
+      var items;
+      var $elements = $('#map-elements');
+
+      $('#region-select').change(function() {
+        if (!isNaN(this.value)) {
+          $.getJSON( "/api/get-polygons/" + this.value, function(data) {
+            items = [];
+
+            $.each(JSON.parse(data.polygons), function(key, val) {
+              items.push(`<div class="form-group row">
+              <label class="col-sm-3 col-form-label">` + val.title + `</label>
+                <div class="col-sm-9">
+                  <input type="number" name="polygon_` + val.pk + `" id="id_` + val.pk + `" required="" class="form-control">
+                </div>
+              </div>`);
+            });
+
+            $elements.html(items.join(''));
+          });
+        }
+        else {
+          $elements.html('');
+        }
+      });
+    </script>
+{% endblock script %}

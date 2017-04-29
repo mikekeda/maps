@@ -29,7 +29,7 @@ class Map(models.Model):
         return self.title
 
 
-class Country(models.Model):
+class Region(models.Model):
     filename = models.CharField(max_length=256)
 
     def __str__(self):
@@ -38,7 +38,7 @@ class Country(models.Model):
 
 class Polygon(models.Model):
     title = models.CharField(max_length=256)
-    country = models.ForeignKey(Country, related_name='polygons')
+    region = models.ForeignKey(Region, related_name='polygons')
     geom = PolygonField()
 
     def __str__(self):

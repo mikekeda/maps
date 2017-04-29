@@ -24,8 +24,8 @@ class MapElementAdmin(admin.ModelAdmin):
 
 class PolygonAdmin(LeafletGeoAdmin):
     search_fields = ['title']
-    list_filter = ('country',)
-    readonly_fields = ('country',)
+    list_filter = ('region',)
+    readonly_fields = ('region',)
 
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
