@@ -1,7 +1,10 @@
 from leaflet.admin import LeafletGeoAdmin
 from django.contrib import admin
+from easy_select2 import select2_modelform
 
 from .models import Map, Polygon, MapElement
+
+MapElementForm = select2_modelform(MapElement)
 
 
 class MapAdmin(admin.ModelAdmin):
@@ -16,10 +19,13 @@ class MapAdmin(admin.ModelAdmin):
 
 class MapElementAdmin(admin.ModelAdmin):
     list_filter = ('map__title',)
+    form = MapElementForm
 
 
 class PolygonAdmin(LeafletGeoAdmin):
     search_fields = ['title']
+    list_filter = ('country',)
+    readonly_fields = ('country',)
 
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
