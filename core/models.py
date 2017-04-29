@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 class Map(models.Model):
     title = models.CharField(max_length=256)
     description = models.TextField(blank=True, null=True)
+    unit = models.CharField(max_length=64)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='maps')
     slug = models.SlugField(editable=False)
 
@@ -31,7 +32,7 @@ class Polygon(models.Model):
 class MapElement(models.Model):
     map = models.ForeignKey(Map, related_name='elements')
     polygon = models.ForeignKey(Polygon, related_name='elements')
-    data = models.PositiveIntegerField()
+    data = models.FloatField()
 
     def __str__(self):
         return u'%s: %s: %s' % (
