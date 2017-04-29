@@ -5,7 +5,12 @@
 
 {% block content %}
   <div>
+      <div class="clearfix">
       <h1 class="display-5 text-center">{{ map.title }}</h1>
+      {% if request.user.is_superuser %}
+        <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map">{% trans "Edit" %}</a>
+      {% endif %}
+      </div>
       <div class="row">
           <div class="col-md-12">
               <div id="map"></div>

@@ -7,9 +7,14 @@ from .models import Map, Polygon, MapElement
 MapElementForm = select2_modelform(MapElement)
 
 
+class MapElementInline(admin.TabularInline):
+    model = MapElement
+
+
 class MapAdmin(admin.ModelAdmin):
     list_filter = ('user__username',)
     search_fields = ['title']
+    inlines = [MapElementInline]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user':
