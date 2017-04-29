@@ -1,7 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Prefetch
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from .models import Map, MapElement
+from .forms import MapForm
 
 
 def homepage(request):
@@ -43,6 +46,24 @@ def map_view(request, slug):
         data_range=data_range,
         active_page='map')
     )
+
+
+@login_required
+def add_map(request):
+    """Create Map."""
+    if request.method == 'POST':
+        form = MapForm(data=request.POST)
+        if form.is_valid():
+            map_obj = form.save(commit=False)
+            map_obj.user = request.user
+            map_obj.save()
+            return redirect(reverse('core:map', args=(map_obj.slug,)))
+    else:
+        form = MapForm()
+
+    return render(request, 'map-form.html', {
+        'form': form,
+    })
 
 
 def example(request, example_id):

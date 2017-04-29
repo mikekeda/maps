@@ -31,7 +31,7 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item {% if request.get_full_path == user_list_url %}active{% endif %}">
-          <a class="nav-link" href="{% url 'core:homepage' %}">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{% url 'core:homepage' %}">{% trans "Home" %} <span class="sr-only">(current)</span></a>
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
@@ -44,6 +44,12 @@
           <a class="nav-link" href="{{ example2_url }}">{% trans "Example" %} 2</a>
         </li>
         {% if user.is_authenticated %}
+        {% url 'core:add_map' as add_map_url %}
+        <li class="nav-item {% if request.get_full_path == add_map_url %}active{% endif %}">
+          <a class="nav-link" href="{{ add_map_url }}">
+            {% trans "Add Map" %}
+          </a>
+        </li>
         <li class="nav-item {% if request.get_full_path == user_url %}active{% endif %}">
           <a class="nav-link" href="/admin/auth/user/{{ user.pk }}/change/">
             {{ user.username }}

@@ -11,9 +11,17 @@ class Map(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='maps')
     slug = models.SlugField(editable=False)
 
+    def _get_unique_slug(self):
+        unique_slug = slug = slugify(self.title)
+        num = 1
+        while Map.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
     def save(self, *args, **kwargs):
         if not self.id:
-            self.slug = slugify(self.title)
+            self.slug = self._get_unique_slug()
 
         super(Map, self).save(*args, **kwargs)
 
