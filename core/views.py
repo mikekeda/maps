@@ -6,7 +6,10 @@ from .models import Map, MapElement
 
 def homepage(request):
     """Homepage."""
-    maps = Map.objects.filter(user=request.user).order_by('-id')
+    if request.user.is_authenticated:
+        maps = Map.objects.filter(user=request.user).order_by('-id')
+    else:
+        maps = Map.objects.all()
 
     return render(request, 'homepage.html', dict(maps=maps, active_page='homepage'))
 
