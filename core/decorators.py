@@ -1,7 +1,7 @@
 from django.core.cache import cache
 
 
-def simple_cache_page(cache_timeout):
+def simple_cache_page(cache_timeout, per_user=False):
     """
     Decorator for views that tries getting the page from the cache and
     populates the cache if the page isn't in the cache yet.
@@ -10,7 +10,12 @@ def simple_cache_page(cache_timeout):
     """
     def _dec(func):
         def _new_func(*args, **kwargs):
-            key = func.__name__
+            key = ''
+            if per_user:
+                request, = args
+                key += str(request.user.id) if request.user.id else '0'
+                key += ':'
+            key += func.__name__
             if kwargs:
                 key += ':' + ':'.join([kwargs[key] for key in kwargs])
 
