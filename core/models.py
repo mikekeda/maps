@@ -2,6 +2,7 @@ from djgeojson.fields import PolygonField
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.core.cache import cache
 
 
 class Map(models.Model):
@@ -23,6 +24,8 @@ class Map(models.Model):
         if not self.id:
             self.slug = self._get_unique_slug()
 
+        cache.set('map_view:' + self.slug, None, 0)
+        cache.set('homepage', None, 0)
         super(Map, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -49,6 +52,10 @@ class MapElement(models.Model):
     map = models.ForeignKey(Map, related_name='elements')
     polygon = models.ForeignKey(Polygon, related_name='elements')
     data = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        cache.set('map_view:' + self.map.slug, None, 0)
+        super(MapElement, self).save(*args, **kwargs)
 
     def __str__(self):
         return u'%s: %s: %s' % (
