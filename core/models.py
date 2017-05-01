@@ -24,8 +24,8 @@ class Map(models.Model):
         if not self.id:
             self.slug = self._get_unique_slug()
 
-        cache.set('map_view:' + self.slug, None, 0)
-        cache.set('homepage', None, 0)
+        cache.delete_pattern('*:map_view:' + self.slug)
+        cache.delete_pattern('*:homepage')
         super(Map, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class MapElement(models.Model):
     data = models.FloatField()
 
     def save(self, *args, **kwargs):
-        cache.set('map_view:' + self.map.slug, None, 0)
+        cache.delete_pattern('*:map_view:' + self.map.slug)
         super(MapElement, self).save(*args, **kwargs)
 
     def __str__(self):

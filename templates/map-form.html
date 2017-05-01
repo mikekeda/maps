@@ -9,7 +9,7 @@
       <h1 class="display-5 text-center">{% trans "Add Map" %}</h1>
       <div class="container">
           <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
-              <form action="{% url 'core:add_map' %}" method="post">
+              <form action="{% url 'core:add_map' %}" method="post" class="clearfix">
                   {% csrf_token %}
                   {% for field in form %}
                       <div class="form-group row">
