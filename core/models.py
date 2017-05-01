@@ -4,11 +4,25 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
 
+from .widgets import ColorWidget
+
+
+class ColorField(models.CharField):
+    def __init__(self, *args, **kwargs):
+        super(ColorField, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        kwargs['widget'] = ColorWidget
+        return super(ColorField, self).formfield(**kwargs)
+
 
 class Map(models.Model):
     title = models.CharField(max_length=256)
     description = models.TextField(blank=True, null=True)
     unit = models.CharField(max_length=64)
+    grades = models.PositiveSmallIntegerField(default=8)
+    end_color = ColorField(max_length=6, default='ffeda0')
+    start_color = ColorField(max_length=6, default='bd0026')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='maps')
     slug = models.SlugField(editable=False)
 

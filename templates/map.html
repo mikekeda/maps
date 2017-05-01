@@ -21,21 +21,20 @@
 {% block script %}
     <script>
         var geojson_data = {{ geojson_data|safe }};
-        var data_range = {{ data_range|safe }}
+        var data_range = {{ data_range|safe }};
+        var i;
         var mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
         var map = L.map('map');
         var info = L.control();
         var legend = L.control({ position: 'bottomright' });
 
         function getColor(d) {
-            return d > data_range['max'] - 1 * data_range['step'] ? '#800026' :
-                   d > data_range['max'] - 2 * data_range['step'] ? '#BD0026' :
-                   d > data_range['max'] - 3 * data_range['step'] ? '#E31A1C' :
-                   d > data_range['max'] - 4 * data_range['step'] ? '#FC4E2A' :
-                   d > data_range['max'] - 5 * data_range['step'] ? '#FD8D3C' :
-                   d > data_range['max'] - 6 * data_range['step'] ? '#FEB24C' :
-                   d > data_range['max'] - 7 * data_range['step'] ? '#FED976' :
-                                                                    '#FFEDA0';
+            for (i = data_range.length - 1; i > 0; i--) {
+                if (parseFloat(d) > data_range[i][0]) {
+                    return '#' + data_range[i][1];
+                }
+            }
+            return '#' + data_range[0][1];
         }
 
         function style(feature) {
@@ -99,24 +98,14 @@
         info.addTo(map);
 
         legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend'),
-                grades = [
-                   data_range['max'] - 8 * data_range['step'],
-                   data_range['max'] - 7 * data_range['step'],
-                   data_range['max'] - 6 * data_range['step'],
-                   data_range['max'] - 5 * data_range['step'],
-                   data_range['max'] - 4 * data_range['step'],
-                   data_range['max'] - 3 * data_range['step'],
-                   data_range['max'] - 2 * data_range['step'],
-                   data_range['max'] - 1 * data_range['step']
-                ],
-                labels = [];
+            var div = L.DomUtil.create('div', 'info legend');
+            var labels = [];
 
-            // loop through our density intervals and generate a label with a colored square for each interval
-            for (var i = 0; i < grades.length; i++) {
+            // Loop through our density intervals and generate a label with a colored square for each interval.
+            for (i = 0; i < data_range.length; i++) {
                 div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                    (grades[i]).toPrecision(2) + (grades[i + 1] ? ' &ndash; ' + (grades[i + 1]).toPrecision(2) + '<br>' : '+');
+                    '<i style="background: #' + data_range[i][1] + '"></i> ' +
+                    (data_range[i][0]).toPrecision(2) + (data_range[i + 1] ? ' &ndash; ' + (data_range[i + 1][0]).toPrecision(2) + '<br>' : '+');
             }
 
             return div;

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static from staticfiles %}
 {% load i18n %}
 {% load widget_tweaks %}
 
@@ -15,7 +16,11 @@
                       <div class="form-group row">
                           <label class="col-sm-3 col-form-label">{{ field.label }}</label>
                           <div class="col-sm-9">
-                              {{ field|add_class:"form-control" }}
+                              {% if field.name == 'start_color' or field.name == 'end_color' %}
+                                {{ field|add_class:"form-control jscolor" }}
+                              {% else %}
+                                {{ field|add_class:"form-control" }}
+                              {% endif %}
                           </div>
                           {% if field.errors %}
                               <div class="alert alert-warning col-sm-9 offset-sm-3" role="alert">
@@ -44,6 +49,7 @@
 {% endblock content %}
 
 {% block script %}
+    <script type="text/javascript" src="{% static 'js/jscolor.min.js' %}"></script>
     <script defer>
       var items;
       var $elements = $('#map-elements');

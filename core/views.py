@@ -26,13 +26,15 @@ def map_view(request, slug):
         slug=slug
     )
 
-    data_range = {'min': float('Inf'), 'max': -float('Inf'), 'step': 0}
+    data_range = []
+    data_min = float('Inf')
+    data_max = -float('Inf')
 
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
     for element in map_obj.elements.all():
-        data_range['min'] = element.data if element.data < data_range['min'] else data_range['min']
-        data_range['max'] = element.data if element.data > data_range['max'] else data_range['max']
+        data_min = element.data if element.data < data_min else data_min
+        data_max = element.data if element.data > data_max else data_max
         geojson_data += '{{\
                 "type": "Feature", "id": "{}", "properties": {{"name": "{}", "density": {}}}, "geometry": {}\
             }}, '.format(
@@ -40,7 +42,37 @@ def map_view(request, slug):
         )
     geojson_data += ']}'
 
-    data_range['step'] = (data_range['max'] - data_range['min']) / 8
+    if data_min < float('Inf') and data_max > -float('Inf'):
+        # Get value step
+        step = (data_max - data_min) / map_obj.grades
+
+        # Convert colors to int
+        start_red = int(map_obj.start_color[:2], 16)
+        start_green = int(map_obj.start_color[2:4], 16)
+        start_blue = int(map_obj.start_color[4:], 16)
+
+        end_red = int(map_obj.end_color[:2], 16)
+        end_green = int(map_obj.end_color[2:4], 16)
+        end_blue = int(map_obj.end_color[4:], 16)
+
+        # Get color steps
+        red_step = (end_red - start_red) / map_obj.grades
+        green_step = (end_green - start_green) / map_obj.grades
+        blue_step = (end_blue - start_blue) / map_obj.grades
+
+        for i in reversed(range(map_obj.grades)):
+            # Get current colors
+            red = hex(start_red + int(red_step * i))[2:]
+            green = hex(start_green + int(green_step * i))[2:]
+            blue = hex(start_blue + int(blue_step * i))[2:]
+
+            # Fix current colors (we need 2 digits)
+            red = red if len(red) == 2 else '0' + red
+            green = green if len(green) == 2 else '0' + green
+            blue = blue if len(blue) == 2 else '0' + blue
+
+            key = data_max - step * (i + 1)
+            data_range.append([key, red + green + blue])
 
     return render(request, 'map.html', dict(
         map=map_obj,
