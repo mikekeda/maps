@@ -30,19 +30,30 @@
 
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
-        {% url 'core:homepage' as homepage_url %}
-        <li class="nav-item {% if request.get_full_path == homepage_url %}active{% endif %}">
-          <a class="nav-link" href="{{ homepage_url }}">{% trans "Home" %} <span class="sr-only">(current)</span></a>
+        {% url 'core:maps' as maps_url %}
+        <li class="nav-item {% if request.get_full_path == maps_url %}active{% endif %}">
+          <a class="nav-link" href="{{ maps_url }}">{% trans "Home" %} <span class="sr-only">(current)</span></a>
+        </li>
+        {% if user.is_authenticated %}
+        {% url 'core:user_maps' user.username as user_maps_url %}
+        <li class="nav-item {% if request.get_full_path == user_maps_url %}active{% endif %}">
+          <a class="nav-link" href="{{ user_maps_url }}">{% trans "My maps" %}</a>
+        </li>
+        {% endif %}
+        {% url 'core:about' as about_url %}
+        <li class="nav-item {% if request.get_full_path == about_url %}active{% endif %}">
+          <a class="nav-link" href="{{ about_url }}">{% trans "About" %}</a>
         </li>
       </ul>
       <ul class="navbar-nav mr-right">
-        {% url 'core:example' 1 as example1_url %}
-        <li class="nav-item {% if request.get_full_path == example1_url %}active{% endif %}">
-          <a class="nav-link" href="{{ example1_url }}">{% trans "Example" %} 1</a>
-        </li>
-        {% url 'core:example' 2 as example2_url %}
-        <li class="nav-item {% if request.get_full_path == example2_url %}active{% endif %}">
-          <a class="nav-link" href="{{ example2_url }}">{% trans "Example" %} 2</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Examples" %}</a>
+          <div class="dropdown-menu">
+            {% url 'core:example' 1 as example1_url %}
+            <a class="nav-link text-muted {% if request.get_full_path == example1_url %}active{% endif %}" href="{{ example1_url }}">{% trans "Example" %} 1</a>
+            {% url 'core:example' 2 as example2_url %}
+            <a class="nav-link text-muted {% if request.get_full_path == example2_url %}active{% endif %}" href="{{ example2_url }}">{% trans "Example" %} 2</a>
+          </div>
         </li>
         {% if user.is_authenticated %}
         {% url 'core:add_map' as add_map_url %}

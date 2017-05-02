@@ -3,16 +3,18 @@ from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 import json
 
 from .models import Map, MapElement, Polygon, Region
 from .forms import MapForm
 
 
-def homepage(request):
-    """Homepage."""
-    if request.user.is_authenticated:
-        maps = Map.objects.filter(user=request.user).order_by('-id')
+def maps(request, username=None):
+    """Maps."""
+    if username:
+        user = get_object_or_404(User, username=username)
+        maps = Map.objects.filter(user=user).order_by('-id')
     else:
         maps = Map.objects.all()
 
@@ -127,3 +129,9 @@ def example(request, example_id):
     """Example map."""
 
     return render(request, 'example' + example_id + '.html')
+
+
+def about(request):
+    """About page."""
+
+    return render(request, 'about.html')

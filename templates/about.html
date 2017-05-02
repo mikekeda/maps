@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "About page" %}{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="mb-4">{% trans "About" %}</h1>
+            <p>{% trans "With this site you can build statistic interactive webmaps." %}</p>
+        </div>
+    </div>
+{% endblock content %}
