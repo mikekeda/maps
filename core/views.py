@@ -5,9 +5,14 @@ from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 import json
+from django.views.decorators.http import condition
 
 from .models import Map, MapElement, Polygon, Region
 from .forms import MapForm
+
+
+def map_latest_entry(request, slug):
+    return get_object_or_404(Map, slug=slug).changed
 
 
 def maps(request, username=None):
@@ -21,6 +26,7 @@ def maps(request, username=None):
     return render(request, 'homepage.html', dict(maps=maps, active_page='homepage'))
 
 
+@condition(last_modified_func=map_latest_entry)
 def map_view(request, slug):
     """Map."""
     map_obj = get_object_or_404(

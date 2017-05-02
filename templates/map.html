@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{{ map.title }}{% endblock title %}
+{% block description %}{{ map.description|default:_("No description provided") }}{% endblock description %}
 
 {% block content %}
   <div>

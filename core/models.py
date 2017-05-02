@@ -45,6 +45,9 @@ class Map(models.Model):
         default=0.7,
         validators=[MinValueValidator(0), MaxValueValidator(1)],
         help_text="The opacity for regions.")
+    changed = models.DateTimeField(
+        auto_now=True,
+        help_text="Time when map was changed last time.")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='maps',

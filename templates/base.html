@@ -14,6 +14,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}?v=3"/>
   {% block css %}{% endblock css %}
   <title>{% block title %}{% trans "Maps" %}{% endblock title %}</title>
+  <meta name="description" content="{% block description %}{% trans 'Statistic interactive webmaps.' %}{% endblock description %}">
+  <meta name="keywords" content="Map,Webmap,Leaflet,GeoJSON">
 </head>
 <body>
 <svg class="hidden-xl-down">
