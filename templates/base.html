@@ -7,15 +7,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="robots" content="none">
   <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABoklEQVR42n3TSyhmYRzH8fOKZKQpCwvNNGKhFBOxUFMGUVKKZqEsmCzGwm0hG80kt0TZyMKdkBjZYKTJLTaSKEozjSJq1CwsMJlJ+P7rdzje5KnPW+c8z/k9l//z+hzH2UInxvHPeWiZqMeL5/p9/NziGmfowSZqkKqP7H2xPvb2v7MUNyAPUShHjD4cwqJmC0OJX/8aut2AdIQrcFuDWvEBXzCDP/iJv3iDCJvADbBBicjHfwygA2NI8ey7FocYRr+tyA14jwJUauAgplCKY723sZcIxjxGMOkNaEGcZviBT8iWIoR4VvIVEzaJN2ADC+jCjvb7S+dh7Uar8Ol5DrnegFUE4TtO0YZlhGrMPk6QgyM0W1n9A6w8hZphSdvIsHKhGgk6Hwu9wop/QK5Kdq59zyIW64jEZ1XsLaIx7R/g6IQDkaXneDSoxEEaa2dVZwf/VIDtfVdlCtYhJmFU/R/xCr/R6wbYxWjEAV7rWtveqxCgfXepKtZeosm9SHZZKrTUb9hDGS50na88/fNa3X2/W1NraRqYjHb0OY//vk/23wHtsXwyEoeUBgAAAABJRU5ErkJggg==" rel="icon"/>
   <link rel="stylesheet" type="text/css" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
-  {% leaflet_css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}?v=3"/>
-  {% block css %}{% endblock css %}
   <title>{% block title %}{% trans "Maps" %}{% endblock title %}</title>
   <meta name="description" content="{% block description %}{% trans 'Statistic interactive webmaps.' %}{% endblock description %}">
   <meta name="keywords" content="Map,Webmap,Leaflet,GeoJSON">
+  {% leaflet_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}?v=3"/>
+  {% block css %}{% endblock css %}
 </head>
 <body>
 <svg class="hidden-xl-down">
