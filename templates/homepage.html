@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "My Maps" %}{% endblock title %}
+{% block title %}{% trans "Maps" %}{% endblock title %}
 
 {% block content %}
   <div class="container">
-      <h1 class="display-5 offset-xl-2 offset-lg-1">{% trans "Maps" %}</h1>
+      <h1 class="display-5 offset-xl-2 offset-lg-1"><wbr>{% trans "Maps" %}</h1>
       {% for map in maps %}
       <div class="row">
           <div class="card card-inverse mb-3 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">

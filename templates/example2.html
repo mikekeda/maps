@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Video call with" %} {{ interlocutor.username }}{% endblock title %}
+{% block title %}{% trans "Example map 2" %}{% endblock title %}
 
 {% block content %}
   <div>
-      <h1 class="display-5 text-center">{% trans "Interactive Choropleth Map" %}</h1>
+      <h1 class="display-5 text-center"><wbr>{% trans "Interactive Choropleth Map" %}</h1>
       <div class="row">
           <div class="col-md-12">
               <div id="map"></div>
@@ -78,14 +78,14 @@
             }
 
             info.onAdd = function (map) {
-                this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+                this._div = L.DomUtil.create('div', 'info hidden-print'); // create a div with a class "info"
                 this.update();
                 return this._div;
             };
 
             // method that we will use to update the control based on feature properties passed
             info.update = function (props) {
-                this._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+                this._div.innerHTML = '<h4><wbr>US Population Density</h4>' +  (props ?
                     '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
                     : 'Hover over a state');
             };
@@ -100,7 +100,7 @@
                 // loop through our density intervals and generate a label with a colored square for each interval
                 for (var i = 0; i < grades.length; i++) {
                     div.innerHTML +=
-                        '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                        '<i style="background:' + getColor(grades[i] + 1) + '; -webkit-print-color-adjust: exact;"></i> ' +
                         grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
                 }
 

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from .widgets import ColorWidget
 
@@ -17,14 +18,40 @@ class ColorField(models.CharField):
 
 
 class Map(models.Model):
-    title = models.CharField(max_length=256)
-    description = models.TextField(blank=True, null=True)
-    unit = models.CharField(max_length=64)
-    grades = models.PositiveSmallIntegerField(default=8)
-    end_color = ColorField(max_length=6, default='ffeda0')
-    start_color = ColorField(max_length=6, default='bd0026')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='maps')
-    slug = models.SlugField(editable=False)
+    title = models.CharField(
+        max_length=256,
+        help_text="Map title.")
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Map description.")
+    unit = models.CharField(
+        max_length=64,
+        help_text="The unit that will be used for the map.")
+    grades = models.PositiveSmallIntegerField(
+        default=8,
+        help_text="How many grades you would like to have")
+    end_color = ColorField(
+        max_length=6,
+        default='ffeda0',
+        help_text="The color to fill regions with the lowest value.")
+    start_color = ColorField(
+        max_length=6,
+        default='bd0026',
+        help_text="The color to fill regions with the highest value.")
+    opacity = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.7,
+        validators=[MinValueValidator(0), MaxValueValidator(1)],
+        help_text="The opacity for regions.")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='maps',
+        help_text="Map owner.")
+    slug = models.SlugField(
+        editable=False,
+        help_text="The slug that will be user for urls.")
 
     def _get_unique_slug(self):
         unique_slug = slug = slugify(self.title)

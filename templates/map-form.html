@@ -2,12 +2,13 @@
 {% load static from staticfiles %}
 {% load i18n %}
 {% load widget_tweaks %}
+{% load core_tags %}
 
 {% block title %}{% trans "Add Map" %}{% endblock title %}
 
 {% block content %}
   <div>
-      <h1 class="display-5 text-center">{% trans "Add Map" %}</h1>
+      <h1 class="display-5 text-center"><wbr>{% trans "Add Map" %}</h1>
       <div class="container mb-4">
           <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
               <form action="{% url 'core:add_map' %}" method="post" class="clearfix">
@@ -19,7 +20,7 @@
                               {% if field.name == 'start_color' or field.name == 'end_color' %}
                                 {{ field|add_class:"form-control jscolor" }}
                               {% else %}
-                                {{ field|add_class:"form-control" }}
+                                {{ field|placeholder:field.help_text|add_class:"form-control" }}
                               {% endif %}
                           </div>
                           {% if field.errors %}

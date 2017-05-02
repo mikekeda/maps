@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Map" %}{% endblock title %}
+{% block title %}{{ map.title }}{% endblock title %}
 
 {% block content %}
   <div>
       <div class="clearfix">
-      <h1 class="display-5 text-center">{{ map.title }}</h1>
+      <h1 class="display-5 text-center"><wbr>{{ map.title }}</h1>
       {% if request.user.is_superuser %}
-        <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map">{% trans "Edit" %}</a>
+        <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
       {% endif %}
       </div>
       <div class="row">
@@ -44,7 +44,7 @@
                 opacity: 1,
                 color: 'white',
                 dashArray: '3',
-                fillOpacity: 0.7
+                fillOpacity: {{ map.opacity }}
             };
         }
 
@@ -55,7 +55,7 @@
                 weight: 2,
                 color: '#666',
                 dashArray: '',
-                fillOpacity: 0.7
+                fillOpacity: {{ map.opacity }}
             });
 
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -83,14 +83,14 @@
         }
 
         info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this._div = L.DomUtil.create('div', 'info hidden-print'); // create a div with a class "info"
             this.update();
             return this._div;
         };
 
         // method that we will use to update the control based on feature properties passed
         info.update = function (props) {
-            this._div.innerHTML = '<h4>{{ map.title }}</h4>' +  (props ?
+            this._div.innerHTML = '<h4><wbr>{{ map.title }}</h4>' +  (props ?
                 '<b>' + props.name + '</b><br />' + props.density + ' {{ map.unit }}'
                 : 'Hover over a state');
         };
@@ -104,7 +104,7 @@
             // Loop through our density intervals and generate a label with a colored square for each interval.
             for (i = 0; i < data_range.length; i++) {
                 div.innerHTML +=
-                    '<i style="background: #' + data_range[i][1] + '"></i> ' +
+                    '<i style="background: #' + data_range[i][1] + '; -webkit-print-color-adjust: exact;"></i> ' +
                     (data_range[i][0]).toPrecision(2) + (data_range[i + 1] ? ' &ndash; ' + (data_range[i + 1][0]).toPrecision(2) + '<br>' : '+');
             }
 
