@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static from staticfiles %}
 {% load i18n %}
 
 {% block title %}{% trans "Example map 2" %}{% endblock title %}
@@ -15,7 +16,7 @@
 {% endblock content %}
 {% block script %}
     <script>
-        $.getScript('http://leafletjs.com/examples/choropleth/us-states.js', function() {
+        $.getScript("{% static 'js/us-states.js' %}", function() {
             var mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
             var map = L.map('map').setView([37.8, -96], 4);
             var info = L.control();
