@@ -24,7 +24,7 @@ class Command(BaseCommand):
             files = [f for f in listdir(path) if isfile(join(path, f))]
 
         for json_file in files:
-            region, created = Region.objects.get_or_create(filename=splitext(json_file)[0])
+            region, created = Region.objects.get_or_create(filename=splitext(json_file)[0].capitalize())
             with open(join(path, json_file)) as f:
                 data = json.load(f)
                 for feature in data['features']:
@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     elif 'nom' in feature['properties']:
                         name = feature['properties']['nom']
                     polygon, created = Polygon.objects.get_or_create(
-                        title=name,
+                        title=name.capitalize(),
                         region=region,
                         defaults={'geom': feature['geometry']}
                     )

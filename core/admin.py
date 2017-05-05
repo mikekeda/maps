@@ -2,7 +2,7 @@ from leaflet.admin import LeafletGeoAdmin
 from django.contrib import admin
 from easy_select2 import select2_modelform
 
-from .models import Map, Polygon, MapElement
+from .models import Map, Polygon, MapElement, Region
 
 MapElementForm = select2_modelform(MapElement)
 
@@ -35,3 +35,4 @@ class PolygonAdmin(LeafletGeoAdmin):
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
+admin.site.register(Region)
