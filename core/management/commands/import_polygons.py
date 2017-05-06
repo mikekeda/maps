@@ -14,21 +14,29 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('file', nargs='?', type=str)
-        parser.add_argument('level', nargs='?', type=str)
+        parser.add_argument('parent', nargs='?', type=str)
 
     def handle(self, *args, **options):
         self.stdout.write("Started Polygons import")
         path = 'geojson'
+        need_parent = []
         if options['file']:
             files = [options['file']]
         else:
             files = [f for f in listdir(path) if isfile(join(path, f))]
 
         for json_file in files:
-            if options['level']:
-                parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize(), level=options['level']).first()
+            if options['parent']:
+                parent = Polygon.objects.filter(
+                    title=splitext(json_file)[0].capitalize(),
+                    parent__title=options['parent']).first()
             else:
-                parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize()).first()
+                parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize())
+                if len(parent) > 1:
+                    need_parent.append(json_file)
+                    continue
+                else:
+                    parent = parent[0] if parent else None
             with open(join(path, json_file)) as f:
                 data = json.load(f)
                 for feature in data['features']:
@@ -39,6 +47,8 @@ class Command(BaseCommand):
                         name = feature['properties']['name']
                     elif 'nom' in feature['properties']:
                         name = feature['properties']['nom']
+                    elif 'namelsad' in feature['properties']:
+                        name = feature['properties']['namelsad']
                     polygon, created = Polygon.objects.get_or_create(
                         title=name.capitalize(),
                         parent=parent,
@@ -48,3 +58,5 @@ class Command(BaseCommand):
                         print(name + ' was created')
                     else:
                         print(name + ' already exists')
+        if need_parent:
+            print('{} need provide parent'.format(', '.join(need_parent)))
