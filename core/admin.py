@@ -1,8 +1,9 @@
 from leaflet.admin import LeafletGeoAdmin
 from django.contrib import admin
 from easy_select2 import select2_modelform
+from mptt.admin import MPTTModelAdmin
 
-from .models import Map, Polygon, MapElement, Region
+from .models import Map, Polygon, MapElement
 
 MapElementForm = select2_modelform(MapElement)
 
@@ -27,12 +28,9 @@ class MapElementAdmin(admin.ModelAdmin):
     form = MapElementForm
 
 
-class PolygonAdmin(LeafletGeoAdmin):
+class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
     search_fields = ['title']
-    list_filter = ('region',)
-    readonly_fields = ('region',)
 
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
-admin.site.register(Region)

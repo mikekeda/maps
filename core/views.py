@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Prefetch
+from django.db.models import Prefetch, F
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.http import condition
 
-from .models import Map, MapElement, Polygon, Region
+from .models import Map, MapElement, Polygon
 from .forms import MapForm
 
 
@@ -103,7 +103,7 @@ def add_map(request):
             # Create map elements.
             polygon_prefix = 'polygon_'
             for key in request.POST:
-                if key.startswith(polygon_prefix):
+                if key.startswith(polygon_prefix) and request.POST[key]:
                     MapElement(
                         map=map_obj,
                         polygon_id=key.strip(polygon_prefix),
@@ -114,7 +114,7 @@ def add_map(request):
     else:
         form = MapForm(prefix='map')
 
-    regions = Region.objects.order_by('filename')
+    regions = Polygon.objects.filter(lft__lte=F('rght')-2).order_by('title')
 
     return render(request, 'map-form.html', {
         'form': form,
@@ -123,9 +123,12 @@ def add_map(request):
 
 
 @login_required
-def get_polygons(request, region_id):
+def get_polygons(request, parent_id):
     """Get array of polygons by region."""
-    polygons = Polygon.objects.filter(region__pk=region_id,).order_by('title')
+    if parent_id == '0':
+        polygons = Polygon.objects.filter(lft=1).order_by('title')
+    else:
+        polygons = get_object_or_404(Polygon, pk=parent_id).get_children().order_by('title')
     polygons = json.dumps([{'pk': polygon.pk, 'title': polygon.title} for polygon in polygons])
 
     return JsonResponse({'polygons': polygons})

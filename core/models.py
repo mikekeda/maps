@@ -4,6 +4,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
 from django.core.validators import MaxValueValidator, MinValueValidator
+from mptt.models import MPTTModel, TreeForeignKey
 
 from .widgets import ColorWidget
 
@@ -76,17 +77,13 @@ class Map(models.Model):
         return self.title
 
 
-class Region(models.Model):
-    filename = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.filename
-
-
-class Polygon(models.Model):
+class Polygon(MPTTModel):
     title = models.CharField(max_length=256)
-    region = models.ForeignKey(Region, related_name='polygons')
     geom = PolygonField()
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['title']
 
     def __str__(self):
         return self.title

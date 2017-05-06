@@ -35,8 +35,9 @@
                       <div class="col-sm-9">
                           <select class="form-control" id="region-select">
                               <option value="_none">- {% trans "none" %} -</option>
+                              <option value="0">{% trans "World" %}</option>
                               {% for region in regions %}
-                                  <option value="{{ region.pk }}">{{ region.filename }}</option>
+                                  <option value="{{ region.pk }}">{{ region.title }}</option>
                               {% endfor %}
                           </select>
                       </div>
@@ -64,7 +65,7 @@
               items.push(`<div class="form-group row">
               <label class="col-sm-3 col-form-label">` + val.title + `</label>
                 <div class="col-sm-9">
-                  <input type="number" name="polygon_` + val.pk + `" id="id_` + val.pk + `" required="" class="form-control">
+                  <input type="number" name="polygon_` + val.pk + `" id="id_` + val.pk + `" class="form-control">
                 </div>
               </div>`);
             });

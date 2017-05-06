@@ -3,7 +3,7 @@ import json
 from os import listdir
 from os.path import isfile, join, splitext
 
-from core.models import Polygon, Region
+from core.models import Polygon
 
 
 # The class must be named Command, and subclass BaseCommand
@@ -24,7 +24,7 @@ class Command(BaseCommand):
             files = [f for f in listdir(path) if isfile(join(path, f))]
 
         for json_file in files:
-            region, created = Region.objects.get_or_create(filename=splitext(json_file)[0].capitalize())
+            parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize()).first()
             with open(join(path, json_file)) as f:
                 data = json.load(f)
                 for feature in data['features']:
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                         name = feature['properties']['nom']
                     polygon, created = Polygon.objects.get_or_create(
                         title=name.capitalize(),
-                        region=region,
+                        parent=parent,
                         defaults={'geom': feature['geometry']}
                     )
                     if created:
