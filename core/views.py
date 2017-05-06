@@ -114,7 +114,7 @@ def add_map(request):
     else:
         form = MapForm(prefix='map')
 
-    regions = Region.objects.all()
+    regions = Region.objects.order_by('filename')
 
     return render(request, 'map-form.html', {
         'form': form,
