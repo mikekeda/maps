@@ -50,7 +50,7 @@ class Command(BaseCommand):
                     elif 'namelsad' in feature['properties']:
                         name = feature['properties']['namelsad']
                     polygon, created = Polygon.objects.get_or_create(
-                        title=name.capitalize(),
+                        title=name[0].capitalize() + name[1:],
                         parent=parent,
                         defaults={'geom': feature['geometry']}
                     )
