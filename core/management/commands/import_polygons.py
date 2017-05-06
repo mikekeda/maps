@@ -14,6 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('file', nargs='?', type=str)
+        parser.add_argument('level', nargs='?', type=str)
 
     def handle(self, *args, **options):
         self.stdout.write("Started Polygons import")
@@ -24,7 +25,10 @@ class Command(BaseCommand):
             files = [f for f in listdir(path) if isfile(join(path, f))]
 
         for json_file in files:
-            parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize()).first()
+            if options['level']:
+                parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize(), level=options['level']).first()
+            else:
+                parent = Polygon.objects.filter(title=splitext(json_file)[0].capitalize()).first()
             with open(join(path, json_file)) as f:
                 data = json.load(f)
                 for feature in data['features']:
