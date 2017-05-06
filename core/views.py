@@ -114,7 +114,7 @@ def add_map(request):
     else:
         form = MapForm(prefix='map')
 
-    regions = Polygon.objects.filter(lft__lte=F('rght')-2).order_by('title')
+    regions = Polygon.objects.filter(lft__lte=F('rght')-2).order_by('tree_id', 'level', 'title')
 
     return render(request, 'map-form.html', {
         'form': form,

@@ -37,7 +37,7 @@
                               <option value="_none">- {% trans "none" %} -</option>
                               <option value="0">{% trans "World" %}</option>
                               {% for region in regions %}
-                                  <option value="{{ region.pk }}">{{ region.title }}</option>
+                                  <option value="{{ region.pk }}">&nbsp;&nbsp;&nbsp;&nbsp;{% for i in ""|ljust:region.level %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{{ region.title }}</option>
                               {% endfor %}
                           </select>
                       </div>
@@ -55,6 +55,8 @@
     <script defer>
       var items;
       var $elements = $('#map-elements');
+
+      $('#region-select').select2();
 
       $('#region-select').change(function() {
         if (!isNaN(this.value)) {
