@@ -10,6 +10,7 @@ MapElementForm = select2_modelform(MapElement)
 
 class MapElementInline(admin.TabularInline):
     model = MapElement
+    exclude = ['polygon']
 
 
 class MapAdmin(admin.ModelAdmin):

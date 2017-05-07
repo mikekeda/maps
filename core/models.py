@@ -1,4 +1,4 @@
-from djgeojson.fields import PolygonField
+from djgeojson.fields import MultiPolygonField
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -85,7 +85,7 @@ class Map(models.Model):
 
 class Polygon(MPTTModel):
     title = models.CharField(max_length=256)
-    geom = PolygonField()
+    geom = MultiPolygonField()
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
 
     class MPTTMeta:
