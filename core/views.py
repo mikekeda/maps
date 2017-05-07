@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 import json
 from django.views.decorators.http import condition
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Map, MapElement, Polygon
 from .forms import MapForm
@@ -19,9 +20,19 @@ def maps(request, username=None):
     """Maps."""
     if username:
         user = get_object_or_404(User, username=username)
-        maps = Map.objects.filter(user=user).order_by('-id')
+        maps = Map.objects.filter(user=user)
     else:
-        maps = Map.objects.all().order_by('-id')
+        maps = Map.objects.all()
+
+    maps = maps.order_by('-id').prefetch_related('categories').select_related('region')
+    paginator = Paginator(maps, 10)
+    page = request.GET.get('p')
+    try:
+        maps = paginator.page(page)
+    except PageNotAnInteger:
+        maps = paginator.page(1)
+    except EmptyPage:
+        maps = paginator.page(paginator.num_pages)
 
     return render(request, 'homepage.html', dict(maps=maps, active_page='homepage'))
 

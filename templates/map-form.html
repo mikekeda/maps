@@ -77,7 +77,7 @@
         for (i = 0; i < lines.length; i++) {
           country = lines[i].substring(7, 58).trim();
           if (country) {
-            data = parseFloat(lines[i].substring(58, lines[i].length).trim().replace(/,/g,''));
+            data = parseFloat(lines[i].substring(58, lines[i].length).trim().replace(/\D/g,''));
             $elements.find('[data-country="' + country.toLowerCase() + '"]').find('input').val(data);
           }
         }
@@ -85,7 +85,7 @@
 
       $data_import[0].addEventListener('change', onChange);
 
-      $('#region-select').select2();
+      $('select').select2();
 
       $('#region-select').change(function() {
         if (!isNaN(this.value)) {

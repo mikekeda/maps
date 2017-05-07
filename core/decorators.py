@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.conf import settings
 
 
 def simple_cache_page(cache_timeout, per_user=False):
@@ -20,7 +21,7 @@ def simple_cache_page(cache_timeout, per_user=False):
                 key += ':' + ':'.join([kwargs[key] for key in kwargs])
 
             response = cache.get(key)
-            if not response:
+            if not response or settings.DEBUG:
                 response = func(*args, **kwargs)
                 cache.set(key, response, cache_timeout)
             return response

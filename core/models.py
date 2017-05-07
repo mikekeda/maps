@@ -11,6 +11,7 @@ from .widgets import ColorWidget
 
 
 class ColorField(models.CharField):
+    """Color field"""
     def __init__(self, *args, **kwargs):
         super(ColorField, self).__init__(*args, **kwargs)
 
@@ -19,7 +20,39 @@ class ColorField(models.CharField):
         return super(ColorField, self).formfield(**kwargs)
 
 
+class Category(models.Model):
+    """Category model"""
+    title = models.CharField(max_length=60, unique=True)
+    description = models.TextField(blank=True, null=True)
+    slug = models.SlugField(editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.title)
+
+        super(Category, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return u'%s' % (
+            self.title,
+        )
+
+
+class Polygon(MPTTModel):
+    """Polygon model"""
+    title = models.CharField(max_length=256)
+    geom = MultiPolygonField()
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['title']
+
+    def __str__(self):
+        return self.title
+
+
 class Map(models.Model):
+    """Map model"""
     title = models.CharField(
         max_length=256,
         help_text="Map title.")
@@ -35,6 +68,14 @@ class Map(models.Model):
         default=timezone.now,
         blank=True,
         help_text="An year or date when the information was measured.")
+    region = models.ForeignKey(
+        Polygon,
+        blank=True,
+        null=True,
+        related_name='maps')
+    categories = models.ManyToManyField(
+        Category,
+        related_name='maps')
     grades = models.PositiveSmallIntegerField(
         default=8,
         help_text="How many grades you would like to have")
@@ -83,19 +124,8 @@ class Map(models.Model):
         return self.title
 
 
-class Polygon(MPTTModel):
-    title = models.CharField(max_length=256)
-    geom = MultiPolygonField()
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
-
-    class MPTTMeta:
-        order_insertion_by = ['title']
-
-    def __str__(self):
-        return self.title
-
-
 class MapElement(models.Model):
+    """MapElement model"""
     map = models.ForeignKey(Map, related_name='elements')
     polygon = models.ForeignKey(Polygon, related_name='elements')
     data = models.FloatField()

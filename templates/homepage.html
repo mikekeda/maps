@@ -4,17 +4,53 @@
 {% block title %}{% trans "Maps" %}{% endblock title %}
 
 {% block content %}
-  <div class="container">
+  <div class="container mb-4">
       <h1 class="display-5 offset-xl-2 offset-lg-1"><wbr>{% trans "Maps" %}</h1>
       {% for map in maps %}
       <div class="row">
-          <div class="card card-inverse mb-3 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
+          <div class="card my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
               <div class="card-block">
-                <a href="{% url 'core:map' map.slug %}"><h4>{{ map.title }}</h4></a>
-                <p class="text-muted">{{ map.description }}</p>
+                  <a href="{% url 'core:map' map.slug %}"><h4 class="card-title">{{ map.title }}</h4></a>
+                  <p class="card-text text-muted">{{ map.description }}</p>
+                  {% for category in map.categories.all %}
+                      <a href="?category={{ category.slug }}" class="card-link mr-2">{{ category.title }}</a>
+                  {% endfor %}
+                   {% if request.user.is_superuser %}
+                      <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right hidden-print  ml-2">{% trans "Edit" %}</a>
+                  {% endif %}
+                  <a href="?year={{ map.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ map.date_of_information|date:'Y' }}</a>
+                  {% if map.region %}
+                    <a href="?region={{ map.region.pk }}" class="card-link float-right ml-2">{{ map.region.title }}</a>
+                  {% else %}
+                    <a href="?region=0" class="card-link float-right ml-2">{% trans "World" %}</a>
+                  {% endif %}
               </div>
           </div>
       </div>
       {% endfor %}
+
+      <nav aria-label="pagination" class="d-flex justify-content-center mt-4">
+          <ul class="pagination">
+              <li class="page-item">
+                  <a class="page-link" href="." tabindex="-1">{% trans "First" %}</a>
+              </li>
+              {% if maps.has_previous %}
+              <li class="page-item">
+                  <a class="page-link" href="?p={{ maps.previous_page_number }}">{{ maps.previous_page_number }}</a>
+              </li>
+              {% endif %}
+              <li class="page-item active">
+                  <a class="page-link" href="?p={{ maps.number }}">{{ maps.number }} <span class="sr-only">(current)</span></a>
+              </li>
+              {% if maps.has_next %}
+              <li class="page-item">
+                  <a class="page-link" href="?p={{ maps.next_page_number }}">{{ maps.next_page_number }}</a>
+              </li>
+              {% endif %}
+              <li class="page-item">
+                  <a class="page-link" href="?p={{ maps.paginator.num_pages }}">{% trans "Last" %}</a>
+              </li>
+          </ul>
+      </nav>
   </div>
 {% endblock content %}

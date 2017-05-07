@@ -3,9 +3,10 @@ from django.contrib import admin
 from easy_select2 import select2_modelform
 from mptt.admin import MPTTModelAdmin
 
-from .models import Map, Polygon, MapElement
+from .models import Map, Polygon, MapElement, Category
 
 MapElementForm = select2_modelform(MapElement)
+MapForm = select2_modelform(Map)
 
 
 class MapElementInline(admin.TabularInline):
@@ -16,6 +17,7 @@ class MapElementInline(admin.TabularInline):
 class MapAdmin(admin.ModelAdmin):
     list_filter = ('user__username',)
     search_fields = ['title']
+    form = MapForm
     inlines = [MapElementInline]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -35,3 +37,4 @@ class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
+admin.site.register(Category)
