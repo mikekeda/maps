@@ -42,6 +42,10 @@
                           </select>
                       </div>
                   </div>
+                  <label id="data-import" class="custom-file w-100 mb-3 data-import" style="display: none;">
+                      <input type="file" id="data-import-file" class="custom-file-input">
+                      <span class="custom-file-control"></span>
+                  </label>
                   <div id="map-elements"></div>
                   <button type="submit" class="btn btn-primary float-right">{% trans "Add Map" %}</button>
               </form>
@@ -54,7 +58,32 @@
     <script type="text/javascript" src="{% static 'js/jscolor.min.js' %}"></script>
     <script defer>
       var items;
+      var reader;
+      var lines;
+      var country;
+      var data;
+      var i;
       var $elements = $('#map-elements');
+      var $data_import = $('#data-import');
+
+      function onChange(event) {
+        reader = new FileReader();
+        reader.onload = onReaderLoad;
+        reader.readAsText(event.target.files[0]);
+      }
+
+      function onReaderLoad(event){
+        lines = event.target.result.split('\n');
+        for (i = 0; i < lines.length; i++) {
+          country = lines[i].substring(7, 58).trim();
+          if (country) {
+            data = parseFloat(lines[i].substring(58, lines[i].length).trim().replace(/,/g,''));
+            $elements.find('[data-country="' + country.toLowerCase() + '"]').find('input').val(data);
+          }
+        }
+      }
+
+      $data_import[0].addEventListener('change', onChange);
 
       $('#region-select').select2();
 
@@ -64,19 +93,21 @@
             items = [];
 
             $.each(JSON.parse(data.polygons), function(key, val) {
-              items.push(`<div class="form-group row">
+              items.push(`<div class="form-group row" data-country="` + val.title.toLowerCase() + `">
               <label class="col-sm-3 col-form-label">` + val.title + `</label>
                 <div class="col-sm-9">
-                  <input type="number" name="polygon_` + val.pk + `" id="id_` + val.pk + `" class="form-control">
+                  <input type="number" step="0.01" name="polygon_` + val.pk + `" id="id_` + val.pk + `" class="form-control">
                 </div>
               </div>`);
             });
 
             $elements.html(items.join(''));
+            $data_import.show();
           });
         }
         else {
           $elements.html('');
+          $data_import.hide();
         }
       });
     </script>

@@ -4,6 +4,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 
 from .widgets import ColorWidget
@@ -27,8 +28,13 @@ class Map(models.Model):
         null=True,
         help_text="Map description.")
     unit = models.CharField(
+        blank=True,
         max_length=64,
         help_text="The unit that will be used for the map.")
+    date_of_information = models.DateField(
+        default=timezone.now,
+        blank=True,
+        help_text="An year or date when the information was measured.")
     grades = models.PositiveSmallIntegerField(
         default=8,
         help_text="How many grades you would like to have")
@@ -70,7 +76,7 @@ class Map(models.Model):
             self.slug = self._get_unique_slug()
 
         cache.delete_pattern('*:map_view:' + self.slug)
-        cache.delete_pattern('*:homepage')
+        cache.delete_pattern('*:maps')
         super(Map, self).save(*args, **kwargs)
 
     def __str__(self):

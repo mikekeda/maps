@@ -21,7 +21,7 @@ def maps(request, username=None):
         user = get_object_or_404(User, username=username)
         maps = Map.objects.filter(user=user).order_by('-id')
     else:
-        maps = Map.objects.all()
+        maps = Map.objects.all().order_by('-id')
 
     return render(request, 'homepage.html', dict(maps=maps, active_page='homepage'))
 
