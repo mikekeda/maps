@@ -75,6 +75,7 @@ class Map(models.Model):
         related_name='maps')
     categories = models.ManyToManyField(
         Category,
+        blank=True,
         related_name='maps')
     grades = models.PositiveSmallIntegerField(
         default=8,

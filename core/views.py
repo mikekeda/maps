@@ -110,6 +110,7 @@ def add_map(request):
             map_obj = form.save(commit=False)
             map_obj.user = request.user
             map_obj.save()
+            form.save_m2m()
 
             # Create map elements.
             polygon_prefix = 'polygon_'
