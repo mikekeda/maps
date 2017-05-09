@@ -24,6 +24,16 @@ def maps(request, username=None):
     else:
         maps = Map.objects.all()
 
+    params = request.GET.copy()
+    params.pop('p', None)
+    if 'category' in params:
+        maps = maps.filter(categories__slug=params['category'])
+    if 'year' in params:
+        maps = maps.filter(date_of_information__year=params['year'])
+    if 'region' in params:
+        region = None if params['region'] == '0' else params['region']
+        maps = maps.filter(region=region)
+
     maps = maps.order_by('-id').prefetch_related('categories').select_related('region')
     paginator = Paginator(maps, 10)
     page = request.GET.get('p')
@@ -34,7 +44,11 @@ def maps(request, username=None):
     except EmptyPage:
         maps = paginator.page(paginator.num_pages)
 
-    return render(request, 'homepage.html', dict(maps=maps, active_page='homepage'))
+    return render(request, 'homepage.html', dict(
+        maps=maps,
+        params=params,
+        active_page='homepage'
+    ))
 
 
 @condition(last_modified_func=map_latest_entry)
@@ -97,8 +111,8 @@ def map_view(request, slug):
         map=map_obj,
         geojson_data=geojson_data,
         data_range=data_range,
-        active_page='map')
-    )
+        active_page='map'
+    ))
 
 
 @login_required

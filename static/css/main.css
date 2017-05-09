@@ -18,6 +18,10 @@ body > .navbar {
     z-index: 1;
 }
 
+.no-padding {
+    padding: 0 !important;
+}
+
 .info {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
