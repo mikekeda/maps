@@ -9,5 +9,6 @@ class Command(BaseCommand):
     help = "Delete all Polygons"
 
     def handle(self, *args, **options):
-        self.stdout.write("Started Polygons deleting")
-        Polygon.objects.all().delete()
+        self.stdout.write('Started Polygons deleting')
+        deleted = Polygon.objects.all().delete()
+        self.stdout.write('{} polygons were deleted'.format(deleted[0]))
