@@ -44,28 +44,32 @@
       </div>
       {% endfor %}
 
-      <nav aria-label="pagination" class="d-flex justify-content-center mt-4">
-          <ul class="pagination">
-              <li class="page-item">
-                  <a class="page-link" href="{% update_param request 'p' %}" tabindex="-1">{% trans "First" %}</a>
-              </li>
-              {% if maps.has_previous %}
-              <li class="page-item">
-                  <a class="page-link" href="{% update_param request 'p' maps.previous_page_number %}">{{ maps.previous_page_number }}</a>
-              </li>
-              {% endif %}
-              <li class="page-item active">
-                  <a class="page-link" href="{% update_param request 'p' maps.number %}">{{ maps.number }} <span class="sr-only">(current)</span></a>
-              </li>
-              {% if maps.has_next %}
-              <li class="page-item">
-                  <a class="page-link" href="{% update_param request 'p' maps.next_page_number %}">{{ maps.next_page_number }}</a>
-              </li>
-              {% endif %}
-              <li class="page-item">
-                  <a class="page-link" href="{% update_param request 'p' maps.paginator.num_pages %}">{% trans "Last" %}</a>
-              </li>
-          </ul>
-      </nav>
+      {% if maps|length > 10 %}
+          <nav aria-label="pagination" class="d-flex justify-content-center mt-4">
+              <ul class="pagination">
+                  <li class="page-item">
+                      <a class="page-link" href="{% update_param request 'p' %}" tabindex="-1">{% trans "First" %}</a>
+                  </li>
+                  {% if maps.has_previous %}
+                  <li class="page-item">
+                      <a class="page-link" href="{% update_param request 'p' maps.previous_page_number %}">{{ maps.previous_page_number }}</a>
+                  </li>
+                  {% endif %}
+                  <li class="page-item active">
+                      <a class="page-link" href="{% update_param request 'p' maps.number %}">{{ maps.number }} <span class="sr-only">(current)</span></a>
+                  </li>
+                  {% if maps.has_next %}
+                  <li class="page-item">
+                      <a class="page-link" href="{% update_param request 'p' maps.next_page_number %}">{{ maps.next_page_number }}</a>
+                  </li>
+                  {% endif %}
+                  <li class="page-item">
+                      <a class="page-link" href="{% update_param request 'p' maps.paginator.num_pages %}">{% trans "Last" %}</a>
+                  </li>
+              </ul>
+          </nav>
+      {% else %}
+          <p class="my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">{% trans "No maps" %}</p>
+      {% endif %}
   </div>
 {% endblock content %}
