@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 import json
 from os import walk
-from os.path import join, splitext
+from os.path import join, splitext, isfile
 
 from core.models import Polygon
 
@@ -18,7 +18,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Started Polygons import")
         path = 'geojson'
-        for root, subdirs, files in walk(path):
+        if options['file']:
+            if isfile(join(path, options['file'])):
+                need_proccess = [(
+                    path + '/' + options['file'].rsplit('/', 1)[0],
+                    None,
+                    [options['file'].split('/')[-1]]
+                )]
+            else:
+                # need to implement
+                need_proccess = (None, None, None)
+        else:
+            need_proccess = walk(path)
+
+        for root, subdirs, files in need_proccess:
+            print(root, subdirs, files)
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
@@ -44,6 +58,12 @@ class Command(BaseCommand):
                             name = feature['properties']['nom']
                         elif 'namelsad' in feature['properties']:
                             name = feature['properties']['namelsad']
+                        elif 'provincia' in feature['properties']:
+                            # for argentina.geojson
+                            name = feature['properties']['provincia']
+                        elif 'DEPARTAMTO' in feature['properties']:
+                            # for argentina.geojson
+                            name = feature['properties']['DEPARTAMTO']
                         polygon, created = Polygon.objects.get_or_create(
                             title=name[0].capitalize() + name[1:],
                             parent=parent,
