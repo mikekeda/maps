@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 import json
-from os import walk
+from os import walk, listdir
 from os.path import join, splitext, isfile
 
 from core.models import Polygon
@@ -20,19 +20,26 @@ class Command(BaseCommand):
         path = 'geojson'
         if options['file']:
             if isfile(join(path, options['file'])):
+                root = path
+                subdir = options['file'].rsplit('/', 1)
+                if len(subdir) > 1:
+                    root += '/' + subdir[0]
                 need_proccess = [(
-                    path + '/' + options['file'].rsplit('/', 1)[0],
+                    root,
                     None,
                     [options['file'].split('/')[-1]]
                 )]
             else:
-                # need to implement
-                need_proccess = (None, None, None)
+                root = path + '/' + options['file']
+                need_proccess = [(
+                    root,
+                    None,
+                    [f for f in listdir(root) if isfile(join(root, f))]
+                )]
         else:
             need_proccess = walk(path)
 
         for root, subdirs, files in need_proccess:
-            print(root, subdirs, files)
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
