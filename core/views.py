@@ -115,6 +115,93 @@ def map_view(request, slug):
     ))
 
 
+def polygons_view(request):
+    """Polygons."""
+    args = request.path.split('/')[2:]
+    level = len(args) - 1
+    title = args[-1]
+
+    map_obj = {
+        'title': args[-1] if args[-1] else 'World',
+        'grades': 8,
+        'end_color': 'BD0026',
+        'start_color': 'FFEDA0',
+        'opacity': '0.7',
+        'unit': 'polygons',
+    }
+
+    if level == 0:
+        if title:
+            elements = get_object_or_404(Polygon, level=level, title=title).get_children()
+        else:
+            elements = Polygon.objects.filter(level=level)
+    else:
+        parent_title = args[-2]
+        elements = get_object_or_404(Polygon, level=level, title=title, parent__title=parent_title).get_children()
+
+    data_range = []
+    data_min = float('Inf')
+    data_max = -float('Inf')
+
+    # Get geojson data.
+    geojson_data = '{"type": "FeatureCollection", "features":['
+    for element in elements:
+        data = len(element.get_children())
+        data_min = data if data < data_min else data_min
+        data_max = data if data > data_max else data_max
+
+        path = request.path
+        if path[-1] != '/':
+            path += '/'
+        path += element.title
+
+        geojson_data += '{{\
+                "type": "Feature", "id": "{}", "properties": {{"name": "{}", "density": {}, "path": "{}"}}, "geometry": {}\
+            }}, '.format(
+                element.id, element.title, data, path, element.geom
+            )
+    geojson_data += ']}'
+
+    if data_min < float('Inf') and data_max > -float('Inf'):
+        # Get value step
+        step = (data_max - data_min) / map_obj['grades']
+
+        # Convert colors to int
+        start_red = int(map_obj['start_color'][:2], 16)
+        start_green = int(map_obj['start_color'][2:4], 16)
+        start_blue = int(map_obj['start_color'][4:], 16)
+
+        end_red = int(map_obj['end_color'][:2], 16)
+        end_green = int(map_obj['end_color'][2:4], 16)
+        end_blue = int(map_obj['end_color'][4:], 16)
+
+        # Get color steps
+        red_step = (end_red - start_red) / map_obj['grades']
+        green_step = (end_green - start_green) / map_obj['grades']
+        blue_step = (end_blue - start_blue) / map_obj['grades']
+
+        for i in reversed(range(map_obj['grades'])):
+            # Get current colors
+            red = hex(start_red + int(red_step * i))[2:]
+            green = hex(start_green + int(green_step * i))[2:]
+            blue = hex(start_blue + int(blue_step * i))[2:]
+
+            # Fix current colors (we need 2 digits)
+            red = red if len(red) == 2 else '0' + red
+            green = green if len(green) == 2 else '0' + green
+            blue = blue if len(blue) == 2 else '0' + blue
+
+            key = data_max - step * (i + 1)
+            data_range.append([key, red + green + blue])
+
+    return render(request, 'map.html', dict(
+        map=map_obj,
+        geojson_data=geojson_data,
+        data_range=data_range,
+        active_page='map'
+    ))
+
+
 @login_required
 def add_map(request):
     """Create Map."""

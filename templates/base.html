@@ -57,6 +57,12 @@
             <a class="nav-link text-muted {% if request.get_full_path == example2_url %}active{% endif %}" href="{{ example2_url }}">{% trans "Example" %} 2</a>
           </div>
         </li>
+        {% url 'core:polygons' as polygons_url %}
+        <li class="nav-item {% if request.get_full_path == polygons_url %}active{% endif %}">
+          <a class="nav-link" href="{{ polygons_url }}">
+            {% trans "Available polygons" %}
+          </a>
+        </li>
         {% if user.is_authenticated %}
         {% url 'core:add_map' as add_map_url %}
         <li class="nav-item {% if request.get_full_path == add_map_url %}active{% endif %}">

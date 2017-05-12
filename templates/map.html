@@ -72,6 +72,9 @@
         }
 
         function zoomToFeature(e) {
+            if (e.target.feature.properties.path && e.target.feature.properties.density > 0) {
+                window.location = e.target.feature.properties.path;
+            }
             map.fitBounds(e.target.getBounds());
         }
 

@@ -1,12 +1,13 @@
 from django.conf.urls import url
 
-from .views import maps, example, map_view, add_map, get_polygons, about
+from .views import maps, example, map_view, polygons_view, add_map, get_polygons, about
 from .decorators import simple_cache_page
 
 
 urlpatterns = [
     url(r'^$', maps, name='maps'),
     url(r'^map/(?P<slug>.+)$', simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
+    url(r'^world/', polygons_view, name='polygons'),
     url(r'^user/(?P<username>\w+)/maps$', maps, name='user_maps'),
     url(r'^map/(?P<slug>.+)$', map_view, name='map'),
     url(r'^add/map$', add_map, name='add_map'),
