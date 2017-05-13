@@ -71,6 +71,12 @@ class Command(BaseCommand):
                         elif 'DEPARTAMTO' in feature['properties']:
                             # for argentina.geojson
                             name = feature['properties']['DEPARTAMTO']
+                        elif 'prefecture' in feature['properties']:
+                            # for mongolia.geojson
+                            name = feature['properties']['prefecture']
+                        elif 'REGION' in feature['properties']:
+                            # for nepal.geojson
+                            name = feature['properties']['REGION']
                         polygon, created = Polygon.objects.get_or_create(
                             title=name[0].capitalize() + name[1:],
                             parent=parent,
