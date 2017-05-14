@@ -6,11 +6,12 @@
 
 {% block content %}
   <div>
-      <div class="clearfix">
-      <h1 class="display-5 text-center"><wbr>{{ map.title }}</h1>
-      {% if request.user.is_superuser %}
-        <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
-      {% endif %}
+      <div class="clearfix d-flex flex-column flex-sm-row">
+        <h1 class="display-5 text-center col-sm"><wbr>{{ map.title }}</h1>
+        <a href="#" id="export-geojson" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Export to geojson" %}</a>
+        {% if request.user.is_superuser %}
+          <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
+        {% endif %}
       </div>
       <div class="row">
           <div class="col-md-12">
@@ -28,6 +29,26 @@
         var map = L.map('map');
         var info = L.control();
         var legend = L.control({ position: 'bottomright' });
+
+        function download(data, filename, type) {
+          var file = new Blob([data], {type: type});
+          if (window.navigator.msSaveOrOpenBlob) {// IE10+
+              window.navigator.msSaveOrOpenBlob(file, filename);
+          }
+          else { // Others
+            var a = document.createElement("a");
+            var url = URL.createObjectURL(file);
+
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+            }, 0);
+          }
+        }
 
         function getColor(d) {
             for (i = data_range.length - 1; i > 0; i--) {
@@ -127,5 +148,10 @@
             onEachFeature: onEachFeature
         }).addTo(map);
         map.fitBounds(geojson.getBounds());
+
+        $('#export-geojson').click(function (e) {
+          e.preventDefault();
+          download(JSON.stringify(geojson_data), '{{ map.title }}'.charAt(0).toLowerCase() + '{{ map.title }}'.slice(1) + '.geojson', 'txt');
+        });
     </script>
 {% endblock script %}
