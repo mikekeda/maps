@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.http import condition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import math
 
 from .models import Map, MapElement, Polygon
 from .forms import MapForm
@@ -77,7 +78,11 @@ def map_view(request, slug):
 
     if data_min < float('Inf') and data_max > -float('Inf'):
         # Get value step
-        step = (data_max - data_min) / map_obj.grades
+        if map_obj.logarithmic_scale:
+            addition = 1 - data_min
+            step = (math.log(data_max + addition) - math.log(data_min + addition)) / map_obj.grades
+        else:
+            step = (data_max - data_min) / map_obj.grades
 
         # Convert colors to int
         start_red = int(map_obj.start_color[:2], 16)
@@ -104,7 +109,10 @@ def map_view(request, slug):
             green = green if len(green) == 2 else '0' + green
             blue = blue if len(blue) == 2 else '0' + blue
 
-            key = data_max - step * (i + 1)
+            if map_obj.logarithmic_scale:
+                key = math.pow(math.e, math.log(data_max + addition) - step * (i + 1)) - addition
+            else:
+                key = data_max - step * (i + 1)
             data_range.append([key, red + green + blue])
 
     return render(request, 'map.html', dict(
@@ -128,6 +136,7 @@ def polygons_view(request):
         'start_color': 'FFEDA0',
         'opacity': '0.7',
         'unit': 'polygons',
+        'logarithmic_scale': True,
     }
 
     if level == 0:
@@ -146,7 +155,7 @@ def polygons_view(request):
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
     for element in elements:
-        data = len(element.get_children())
+        data = (element.rght - element.lft - 1) / 2
         data_min = data if data < data_min else data_min
         data_max = data if data > data_max else data_max
 
@@ -164,7 +173,11 @@ def polygons_view(request):
 
     if data_min < float('Inf') and data_max > -float('Inf'):
         # Get value step
-        step = (data_max - data_min) / map_obj['grades']
+        if map_obj['logarithmic_scale']:
+            addition = 1 - data_min
+            step = (math.log(data_max + addition) - math.log(data_min + addition)) / map_obj['grades']
+        else:
+            step = (data_max - data_min) / map_obj['grades']
 
         # Convert colors to int
         start_red = int(map_obj['start_color'][:2], 16)
@@ -191,7 +204,10 @@ def polygons_view(request):
             green = green if len(green) == 2 else '0' + green
             blue = blue if len(blue) == 2 else '0' + blue
 
-            key = data_max - step * (i + 1)
+            if map_obj['logarithmic_scale']:
+                key = math.pow(math.e, math.log(data_max + addition) - step * (i + 1)) - addition
+            else:
+                key = data_max - step * (i + 1)
             data_range.append([key, red + green + blue])
 
     return render(request, 'map.html', dict(

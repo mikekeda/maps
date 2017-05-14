@@ -80,6 +80,9 @@ class Map(models.Model):
     grades = models.PositiveSmallIntegerField(
         default=8,
         help_text="How many grades you would like to have")
+    logarithmic_scale = models.BooleanField(
+        default=False,
+        help_text="If True - logarithmic scale will be used.")
     end_color = ColorField(
         max_length=6,
         default='ffeda0',
