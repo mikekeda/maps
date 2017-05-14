@@ -60,26 +60,86 @@
       var items;
       var reader;
       var lines;
+      var parsed;
       var country;
       var data;
       var i;
       var $elements = $('#map-elements');
       var $data_import = $('#data-import');
 
+      function CSVToArray(strData, strDelimiter) {
+        strDelimiter = (strDelimiter || ",");
+        var objPattern = new RegExp(
+          (
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+          ),
+          "gi"
+          );
+        var arrData = [[]];
+        var arrMatches = null;
+        while (arrMatches = objPattern.exec(strData)) {
+          var strMatchedDelimiter = arrMatches[1];
+          var strMatchedValue;
+          if (strMatchedDelimiter.length
+            && strMatchedDelimiter !== strDelimiter) {
+            arrData.push([]);
+          }
+
+          if (arrMatches[2]) {
+            strMatchedValue = arrMatches[2].replace(
+              new RegExp("\"\"", "g"),
+              "\""
+              );
+          }
+          else {
+            strMatchedValue = arrMatches[3];
+          }
+
+          arrData[arrData.length - 1].push(strMatchedValue);
+        }
+
+        return(arrData);
+      }
+
       function onChange(event) {
         reader = new FileReader();
         reader.onload = onReaderLoad;
+        reader.extension = event.target.files[0].name.split('.').pop().toLowerCase();
         reader.readAsText(event.target.files[0]);
       }
 
-      function onReaderLoad(event){
+      function onReaderLoad(event) {
+        parsed = [];
         lines = event.target.result.split('\n');
-        for (i = 0; i < lines.length; i++) {
-          country = lines[i].substring(7, 58).trim();
-          if (country) {
-            data = parseFloat(lines[i].substring(58, lines[i].length).trim().replace(/[^0-9.]/g, ''));
-            $elements.find('[data-country="' + country.toLowerCase() + '"]').find('input').val(data);
+        if (event.target.extension == 'txt') {
+          for (i = 0; i < lines.length; i++) {
+            country = lines[i].substring(7, 58).trim();
+            if (country) {
+              parsed.push([
+                country,
+                parseFloat(lines[i].substring(58, lines[i].length).trim().replace(/[^0-9.]/g, ''))
+              ]);
+            }
           }
+        }
+        else if (event.target.extension == 'csv') {
+          for (i = 0; i < lines.length; i++) {
+              if (lines[i].length) {
+                data = CSVToArray(lines[i])[0];
+                country = data[0].trim();
+                data = data[1].trim().replace(/[^0-9.]/g, '');
+                parsed.push([country, data]);
+              }
+          }
+        }
+        else {
+          alert('Unsupported file extension ' + event.target.extension);
+        }
+
+        for (i = 0; i < parsed.length; i++) {
+          $elements.find('[data-country="' + parsed[i][0].toLowerCase() + '"]').find('input').val(parsed[i][1]);
         }
       }
 
