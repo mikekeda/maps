@@ -15,6 +15,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     url(r'^admin/', admin.site.urls),
 ]
+admin.site.site_header = 'Maps administration'
 
 if settings.DEBUG:
     from django.conf.urls.static import static
