@@ -22,6 +22,7 @@ class Command(BaseCommand):
             if isfile(join(path, options['file'])):
                 root = path
                 subdir = options['file'].rsplit('/', 1)
+                level = len(options['file'].split('/')) - 1
                 if len(subdir) > 1:
                     root += '/' + subdir[0]
                 need_proccess = [(
@@ -46,6 +47,9 @@ class Command(BaseCommand):
                 parent_title = splitext(json_file)[0]
                 parent_title = parent_title[0].capitalize() + parent_title[1:]
                 parent = Polygon.objects.filter(title=parent_title)
+                if len(parent) > 1:
+                    parent = [candidate for candidate in parent if candidate.level == level - 1]
+
                 if len(parent) > 1:
                     for candidate in parent:
                         if candidate.parent and candidate.parent.title == grandparent:
