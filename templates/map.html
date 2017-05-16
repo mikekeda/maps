@@ -108,7 +108,7 @@
         }
 
         info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info hidden-print'); // create a div with a class "info"
+            this._div = L.DomUtil.create('div', 'info hidden-print hidden-xs-down'); // create a div with a class "info"
             this.update();
             return this._div;
         };
