@@ -8,7 +8,8 @@
   <div>
       <div class="clearfix d-flex flex-column flex-sm-row">
         <h1 class="display-5 text-center col-sm"><wbr>{{ map.title }}</h1>
-        <a href="#" id="export-geojson" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Export to geojson" %}</a>
+        <a href="#" id="export-csv" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "CSV" %}</a>
+        <a href="#" id="export-geojson" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "geojson" %}</a>
         {% if request.user.is_superuser %}
           <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
         {% endif %}
@@ -24,6 +25,8 @@
     <script>
         var geojson_data = {{ geojson_data|safe }};
         var data_range = {{ data_range|safe }};
+        var country;
+        var data;
         var i;
         var mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
         var map = L.map('map');
@@ -148,6 +151,16 @@
             onEachFeature: onEachFeature
         }).addTo(map);
         map.fitBounds(geojson.getBounds());
+
+        $('#export-csv').click(function (e) {
+          e.preventDefault();
+          data = '';
+          for (i in geojson_data.features) {
+            country = geojson_data.features[i];
+            data += country.properties.name + ',' + country.properties.density + '\n';
+          }
+          download(data, '{{ map.title }}'.charAt(0).toLowerCase() + '{{ map.title }}'.slice(1) + '.csv', 'txt');
+        });
 
         $('#export-geojson').click(function (e) {
           e.preventDefault();
