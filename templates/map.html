@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static from staticfiles %}
 {% load i18n %}
 
 {% block title %}{{ map.title }}{% endblock title %}
@@ -8,8 +9,8 @@
   <div>
       <div class="clearfix d-flex flex-column flex-sm-row">
         <h1 class="display-5 text-center col-sm"><wbr>{{ map.title }}</h1>
-        <a href="#" id="export-csv" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "CSV" %}</a>
-        <a href="#" id="export-geojson" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "geojson" %}</a>
+        <a href="#" id="export-csv" class="float-right btn btn-outline-primary edit-map hidden-print hidden-sm-down">{% trans "CSV" %}</a>
+        <a href="#" id="export-geojson" class="float-right btn btn-outline-primary edit-map hidden-print hidden-sm-down">{% trans "geojson" %}</a>
         {% if request.user.is_superuser %}
           <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
         {% endif %}
@@ -17,16 +18,21 @@
       <div class="row">
           <div class="col-md-12">
               <div id="map"></div>
+              <div id="charts" class="mt-4"></div>
           </div>
       </div>
   </div>
 {% endblock content %}
 {% block script %}
+    <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
     <script>
         var geojson_data = {{ geojson_data|safe }};
         var data_range = {{ data_range|safe }};
         var country;
         var data;
+        var unsorted_data;
+        var names;
+        var csv_data;
         var i;
         var mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
         var map = L.map('map');
@@ -152,14 +158,57 @@
         }).addTo(map);
         map.fitBounds(geojson.getBounds());
 
+        unsorted_data = [];
+        for (i in geojson_data.features) {
+          unsorted_data[geojson_data.features[i].properties.name] = geojson_data.features[i].properties.density;
+        }
+        names = Object.keys(unsorted_data)
+        names.sort();
+        data = [];
+        for (i = 0; i < names.length; i++) {
+            data[names[i]] = unsorted_data[names[i]];
+        }
+
+        Highcharts.chart('charts', {
+            chart: {
+                height: 20 * Object.keys(data).length,
+                type: 'bar'
+            },
+            title: {
+                text: '{{ map.title }}'
+            },
+            xAxis: {
+                categories: Object.keys(data)
+            },
+            yAxis: {
+                min: data_range[0][0],
+                title: {
+                    text: '{{ map.title }}'
+                }
+            },
+            legend: {
+                reversed: true
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'normal'
+                }
+            },
+            series: [{
+                name: '{{ map.unit }}',
+                data: Object.keys(data).map(function (key) {
+                    return data[key];
+                })
+            }]
+        });
+
         $('#export-csv').click(function (e) {
           e.preventDefault();
-          data = '';
-          for (i in geojson_data.features) {
-            country = geojson_data.features[i];
-            data += country.properties.name + ',' + country.properties.density + '\n';
+          csv_data = '';
+          for (i in data) {
+            csv_data += i + ',' + data[i] + '\n';
           }
-          download(data, '{{ map.title }}'.charAt(0).toLowerCase() + '{{ map.title }}'.slice(1) + '.csv', 'txt');
+          download(csv_data, '{{ map.title }}'.charAt(0).toLowerCase() + '{{ map.title }}'.slice(1) + '.csv', 'txt');
         });
 
         $('#export-geojson').click(function (e) {
