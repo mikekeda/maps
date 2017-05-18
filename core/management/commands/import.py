@@ -48,6 +48,7 @@ class Command(BaseCommand):
                 parent_title = parent_title[0].capitalize() + parent_title[1:]
                 parent = Polygon.objects.filter(title=parent_title)
                 if len(parent) > 1:
+                    level = len(root.split('/')) - 1
                     parent = [candidate for candidate in parent if candidate.level == level - 1]
 
                 if len(parent) > 1:

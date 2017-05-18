@@ -9,7 +9,7 @@ from django.views.decorators.http import condition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import math
 
-from .models import Map, MapElement, Polygon
+from .models import Map, MapElement, Polygon, Chart
 from .forms import MapForm
 
 
@@ -47,8 +47,7 @@ def maps(request, username=None):
 
     return render(request, 'homepage.html', dict(
         maps=maps,
-        params=params,
-        active_page='homepage'
+        params=params
     ))
 
 
@@ -118,8 +117,7 @@ def map_view(request, slug):
     return render(request, 'map.html', dict(
         map=map_obj,
         geojson_data=geojson_data,
-        data_range=data_range,
-        active_page='map'
+        data_range=data_range
     ))
 
 
@@ -213,8 +211,7 @@ def polygons_view(request):
     return render(request, 'map.html', dict(
         map=map_obj,
         geojson_data=geojson_data,
-        data_range=data_range,
-        active_page='map'
+        data_range=data_range
     ))
 
 
@@ -271,5 +268,45 @@ def example(request, example_id):
 
 def about(request):
     """About page."""
+
+    return render(request, 'about.html')
+
+
+def charts(request, username=None):
+    """Charts."""
+    if username:
+        user = get_object_or_404(User, username=username)
+        charts = Chart.objects.filter(user=user)
+    else:
+        charts = Chart.objects.all()
+
+    params = request.GET.copy()
+    params.pop('p', None)
+    if 'category' in params:
+        charts = charts.filter(categories__slug=params['category'])
+    if 'year' in params:
+        charts = charts.filter(date_of_information__year=params['year'])
+    if 'region' in params:
+        region = None if params['region'] == '0' else params['region']
+        charts = charts.filter(region=region)
+
+        charts = charts.order_by('-id').prefetch_related('categories').select_related('region')
+    paginator = Paginator(charts, 10)
+    page = request.GET.get('p')
+    try:
+        charts = paginator.page(page)
+    except PageNotAnInteger:
+        charts = paginator.page(1)
+    except EmptyPage:
+        charts = paginator.page(paginator.num_pages)
+
+    return render(request, 'homepage.html', dict(
+        maps=charts,
+        params=params
+    ))
+
+
+def chart_view(request, slug):
+    """Chart page."""
 
     return render(request, 'about.html')

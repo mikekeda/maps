@@ -144,3 +144,28 @@ class MapElement(models.Model):
             self.polygon.title,
             self.data,
         )
+
+
+class Chart(models.Model):
+    """Chart model"""
+    TYPE_CHOICES = (
+        ('columnrange', 'Column range'),
+        ('bar-stacked', 'Stacked bar'),
+        ('column-stacked', 'Stacked column'),
+        ('bar-negative-stack', 'Bar with negative stack'),
+    )
+
+    title = models.CharField(max_length=256)
+    type = models.CharField(
+        max_length=32,
+        choices=TYPE_CHOICES)
+    maps = models.ManyToManyField(
+        Map,
+        related_name='charts')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='charts',
+        help_text="Map owner.")
+
+    def __str__(self):
+        return self.title

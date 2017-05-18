@@ -34,7 +34,11 @@
       <ul class="navbar-nav mr-auto">
         {% url 'core:maps' as maps_url %}
         <li class="nav-item {% if request.get_full_path == maps_url %}active{% endif %}">
-          <a class="nav-link" href="{{ maps_url }}">{% trans "Home" %} <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{{ maps_url }}">{% trans "Maps" %} <span class="sr-only">(current)</span></a>
+        </li>
+        {% url 'core:charts' as charts_url %}
+        <li class="nav-item {% if request.get_full_path == charts_url %}active{% endif %}">
+          <a class="nav-link" href="{{ charts_url }}">{% trans "Charts" %}</a>
         </li>
         {% if user.is_authenticated %}
         {% url 'core:user_maps' user.username as user_maps_url %}
