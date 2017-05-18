@@ -166,6 +166,22 @@ class Chart(models.Model):
         settings.AUTH_USER_MODEL,
         related_name='charts',
         help_text="Map owner.")
+    slug = models.SlugField(
+        editable=False,
+        help_text="The slug that will be user for urls.")
+
+    def _get_unique_slug(self):
+        unique_slug = slug = slugify(self.title)
+        num = 1
+        while Chart.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = self._get_unique_slug()
+        super(Chart, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title

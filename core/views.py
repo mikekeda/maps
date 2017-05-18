@@ -8,6 +8,7 @@ import json
 from django.views.decorators.http import condition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import math
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Map, MapElement, Polygon, Chart
 from .forms import MapForm
@@ -47,6 +48,7 @@ def maps(request, username=None):
 
     return render(request, 'homepage.html', dict(
         maps=maps,
+        title=_('Maps'),
         params=params
     ))
 
@@ -302,6 +304,7 @@ def charts(request, username=None):
 
     return render(request, 'homepage.html', dict(
         maps=charts,
+        title=_('Charts'),
         params=params
     ))
 

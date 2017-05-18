@@ -2,11 +2,11 @@
 {% load i18n %}
 {% load core_tags %}
 
-{% block title %}{% trans "Maps" %}{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block content %}
   <div class="container mb-4">
-      <h1 class="display-5 offset-xl-2 offset-lg-1"><wbr>{% trans "Maps" %}</h1>
+      <h1 class="display-5 offset-xl-2 offset-lg-1"><wbr>{{ title }}</h1>
       <div class="row">
           {% if params %}
               <ul class="list-inline d-flex flex-wrap col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12 no-padding">
@@ -70,7 +70,7 @@
           </nav>
       {% else %}
           {% if maps|length == 0 %}
-              <p class="my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">{% trans "No maps" %}</p>
+              <p class="my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">{% blocktrans %}No {{ title }}{% endblocktrans %}</p>
           {% endif %}
       {% endif %}
   </div>
