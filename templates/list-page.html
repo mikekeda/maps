@@ -21,21 +21,26 @@
               </ul>
           {% endif %}
       </div>
-      {% for map in maps %}
+      {% for item in items %}
       <div class="row">
           <div class="card my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
               <div class="card-block">
-                  <a href="{% url 'core:map' map.slug %}"><h4 class="card-title">{{ map.title }}</h4></a>
-                  <p class="card-text text-muted">{{ map.description }}</p>
-                  {% for category in map.categories.all %}
+                  {% if item_name == 'chart' %}
+                    {% url 'core:chart' item.slug as item_url %}
+                  {% else %}
+                    {% url 'core:map' item.slug as item_url %}
+                  {% endif %}
+                  <a href="{{ item_url }}"><h4 class="card-title">{{ item.title }}</h4></a>
+                  <p class="card-text text-muted">{{ item.description }}</p>
+                  {% for category in item.categories.all %}
                       <a href="?category={{ category.slug }}" class="card-link mr-2">{{ category.title }}</a>
                   {% endfor %}
                    {% if request.user.is_superuser %}
-                      <a href="/admin/core/map/{{ map.pk }}/change/" class="float-right hidden-print  ml-2">{% trans "Edit" %}</a>
+                      <a href="/admin/core/{{ item_name }}/{{ item.pk }}/change/" class="float-right hidden-print  ml-2">{% trans "Edit" %}</a>
                   {% endif %}
-                  <a href="?year={{ map.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ map.date_of_information|date:'Y' }}</a>
-                  {% if map.region %}
-                    <a href="?region={{ map.region.pk }}" class="card-link float-right ml-2">{{ map.region.title }}</a>
+                  <a href="?year={{ item.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ item.date_of_information|date:'Y' }}</a>
+                  {% if item.region %}
+                    <a href="?region={{ item.region.pk }}" class="card-link float-right ml-2">{{ item.region.title }}</a>
                   {% else %}
                     <a href="?region=0" class="card-link float-right ml-2">{% trans "World" %}</a>
                   {% endif %}
@@ -44,32 +49,32 @@
       </div>
       {% endfor %}
 
-      {% if maps|length > 10 %}
+      {% if items|length > 10 %}
           <nav aria-label="pagination" class="d-flex justify-content-center mt-4">
               <ul class="pagination">
                   <li class="page-item">
                       <a class="page-link" href="{% update_param request 'p' %}" tabindex="-1">{% trans "First" %}</a>
                   </li>
-                  {% if maps.has_previous %}
+                  {% if items.has_previous %}
                   <li class="page-item">
-                      <a class="page-link" href="{% update_param request 'p' maps.previous_page_number %}">{{ maps.previous_page_number }}</a>
+                      <a class="page-link" href="{% update_param request 'p' items.previous_page_number %}">{{ items.previous_page_number }}</a>
                   </li>
                   {% endif %}
                   <li class="page-item active">
-                      <a class="page-link" href="{% update_param request 'p' maps.number %}">{{ maps.number }} <span class="sr-only">(current)</span></a>
+                      <a class="page-link" href="{% update_param request 'p' items.number %}">{{ items.number }} <span class="sr-only">(current)</span></a>
                   </li>
-                  {% if maps.has_next %}
+                  {% if items.has_next %}
                   <li class="page-item">
-                      <a class="page-link" href="{% update_param request 'p' maps.next_page_number %}">{{ maps.next_page_number }}</a>
+                      <a class="page-link" href="{% update_param request 'p' items.next_page_number %}">{{ items.next_page_number }}</a>
                   </li>
                   {% endif %}
                   <li class="page-item">
-                      <a class="page-link" href="{% update_param request 'p' maps.paginator.num_pages %}">{% trans "Last" %}</a>
+                      <a class="page-link" href="{% update_param request 'p' items.paginator.num_pages %}">{% trans "Last" %}</a>
                   </li>
               </ul>
           </nav>
       {% else %}
-          {% if maps|length == 0 %}
+          {% if items|length == 0 %}
               <p class="my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">{% blocktrans %}No {{ title }}{% endblocktrans %}</p>
           {% endif %}
       {% endif %}

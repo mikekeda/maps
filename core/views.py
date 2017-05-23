@@ -46,9 +46,10 @@ def maps(request, username=None):
     except EmptyPage:
         maps = paginator.page(paginator.num_pages)
 
-    return render(request, 'homepage.html', dict(
-        maps=maps,
+    return render(request, 'list-page.html', dict(
+        item_name='map',
         title=_('Maps'),
+        items=maps,
         params=params
     ))
 
@@ -302,14 +303,32 @@ def charts(request, username=None):
     except EmptyPage:
         charts = paginator.page(paginator.num_pages)
 
-    return render(request, 'homepage.html', dict(
-        maps=charts,
+    return render(request, 'list-page.html', dict(
+        item_name='chart',
         title=_('Charts'),
+        items=charts,
         params=params
     ))
 
 
 def chart_view(request, slug):
     """Chart page."""
+    chart_obj = get_object_or_404(
+        Chart.objects.prefetch_related(
+            Prefetch('maps', queryset=Map.objects.prefetch_related(
+                Prefetch('elements', queryset=MapElement.objects.select_related('polygon')))
+            )
+        ),
+        slug=slug
+    )
+    maps = {}
+    for map in chart_obj.maps.all():
+        if map.title not in maps:
+            maps[map.title] = {}
+        for element in map.elements.all():
+            maps[map.title][element.polygon.title] = element.data
 
-    return render(request, 'about.html')
+    return render(request, 'chart.html', dict(
+        chart=chart_obj,
+        maps=maps,
+    ))
