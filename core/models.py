@@ -148,17 +148,7 @@ class MapElement(models.Model):
 
 class Chart(models.Model):
     """Chart model"""
-    TYPE_CHOICES = (
-        ('columnrange', 'Column range'),
-        ('bar-stacked', 'Stacked bar'),
-        ('column-stacked', 'Stacked column'),
-        ('bar-negative-stack', 'Bar with negative stack'),
-    )
-
     title = models.CharField(max_length=256)
-    type = models.CharField(
-        max_length=32,
-        choices=TYPE_CHOICES)
     maps = models.ManyToManyField(
         Map,
         related_name='charts')

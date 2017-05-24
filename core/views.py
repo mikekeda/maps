@@ -8,6 +8,7 @@ import json
 from django.views.decorators.http import condition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import math
+import operator
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Map, MapElement, Polygon, Chart
@@ -322,27 +323,31 @@ def chart_view(request, slug):
         slug=slug
     )
 
+    # Get polygon titles.
     titles = {}
     for map in chart_obj.maps.all():
         for element in map.elements.all():
-            titles[element.pk] = element.polygon.title
+            titles[element.polygon.pk] = element.polygon.title
+    titles = sorted(titles.items(), key=operator.itemgetter(1))
 
+    # Get data.
     data = []
+    data_min = float('Inf')
     for map in chart_obj.maps.all():
         data.append({
             'name': map.title,
             'data': {},
         })
         for pk in titles:
-            data[-1]['data'][pk] = 0
+            data[-1]['data'][pk[0]] = 0
         for element in map.elements.all():
-            data[-1]['data'][element.pk] = element.data
-
-    print(titles)
-    print(data)
+            data[-1]['data'][element.polygon.pk] = element.data
+            data_min = element.data if element.data < data_min else data_min
+        data[-1]['data'] = list(data[-1]['data'].values())
 
     return render(request, 'chart.html', dict(
         chart=chart_obj,
-        titles=titles,
+        titles=[title[1] for title in titles],
         data=data,
+        data_min=data_min,
     ))
