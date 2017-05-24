@@ -23,7 +23,8 @@
 {% block script %}
     <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
     <script>
-        var data;
+        var titles = {{ titles|safe }};
+        var data = {{ data|safe }};
         var unsorted_data;
         var names;
         var csv_data;
@@ -31,14 +32,16 @@
 
         Highcharts.chart('charts', {
             chart: {
-                height: 100,
+                height: 20 * Object.keys(titles).length,
                 type: 'bar'
             },
             title: {
                 text: '{{ chart.title }}'
             },
             xAxis: {
-                categories: [1]
+                categories: Object.keys(titles).map(function (key) {
+                    return titles[key];
+                })
             },
             yAxis: {
                 min: 0,
@@ -54,14 +57,7 @@
                     stacking: 'normal'
                 }
             },
-            series: [
-              {% for map in maps %}
-              {
-                name: 'uuu',
-                data: 2
-              }{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            ]
+            series: data
         });
     </script>
 {% endblock script %}

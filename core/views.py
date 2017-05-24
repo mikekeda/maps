@@ -321,14 +321,28 @@ def chart_view(request, slug):
         ),
         slug=slug
     )
-    maps = {}
+
+    titles = {}
     for map in chart_obj.maps.all():
-        if map.title not in maps:
-            maps[map.title] = {}
         for element in map.elements.all():
-            maps[map.title][element.polygon.title] = element.data
+            titles[element.pk] = element.polygon.title
+
+    data = []
+    for map in chart_obj.maps.all():
+        data.append({
+            'name': map.title,
+            'data': {},
+        })
+        for pk in titles:
+            data[-1]['data'][pk] = 0
+        for element in map.elements.all():
+            data[-1]['data'][element.pk] = element.data
+
+    print(titles)
+    print(data)
 
     return render(request, 'chart.html', dict(
         chart=chart_obj,
-        maps=maps,
+        titles=titles,
+        data=data,
     ))
