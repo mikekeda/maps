@@ -2,6 +2,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.contrib.sitemaps.views import sitemap
+from django.utils.translation import ugettext_lazy as _
+
 from core.sitemaps import StaticViewSitemap, MapSitemap
 
 sitemaps = {
@@ -15,7 +17,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     url(r'^admin/', admin.site.urls),
 ]
-admin.site.site_header = 'Maps administration'
+admin.site.site_header = _('Maps administration')
 
 if settings.DEBUG:
     from django.conf.urls.static import static
