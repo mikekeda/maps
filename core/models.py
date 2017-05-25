@@ -149,6 +149,10 @@ class MapElement(models.Model):
 class Chart(models.Model):
     """Chart model"""
     title = models.CharField(max_length=256)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Chart description.")
     maps = models.ManyToManyField(
         Map,
         related_name='charts')

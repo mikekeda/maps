@@ -41,7 +41,7 @@
                   <a href="?year={{ item.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ item.date_of_information|date:'Y' }}</a>
                   {% if item.region %}
                     <a href="?region={{ item.region.pk }}" class="card-link float-right ml-2">{{ item.region.title }}</a>
-                  {% else %}
+                  {% elif item_name != 'chart' %}
                     <a href="?region=0" class="card-link float-right ml-2">{% trans "World" %}</a>
                   {% endif %}
               </div>

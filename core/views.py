@@ -286,15 +286,7 @@ def charts(request, username=None):
 
     params = request.GET.copy()
     params.pop('p', None)
-    if 'category' in params:
-        charts = charts.filter(categories__slug=params['category'])
-    if 'year' in params:
-        charts = charts.filter(date_of_information__year=params['year'])
-    if 'region' in params:
-        region = None if params['region'] == '0' else params['region']
-        charts = charts.filter(region=region)
 
-        charts = charts.order_by('-id').prefetch_related('categories').select_related('region')
     paginator = Paginator(charts, 10)
     page = request.GET.get('p')
     try:
@@ -342,8 +334,9 @@ def chart_view(request, slug):
             data[-1]['data'][pk[0]] = 0
         for element in map.elements.all():
             data[-1]['data'][element.polygon.pk] = element.data
-            data_min = element.data if element.data < data_min else data_min
         data[-1]['data'] = list(data[-1]['data'].values())
+        map_data_min = min(data[-1]['data'])
+        data_min = map_data_min if map_data_min < data_min else data_min
 
     return render(request, 'chart.html', dict(
         chart=chart_obj,

@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^chart/(?P<slug>.+)$', chart_view, name='chart'),
     url(r'^world/', polygons_view, name='polygons'),
     url(r'^user/(?P<username>\w+)/maps$', maps, name='user_maps'),
+    url(r'^user/(?P<username>\w+)/charts$', charts, name='user_charts'),
     url(r'^map/(?P<slug>.+)$', map_view, name='map'),
     url(r'^add/map$', add_map, name='add_map'),
     url(r'^api/get-polygons/(?P<parent_id>.+)$', get_polygons, name='get_polygons'),
