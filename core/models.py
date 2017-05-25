@@ -171,6 +171,10 @@ class Chart(models.Model):
     maps = models.ManyToManyField(
         Map,
         related_name='charts')
+    changed = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('changed'),
+        help_text="Time when chart was changed last time.")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='charts',

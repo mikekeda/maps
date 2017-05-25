@@ -4,10 +4,11 @@ from django.conf import settings
 from django.contrib.sitemaps.views import sitemap
 from django.utils.translation import ugettext_lazy as _
 
-from core.sitemaps import StaticViewSitemap, MapSitemap
+from core.sitemaps import StaticViewSitemap, MapSitemap, ChartSitemap
 
 sitemaps = {
     'maps': MapSitemap,
+    'charts': ChartSitemap,
     'static': StaticViewSitemap,
 }
 

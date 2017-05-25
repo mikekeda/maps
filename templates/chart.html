@@ -2,8 +2,8 @@
 {% load static from staticfiles %}
 {% load i18n %}
 
-{% block title %}{{ map.title }}{% endblock title %}
-{% block description %}{{ map.description|default:_("No description provided") }}{% endblock description %}
+{% block title %}{{ chart.title }}{% endblock title %}
+{% block description %}{{ chart.description|default:_("No description provided") }}{% endblock description %}
 
 {% block content %}
   <div>

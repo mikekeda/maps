@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-25 21:09+0300\n"
+"POT-Creation-Date: 2017-05-25 21:32+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,39 +23,19 @@ msgstr ""
 msgid "title"
 msgstr "назва"
 
-#: core/models.py:60
-#, fuzzy
-#| msgid "title"
-msgid "Map title."
-msgstr "Назва карти."
-
 #: core/models.py:64
 #, fuzzy
 #| msgid "No description provided"
 msgid "description"
 msgstr "опис"
 
-#: core/models.py:65
-#, fuzzy
-#| msgid "No description provided"
-msgid "Map description."
-msgstr "Опис карти."
-
 #: core/models.py:69
 msgid "unit"
 msgstr "одиниця"
 
-#: core/models.py:70
-msgid "The unit that will be used for the map."
-msgstr "Одиниця що буде використовуватись для карти."
-
 #: core/models.py:74
 msgid "date"
 msgstr "дата"
-
-#: core/models.py:75
-msgid "An year or date when the information was measured."
-msgstr "Рік коли інформація була зібрана."
 
 #: core/models.py:80
 #, fuzzy
@@ -67,65 +47,33 @@ msgstr "регіон"
 msgid "categories"
 msgstr "категорії"
 
-#: core/models.py:90
-msgid "How many grades you would like to have"
-msgstr "Скільки градацій ви бажаєте мати"
-
 #: core/models.py:93
 msgid "logarithmic scale"
 msgstr "логарифмічна шкала"
-
-#: core/models.py:94
-msgid "If True - logarithmic scale will be used."
-msgstr "Якщо так - використовуватиметься логарифмічна шкала."
 
 #: core/models.py:98
 msgid "end color"
 msgstr "кінцевий колір"
 
-#: core/models.py:99
-msgid "The color to fill regions with the lowest value."
-msgstr "Колір яким зафарбуються регіони з найнижчим показником."
-
 #: core/models.py:103
 msgid "start color"
 msgstr "початковий колір"
-
-#: core/models.py:104
-msgid "The color to fill regions with the highest value."
-msgstr "Колір яким зафарбуються регіони з найвижчим показником."
 
 #: core/models.py:110
 msgid "opacity"
 msgstr "прозорість"
 
-#: core/models.py:111
-msgid "The opacity for regions."
-msgstr "Прозарість полігонів."
-
-#: core/models.py:114
+#: core/models.py:114 core/models.py:176
 msgid "changed"
 msgstr "змінено"
-
-#: core/models.py:115
-msgid "Time when map was changed last time."
-msgstr "Дата коли карта була змінена востаннє."
 
 #: core/models.py:119
 msgid "user"
 msgstr "користувач"
 
-#: core/models.py:120
-msgid "Map owner."
-msgstr "Власник карти."
-
 #: core/models.py:123
 msgid "slug"
 msgstr "адреса"
-
-#: core/models.py:124
-msgid "The slug that will be user for urls."
-msgstr "Адреса яка використовуватиметь в адресній стрічці браузера."
 
 #: core/views.py:52 templates/base.html:13 templates/base.html:37
 msgid "Maps"
@@ -159,7 +107,7 @@ msgstr "Французька"
 msgid "Russian"
 msgstr "Російська"
 
-#: maps/urls.py:20
+#: maps/urls.py:21
 msgid "Maps administration"
 msgstr "Адміністрування"
 
@@ -282,3 +230,43 @@ msgstr ""
 #: templates/map.html:13
 msgid "geojson"
 msgstr ""
+
+#, fuzzy
+#~| msgid "title"
+#~ msgid "Map title."
+#~ msgstr "Назва карти."
+
+#, fuzzy
+#~| msgid "No description provided"
+#~ msgid "Map description."
+#~ msgstr "Опис карти."
+
+#~ msgid "The unit that will be used for the map."
+#~ msgstr "Одиниця що буде використовуватись для карти."
+
+#~ msgid "An year or date when the information was measured."
+#~ msgstr "Рік коли інформація була зібрана."
+
+#~ msgid "How many grades you would like to have"
+#~ msgstr "Скільки градацій ви бажаєте мати"
+
+#~ msgid "If True - logarithmic scale will be used."
+#~ msgstr "Якщо так - використовуватиметься логарифмічна шкала."
+
+#~ msgid "The color to fill regions with the lowest value."
+#~ msgstr "Колір яким зафарбуються регіони з найнижчим показником."
+
+#~ msgid "The color to fill regions with the highest value."
+#~ msgstr "Колір яким зафарбуються регіони з найвижчим показником."
+
+#~ msgid "The opacity for regions."
+#~ msgstr "Прозарість полігонів."
+
+#~ msgid "Time when map was changed last time."
+#~ msgstr "Дата коли карта була змінена востаннє."
+
+#~ msgid "Map owner."
+#~ msgstr "Власник карти."
+
+#~ msgid "The slug that will be user for urls."
+#~ msgstr "Адреса яка використовуватиметь в адресній стрічці браузера."
