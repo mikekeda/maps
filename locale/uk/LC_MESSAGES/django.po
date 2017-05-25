@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-25 20:52+0300\n"
+"POT-Creation-Date: 2017-05-25 21:09+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,114 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: core/models.py:59 core/models.py:89
+msgid "title"
+msgstr "назва"
+
+#: core/models.py:60
+#, fuzzy
+#| msgid "title"
+msgid "Map title."
+msgstr "Назва карти."
+
+#: core/models.py:64
+#, fuzzy
+#| msgid "No description provided"
+msgid "description"
+msgstr "опис"
+
+#: core/models.py:65
+#, fuzzy
+#| msgid "No description provided"
+msgid "Map description."
+msgstr "Опис карти."
+
+#: core/models.py:69
+msgid "unit"
+msgstr "одиниця"
+
+#: core/models.py:70
+msgid "The unit that will be used for the map."
+msgstr "Одиниця що буде використовуватись для карти."
+
+#: core/models.py:74
+msgid "date"
+msgstr "дата"
+
+#: core/models.py:75
+msgid "An year or date when the information was measured."
+msgstr "Рік коли інформація була зібрана."
+
+#: core/models.py:80
+#, fuzzy
+#| msgid "Region"
+msgid "region"
+msgstr "регіон"
+
+#: core/models.py:85
+msgid "categories"
+msgstr "категорії"
+
+#: core/models.py:90
+msgid "How many grades you would like to have"
+msgstr "Скільки градацій ви бажаєте мати"
+
+#: core/models.py:93
+msgid "logarithmic scale"
+msgstr "логарифмічна шкала"
+
+#: core/models.py:94
+msgid "If True - logarithmic scale will be used."
+msgstr "Якщо так - використовуватиметься логарифмічна шкала."
+
+#: core/models.py:98
+msgid "end color"
+msgstr "кінцевий колір"
+
+#: core/models.py:99
+msgid "The color to fill regions with the lowest value."
+msgstr "Колір яким зафарбуються регіони з найнижчим показником."
+
+#: core/models.py:103
+msgid "start color"
+msgstr "початковий колір"
+
+#: core/models.py:104
+msgid "The color to fill regions with the highest value."
+msgstr "Колір яким зафарбуються регіони з найвижчим показником."
+
+#: core/models.py:110
+msgid "opacity"
+msgstr "прозорість"
+
+#: core/models.py:111
+msgid "The opacity for regions."
+msgstr "Прозарість полігонів."
+
+#: core/models.py:114
+msgid "changed"
+msgstr "змінено"
+
+#: core/models.py:115
+msgid "Time when map was changed last time."
+msgstr "Дата коли карта була змінена востаннє."
+
+#: core/models.py:119
+msgid "user"
+msgstr "користувач"
+
+#: core/models.py:120
+msgid "Map owner."
+msgstr "Власник карти."
+
+#: core/models.py:123
+msgid "slug"
+msgstr "адреса"
+
+#: core/models.py:124
+msgid "The slug that will be user for urls."
+msgstr "Адреса яка використовуватиметь в адресній стрічці браузера."
 
 #: core/views.py:52 templates/base.html:13 templates/base.html:37
 msgid "Maps"
@@ -29,27 +137,27 @@ msgstr "Діаграми"
 
 #: maps/settings.py:131
 msgid "English"
-msgstr ""
+msgstr "Англійська"
 
 #: maps/settings.py:132
 msgid "Spanish"
-msgstr ""
+msgstr "Іспанська"
 
 #: maps/settings.py:133
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"
 
 #: maps/settings.py:134
 msgid "Italian"
-msgstr ""
+msgstr "Італійська"
 
 #: maps/settings.py:135
 msgid "French"
-msgstr ""
+msgstr "Французька"
 
 #: maps/settings.py:136
 msgid "Russian"
-msgstr ""
+msgstr "Російська"
 
 #: maps/urls.py:20
 msgid "Maps administration"
