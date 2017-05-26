@@ -10,6 +10,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import math
 import operator
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Map, MapElement, Polygon, Chart
 from .forms import MapForm
@@ -344,3 +346,20 @@ def chart_view(request, slug):
         data=data,
         data_min=data_min,
     ))
+
+
+def log_in(request):
+    form = AuthenticationForm()
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect(reverse('core:maps'))
+
+    return render(request, 'login.html', {'form': form})
+
+
+@login_required
+def log_out(request):
+    logout(request)
+    return redirect(reverse('core:login'))

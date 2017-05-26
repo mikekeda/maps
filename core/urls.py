@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import maps, example, map_view, polygons_view, add_map, get_polygons, about, charts, chart_view
+from .views import maps, example, map_view, polygons_view, add_map, get_polygons, about, charts, chart_view, log_in, log_out
 from .decorators import simple_cache_page
 
 
@@ -17,4 +17,6 @@ urlpatterns = [
     url(r'^api/get-polygons/(?P<parent_id>.+)$', get_polygons, name='get_polygons'),
     url(r'^example/(?P<example_id>.+)$', example, name='example'),
     url(r'^about$', about, name='about'),
+    url(r'^login$', log_in, name='login'),
+    url(r'^logout$', log_out, name='logout'),
 ]
