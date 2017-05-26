@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-25 21:32+0300\n"
+"POT-Creation-Date: 2017-05-26 22:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,39 +75,39 @@ msgstr "користувач"
 msgid "slug"
 msgstr "адреса"
 
-#: core/views.py:52 templates/base.html:13 templates/base.html:37
+#: core/views.py:54 templates/base.html:13 templates/base.html:37
 msgid "Maps"
 msgstr "Карти"
 
-#: core/views.py:301 templates/base.html:41
+#: core/views.py:303 templates/base.html:41
 msgid "Charts"
 msgstr "Діаграми"
 
-#: maps/settings.py:131
+#: maps/settings.py:143
 msgid "English"
 msgstr "Англійська"
 
-#: maps/settings.py:132
+#: maps/settings.py:144
 msgid "Spanish"
 msgstr "Іспанська"
 
-#: maps/settings.py:133
+#: maps/settings.py:145
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: maps/settings.py:134
+#: maps/settings.py:146
 msgid "Italian"
 msgstr "Італійська"
 
-#: maps/settings.py:135
+#: maps/settings.py:147
 msgid "French"
 msgstr "Французька"
 
-#: maps/settings.py:136
+#: maps/settings.py:148
 msgid "Russian"
 msgstr "Російська"
 
-#: maps/urls.py:21
+#: maps/urls.py:22
 msgid "Maps administration"
 msgstr "Адміністрування"
 
@@ -141,12 +141,10 @@ msgstr "Вибачте, сторінка яку ви шукаєте не бул�
 msgid "Try refreshing the page."
 msgstr "Спробуйте оновити сторіку."
 
-#: templates/about.html:4
-msgid "About page"
-msgstr "Про нас"
-
-#: templates/about.html:9 templates/base.html:45
-msgid "About"
+#: templates/about.html:4 templates/about.html:9
+#, fuzzy
+#| msgid "About"
+msgid "About us"
 msgstr "Про нас"
 
 #: templates/about.html:10
@@ -156,6 +154,10 @@ msgstr "Тут ви можете створювати інтерактивні �
 #: templates/base.html:14
 msgid "Statistic interactive webmaps."
 msgstr "Статистичні інтерактивні вебкарти."
+
+#: templates/base.html:45
+msgid "About"
+msgstr "Про нас"
 
 #: templates/base.html:52
 msgid "Available polygons"
@@ -181,7 +183,11 @@ msgstr "Мої карти"
 msgid "My charts"
 msgstr "Мої діаграми"
 
-#: templates/base.html:76
+#: templates/base.html:73
+msgid "Logout"
+msgstr "Вихід"
+
+#: templates/base.html:75
 msgid "Login"
 msgstr "Вхід"
 
@@ -209,6 +215,14 @@ msgstr "Остання сторінка"
 #, python-format
 msgid "No %(title)s"
 msgstr ""
+
+#: templates/login.html:27
+msgid "Log in"
+msgstr "Вхід"
+
+#: templates/login.html:30
+msgid "Login with Facebook"
+msgstr "Вхід з Facebook"
 
 #: templates/map-form.html:7 templates/map-form.html:11
 #: templates/map-form.html:50
