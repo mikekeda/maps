@@ -139,7 +139,7 @@
             for (i = 0; i < data_range.length; i++) {
                 div.innerHTML +=
                     '<i style="background: #' + data_range[i][1] + '; -webkit-print-color-adjust: exact;"></i> ' +
-                    (data_range[i][0]).toPrecision(2) + (data_range[i + 1] ? ' &ndash; ' + (data_range[i + 1][0]).toPrecision(2) + '<br>' : '+');
+                    parseFloat((data_range[i][0]).toPrecision(2)) + (data_range[i + 1] ? ' &ndash; ' + parseFloat((data_range[i + 1][0]).toPrecision(2)) + '<br>' : '+');
             }
 
             return div;
