@@ -57,7 +57,7 @@ def maps(request, username=None):
     ))
 
 
-@condition(last_modified_func=map_latest_entry)
+# @condition(last_modified_func=map_latest_entry)
 def map_view(request, slug):
     """Map."""
     map_obj = get_object_or_404(

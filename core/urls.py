@@ -7,7 +7,8 @@ from .decorators import simple_cache_page
 urlpatterns = [
     url(r'^$', maps, name='maps'),
     url(r'^charts$', charts, name='charts'),
-    url(r'^map/(?P<slug>.+)$', simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
+    # url(r'^map/(?P<slug>.+)$', simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
+    url(r'^map/(?P<slug>.+)$', map_view, name='map'),
     url(r'^chart/(?P<slug>.+)$', chart_view, name='chart'),
     url(r'^world/', polygons_view, name='polygons'),
     url(r'^user/(?P<username>\w+)/maps$', maps, name='user_maps'),
