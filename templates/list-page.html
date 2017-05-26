@@ -57,7 +57,7 @@
                   </li>
                   {% if items.has_previous %}
                   <li class="page-item">
-                      <a class="page-link" href="{% update_param request 'p' items.previous_page_number %}">{{ items.previous_page_number }}</a>
+                      <a class="page-link" href="{% update_param request 'p' items.previous_page_number %}" rel="prev">{{ items.previous_page_number }}</a>
                   </li>
                   {% endif %}
                   <li class="page-item active">
@@ -65,7 +65,7 @@
                   </li>
                   {% if items.has_next %}
                   <li class="page-item">
-                      <a class="page-link" href="{% update_param request 'p' items.next_page_number %}">{{ items.next_page_number }}</a>
+                      <a class="page-link" href="{% update_param request 'p' items.next_page_number %}" rel="next">{{ items.next_page_number }}</a>
                   </li>
                   {% endif %}
                   <li class="page-item">
