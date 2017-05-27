@@ -10,7 +10,7 @@
       <div class="clearfix d-flex flex-column flex-sm-row">
         <h1 class="display-5 text-center col-sm"><wbr>{{ chart.title }}</h1>
         {% if request.user.is_superuser %}
-          <a href="/admin/core/chart/{{ chart.pk }}/change/" class="float-right btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
+          <a href="/admin/core/chart/{{ chart.pk }}/change/" class="float-right my-auto btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
         {% endif %}
       </div>
       <div class="row">

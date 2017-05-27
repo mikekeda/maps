@@ -57,17 +57,17 @@
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Add" %}</a>
           <div class="dropdown-menu dropdown-menu-right">
             {% url 'core:add_map' as add_map_url %}
-            <a class="nav-link text-muted {% if request.get_full_path == add_map_url %}active{% endif %}" href="{{ add_map_url }}">{% trans "Map" %}</a>
-            <a class="nav-link text-muted" href="/admin/core/chart/add/">{% trans "Chart" %}</a>
+            <a class="nav-link text-muted ml-2{% if request.get_full_path == add_map_url %} active{% endif %}" href="{{ add_map_url }}">{% trans "Map" %}</a>
+            <a class="nav-link text-muted ml-2" href="/admin/core/chart/add/">{% trans "Chart" %}</a>
           </div>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
           <div class="dropdown-menu dropdown-menu-right">
             {% url 'core:user_maps' user.username as user_maps_url %}
-            <a class="nav-link text-muted {% if request.get_full_path == user_maps_url %}active{% endif %}" href="{{ user_maps_url }}">{% trans "My maps" %}</a>
+            <a class="nav-link text-muted ml-2{% if request.get_full_path == user_maps_url %} active{% endif %}" href="{{ user_maps_url }}">{% trans "My maps" %}</a>
             {% url 'core:user_charts' user.username as user_charts_url %}
-            <a class="nav-link text-muted {% if request.get_full_path == user_charts_url %}active{% endif %}" href="{{ user_charts_url }}">{% trans "My charts" %}</a>
+            <a class="nav-link text-muted ml-2{% if request.get_full_path == user_charts_url %} active{% endif %}" href="{{ user_charts_url }}">{% trans "My charts" %}</a>
           </div>
         </li>
         <li class="nav-item"><a href="{% url 'core:logout' %}" class="nav-link">{% trans "Logout" %}</a></li>
