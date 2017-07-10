@@ -13,6 +13,9 @@
   <title>{% block title %}{% trans "Maps" %}{% endblock title %}</title>
   <meta name="description" content="{% block description %}{% trans 'Statistic interactive webmaps.' %}{% endblock description %}">
   <meta name="keywords" content="Map,Webmap,Leaflet,GeoJSON">
+  <meta property="og:title" content="{% block og-title %}{% trans 'Maps' %}{% endblock og-title %}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{% block og-description %}{% trans 'Statistic interactive webmaps.' %}{% endblock og-description %}">
   {% leaflet_css %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}?v=9"/>
   {% block css %}{% endblock css %}

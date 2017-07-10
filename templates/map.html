@@ -4,6 +4,8 @@
 
 {% block title %}{{ map.title }}{% endblock title %}
 {% block description %}{{ map.description|default:_("No description provided") }}{% endblock description %}
+{% block og-title %}{{ map.title }}{% endblock og-title %}
+{% block og-description %}{{ map.description|default:_("No description provided") }}{% endblock og-description %}
 
 {% block content %}
   <div>
@@ -25,6 +27,7 @@
 {% endblock content %}
 {% block script %}
     <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
+    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=596324fed14c220014c25d99&product=sticky-share-buttons"></script>
     <script>
         var geojson_data = {{ geojson_data|safe }};
         var data_range = {{ data_range|safe }};
