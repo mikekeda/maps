@@ -4,6 +4,8 @@
 
 {% block title %}{{ chart.title }}{% endblock title %}
 {% block description %}{{ chart.description|default:_("No description provided") }}{% endblock description %}
+{% block og-title %}{{ chart.title }}{% endblock og-title %}
+{% block og-description %}{{ chart.description|default:_("No description provided") }}{% endblock og-description %}
 
 {% block content %}
   <div>
@@ -23,6 +25,7 @@
 {% endblock content %}
 {% block script %}
     <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
+    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=596324fed14c220014c25d99&product=sticky-share-buttons"></script>
     <script>
         var titles = {{ titles|safe }};
         var data = {{ data|safe }};
