@@ -36,3 +36,14 @@ Running
 -------
     # Locally
     python manage.py runserver
+
+
+
+
+Upgrade python packages
+-------
+    # Remove versions from requirements.txt
+    # Upgrade python packages
+    pip install --upgrade --force-reinstall -r requirements.txt
+    # Update requirements.txt
+    pip freeze > requirements.txt
