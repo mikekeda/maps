@@ -1,17 +1,18 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Prefetch, F
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-import json
-from django.views.decorators.http import condition
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import math
 import operator
-from django.utils.translation import ugettext_lazy as _
+import json
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Prefetch, F
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+# from django.views.decorators.http import condition
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Map, MapElement, Polygon, Chart
 from .forms import MapForm
@@ -39,7 +40,8 @@ def maps(request, username=None):
         region = None if params['region'] == '0' else params['region']
         maps = maps.filter(region=region)
 
-    maps = maps.order_by('-id').prefetch_related('categories').select_related('region')
+    maps = maps.order_by('-id').prefetch_related('categories')\
+        .select_related('region')
     paginator = Paginator(maps, 10)
     page = request.GET.get('p')
     try:
@@ -61,7 +63,12 @@ def maps(request, username=None):
 def map_view(request, slug):
     """Map."""
     map_obj = get_object_or_404(
-        Map.objects.prefetch_related(Prefetch('elements', queryset=MapElement.objects.select_related('polygon'))),
+        Map.objects.prefetch_related(
+            Prefetch(
+                'elements',
+                queryset=MapElement.objects.select_related('polygon')
+            )
+        ),
         slug=slug
     )
 
@@ -74,18 +81,26 @@ def map_view(request, slug):
     for element in map_obj.elements.all():
         data_min = element.data if element.data < data_min else data_min
         data_max = element.data if element.data > data_max else data_max
-        geojson_data += '{{\
-                "type": "Feature", "id": "{}", "properties": {{"name": "{}", "density": {}}}, "geometry": {}\
-            }}, '.format(
-            element.id, element.polygon.title, element.data, element.polygon.geom
-        )
+        geojson_data += '{{' \
+                        '"type": "Feature", ' \
+                        '"id": "{}", ' \
+                        '"properties": {{"name": "{}", "density": {}}}, ' \
+                        '"geometry": {}' \
+                        '}}, '.format(
+                            element.id,
+                            element.polygon.title,
+                            element.data,
+                            element.polygon.geom
+                        )
     geojson_data += ']}'
 
     if data_min < float('Inf') and data_max > -float('Inf'):
         # Get value step
         if map_obj.logarithmic_scale:
             addition = 1 - data_min
-            step = (math.log(data_max + addition) - math.log(data_min + addition)) / map_obj.grades
+            step = math.log(data_max + addition)
+            step -= math.log(data_min + addition)
+            step /= map_obj.grades
         else:
             step = (data_max - data_min) / map_obj.grades
 
@@ -115,7 +130,9 @@ def map_view(request, slug):
             blue = blue if len(blue) == 2 else '0' + blue
 
             if map_obj.logarithmic_scale:
-                key = math.pow(math.e, math.log(data_max + addition) - step * (i + 1)) - addition
+                key = math.log(data_max + addition) - step * (i + 1)
+                key = math.pow(math.e, key)
+                key -= addition
             else:
                 key = data_max - step * (i + 1)
             data_range.append([key, red + green + blue])
@@ -145,12 +162,21 @@ def polygons_view(request):
 
     if level == 0:
         if title:
-            elements = get_object_or_404(Polygon, level=level, title=title).get_children()
+            elements = get_object_or_404(
+                Polygon,
+                level=level,
+                title=title
+            ).get_children()
         else:
             elements = Polygon.objects.filter(level=level)
     else:
         parent_title = args[-2]
-        elements = get_object_or_404(Polygon, level=level, title=title, parent__title=parent_title).get_children()
+        elements = get_object_or_404(
+            Polygon,
+            level=level,
+            title=title,
+            parent__title=parent_title
+        ).get_children()
 
     data_range = []
     data_min = float('Inf')
@@ -168,18 +194,25 @@ def polygons_view(request):
             path += '/'
         path += element.title
 
-        geojson_data += '{{\
-                "type": "Feature", "id": "{}", "properties": {{"name": "{}", "density": {}, "path": "{}"}}, "geometry": {}\
-            }}, '.format(
-                element.id, element.title, data, path, element.geom
-            )
+        geojson_data += '{{' \
+                        '"type": "Feature", ' \
+                        '"id": "{}", ' \
+                        '"properties": {{' \
+                        '"name": "{}", "density": {}, "path": "{}"' \
+                        '}}, ' \
+                        '"geometry": {}' \
+                        '}}, '.format(
+                            element.id, element.title, data, path, element.geom
+                        )
     geojson_data += ']}'
 
     if data_min < float('Inf') and data_max > -float('Inf'):
         # Get value step
         if map_obj['logarithmic_scale']:
             addition = 1 - data_min
-            step = (math.log(data_max + addition) - math.log(data_min + addition)) / map_obj['grades']
+            step = math.log(data_max + addition)
+            step -= math.log(data_min + addition)
+            step /= map_obj['grades']
         else:
             step = (data_max - data_min) / map_obj['grades']
 
@@ -209,7 +242,9 @@ def polygons_view(request):
             blue = blue if len(blue) == 2 else '0' + blue
 
             if map_obj['logarithmic_scale']:
-                key = math.pow(math.e, math.log(data_max + addition) - step * (i + 1)) - addition
+                key = math.log(data_max + addition) - step * (i + 1)
+                key = math.pow(math.e, key)
+                key -= addition
             else:
                 key = data_max - step * (i + 1)
             data_range.append([key, red + green + blue])
@@ -246,7 +281,8 @@ def add_map(request):
     else:
         form = MapForm(prefix='map')
 
-    regions = Polygon.objects.filter(lft__lte=F('rght')-2).order_by('tree_id', 'level', 'title')
+    regions = Polygon.objects.filter(lft__lte=F('rght')-2)\
+        .order_by('tree_id', 'level', 'title')
 
     return render(request, 'map-form.html', {
         'form': form,
@@ -260,16 +296,14 @@ def get_polygons(request, parent_id):
     if parent_id == '0':
         polygons = Polygon.objects.filter(lft=1).order_by('title')
     else:
-        polygons = get_object_or_404(Polygon, pk=parent_id).get_children().order_by('title')
-    polygons = json.dumps([{'pk': polygon.pk, 'title': polygon.title} for polygon in polygons])
+        polygons = get_object_or_404(Polygon, pk=parent_id)\
+            .get_children().order_by('title')
+    polygons = json.dumps([
+        {'pk': polygon.pk, 'title': polygon.title}
+        for polygon in polygons
+    ])
 
     return JsonResponse({'polygons': polygons})
-
-
-def example(request, example_id):
-    """Example map."""
-
-    return render(request, 'example' + example_id + '.html')
 
 
 def about(request):
@@ -311,8 +345,11 @@ def chart_view(request, slug):
     chart_obj = get_object_or_404(
         Chart.objects.prefetch_related(
             Prefetch('maps', queryset=Map.objects.prefetch_related(
-                Prefetch('elements', queryset=MapElement.objects.select_related('polygon')))
-            )
+                Prefetch(
+                    'elements',
+                    queryset=MapElement.objects.select_related('polygon')
+                )
+            ))
         ),
         slug=slug
     )

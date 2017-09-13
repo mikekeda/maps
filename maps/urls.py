@@ -14,7 +14,7 @@ sitemaps = {
 
 urlpatterns = [
     url(r'^', include('core.urls', namespace='core')),
-url(r'^oauth/', include('social_django.urls', namespace='social')),
+    url(r'^oauth/', include('social_django.urls', namespace='social')),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
     url(r'^admin/', admin.site.urls),
@@ -23,4 +23,7 @@ admin.site.site_header = _('Maps administration')
 
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )

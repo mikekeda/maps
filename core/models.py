@@ -43,7 +43,13 @@ class Polygon(MPTTModel):
     """Polygon model"""
     title = models.CharField(max_length=256)
     geom = MultiPolygonField()
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = TreeForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='children',
+        db_index=True
+    )
 
     class MPTTMeta:
         order_insertion_by = ['title']

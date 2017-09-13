@@ -49,11 +49,16 @@ class Command(BaseCommand):
                 parent = Polygon.objects.filter(title=parent_title)
                 if len(parent) > 1:
                     level = len(root.split('/')) - 1
-                    parent = [candidate for candidate in parent if candidate.level == level - 1]
+                    parent = [
+                        candidate
+                        for candidate in parent
+                        if candidate.level == level - 1
+                    ]
 
                 if len(parent) > 1:
                     for candidate in parent:
-                        if candidate.parent and candidate.parent.title == grandparent:
+                        if candidate.parent \
+                                and candidate.parent.title == grandparent:
                             parent = candidate
                             break
                 else:

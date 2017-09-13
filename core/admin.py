@@ -44,6 +44,7 @@ class ChartAdmin(admin.ModelAdmin):
             kwargs['initial'] = request.user.id
         return db_field.formfield(**kwargs)
 
+
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
