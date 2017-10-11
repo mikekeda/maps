@@ -5,16 +5,14 @@ from django.template.defaultfilters import slugify
 from django.core.cache import cache
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.translation import ugettext_lazy as _
+from mptt.models import MPTTModel, TreeForeignKey
 
 from .widgets import ColorWidget
 
 
 class ColorField(models.CharField):
     """Color field"""
-    def __init__(self, *args, **kwargs):
-        super(ColorField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
         kwargs['widget'] = ColorWidget
@@ -27,11 +25,13 @@ class Category(models.Model):
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(editable=False)
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         if not self.id:
             self.slug = slugify(self.title)
 
-        super(Category, self).save(*args, **kwargs)
+        super(Category, self).save(force_insert, force_update,
+                                   using, update_fields)
 
     def __str__(self):
         return u'%s' % (
@@ -137,13 +137,14 @@ class Map(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         if not self.id:
             self.slug = self._get_unique_slug()
 
         cache.delete_pattern('*:map_view:' + self.slug)
         cache.delete_pattern('*:maps')
-        super(Map, self).save(*args, **kwargs)
+        super(Map, self).save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title
@@ -155,9 +156,11 @@ class MapElement(models.Model):
     polygon = models.ForeignKey(Polygon, related_name='elements')
     data = models.FloatField()
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         cache.delete_pattern('*:map_view:' + self.map.slug)
-        super(MapElement, self).save(*args, **kwargs)
+        super(MapElement, self).save(force_insert, force_update,
+                                     using, update_fields)
 
     def __str__(self):
         return u'%s: %s: %s' % (
@@ -197,10 +200,12 @@ class Chart(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         if not self.id:
             self.slug = self._get_unique_slug()
-        super(Chart, self).save(*args, **kwargs)
+        super(Chart, self).save(force_insert, force_update,
+                                using, update_fields)
 
     def __str__(self):
         return self.title
