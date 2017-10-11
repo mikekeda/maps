@@ -1,9 +1,11 @@
 .idea/
-.DS_Store
-db.sqlite3
 node_modules/
 staticfiles/
 media/
-maps/settings.py
+reports/
+
 *.pyc
+
+.DS_Store
+db.sqlite3
 dump.rdb
