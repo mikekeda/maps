@@ -122,10 +122,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-print(get_env_var('DB_NAME', 'maps'))
-print(get_env_var('DB_USER', 'maps_admin'))
-print(get_env_var('DB_PASSWORD', 'maps_pass_!_12'))
-print(get_env_var('DB_HOST', '127.0.0.1'))
 
 CACHES = {
     "default": {
