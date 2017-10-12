@@ -122,6 +122,7 @@ DATABASES = {
         'PORT': '',
     }
 }
+print(get_env_var('DB_PASSWORD', 'maps_pass_!_12'))
 
 CACHES = {
     "default": {
