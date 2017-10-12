@@ -195,7 +195,7 @@ LOGIN_URL = '/admin/login'
 
 STATIC_ROOT = '/home/voron/sites/cdn/maps'
 
-STATIC_URL = 'https://cdn.mkeda.me/maps/'
+STATIC_URL = STATIC_URL = '/static/' if DEBUG else 'https://cdn.mkeda.me/maps/'
 
 STATICFILES_DIRS = (
     ("", os.path.join(BASE_DIR, "static")),
