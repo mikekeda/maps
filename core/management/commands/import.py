@@ -1,7 +1,8 @@
-from django.core.management import BaseCommand
 import json
 from os import walk, listdir
 from os.path import join, splitext, isfile
+
+from django.core.management import BaseCommand
 
 from core.models import Polygon
 
@@ -40,7 +41,7 @@ class Command(BaseCommand):
         else:
             need_proccess = walk(path)
 
-        for root, subdirs, files in need_proccess:
+        for root, _, files in need_proccess:
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
@@ -87,7 +88,7 @@ class Command(BaseCommand):
                         elif 'REGION' in feature['properties']:
                             # for nepal.geojson
                             name = feature['properties']['REGION']
-                        polygon, created = Polygon.objects.get_or_create(
+                        _, created = Polygon.objects.get_or_create(
                             title=name[0].capitalize() + name[1:],
                             parent=parent,
                             defaults={'geom': feature['geometry']}
