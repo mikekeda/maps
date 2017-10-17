@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from .views import (maps_view, map_view, polygons_view, add_map,
-                    get_polygons, about, charts_view, chart_view, log_in, log_out)
+from .views import (maps_view, map_view, polygons_view, add_map, get_polygons,
+                    about, charts_view, chart_view, log_in, log_out)
 # from .decorators import simple_cache_page
 
 
