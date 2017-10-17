@@ -22,7 +22,7 @@ def map_latest_entry(request, slug):
     return get_object_or_404(Map, slug=slug).changed
 
 
-def maps(request, username=None):
+def maps_view(request, username=None):
     """Maps."""
     if username:
         user = get_object_or_404(User, username=username)
@@ -312,7 +312,7 @@ def about(request):
     return render(request, 'about.html')
 
 
-def charts(request, username=None):
+def charts_view(request, username=None):
     """Charts."""
     if username:
         user = get_object_or_404(User, username=username)
@@ -356,22 +356,22 @@ def chart_view(request, slug):
 
     # Get polygon titles.
     titles = {}
-    for map in chart_obj.maps.all():
-        for element in map.elements.all():
+    for map_obj in chart_obj.maps.all():
+        for element in map_obj.elements.all():
             titles[element.polygon.pk] = element.polygon.title
     titles = sorted(titles.items(), key=operator.itemgetter(1))
 
     # Get data.
     data = []
     data_min = float('Inf')
-    for map in chart_obj.maps.all():
+    for map_obj in chart_obj.maps.all():
         data.append({
-            'name': map.title,
+            'name': map_obj.title,
             'data': {},
         })
         for pk in titles:
             data[-1]['data'][pk[0]] = 0
-        for element in map.elements.all():
+        for element in map_obj.elements.all():
             data[-1]['data'][element.polygon.pk] = element.data
         data[-1]['data'] = list(data[-1]['data'].values())
         map_data_min = min(data[-1]['data'])
