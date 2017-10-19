@@ -323,7 +323,7 @@ def charts_view(request, username=None):
     params = request.GET.copy()
     params.pop('p', None)
 
-    paginator = Paginator(charts, 10)
+    paginator = Paginator(charts.order_by('-id'), 10)
     page = request.GET.get('p')
     try:
         charts = paginator.page(page)

@@ -9,7 +9,7 @@ class MapSitemap(sitemaps.Sitemap):
     changefreq = 'weekly'
 
     def items(self):
-        return Map.objects.all()
+        return Map.objects.all().order_by('-id')
 
     def location(self, obj):
         return reverse('core:map', kwargs={'slug': obj.slug})
@@ -23,7 +23,7 @@ class ChartSitemap(sitemaps.Sitemap):
     changefreq = 'weekly'
 
     def items(self):
-        return Chart.objects.all()
+        return Chart.objects.all().order_by('-id')
 
     def location(self, obj):
         return reverse('core:chart', kwargs={'slug': obj.slug})
