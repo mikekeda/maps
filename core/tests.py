@@ -1,5 +1,9 @@
+import sys
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
+from django.utils.six import StringIO
 from django.test import TestCase
 
 
@@ -60,3 +64,22 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         resp = self.client.get('/add/map')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'map-form.html')
+
+    # manage.py commands.
+    def test_world_import_command(self):
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world.geojson')
+        self.assertIn('Zimbabwe was created', out.getvalue())
+
+    def test_us_import_command(self):
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/united States.geojson')
+        self.assertIn('Puerto Rico was created', out.getvalue())
+
+    def test_delete_command(self):
+        out = StringIO()
+        sys.stdout = out
+        call_command('delete')
+        self.assertIn('polygons were deleted', out.getvalue())
