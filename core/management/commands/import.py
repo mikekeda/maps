@@ -23,7 +23,6 @@ class Command(BaseCommand):
             if isfile(join(path, options['file'])):
                 root = path
                 subdir = options['file'].rsplit('/', 1)
-                level = len(options['file'].split('/')) - 1
                 if len(subdir) > 1:
                     root += '/' + subdir[0]
                 need_proccess = [(

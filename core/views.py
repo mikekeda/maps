@@ -81,17 +81,7 @@ def map_view(request, slug):
     for element in map_obj.elements.all():
         data_min = element.data if element.data < data_min else data_min
         data_max = element.data if element.data > data_max else data_max
-        geojson_data += '{{' \
-                        '"type": "Feature", ' \
-                        '"id": "{}", ' \
-                        '"properties": {{"name": "{}", "density": {}}}, ' \
-                        '"geometry": {}' \
-                        '}}, '.format(
-                            element.id,
-                            element.polygon.title,
-                            element.data,
-                            element.polygon.geom
-                        )
+        geojson_data += element.geojson()
     geojson_data += ']}'
 
     if data_min < float('Inf') and data_max > -float('Inf'):
@@ -151,7 +141,7 @@ def polygons_view(request):
     title = args[-1]
 
     map_obj = {
-        'title': args[-1] if args[-1] else 'World',
+        'title': title or 'World',
         'grades': 8,
         'end_color': 'BD0026',
         'start_color': 'FFEDA0',
@@ -194,16 +184,7 @@ def polygons_view(request):
             path += '/'
         path += element.title
 
-        geojson_data += '{{' \
-                        '"type": "Feature", ' \
-                        '"id": "{}", ' \
-                        '"properties": {{' \
-                        '"name": "{}", "density": {}, "path": "{}"' \
-                        '}}, ' \
-                        '"geometry": {}' \
-                        '}}, '.format(
-                            element.id, element.title, data, path, element.geom
-                        )
+        geojson_data += element.geojson(data, path)
     geojson_data += ']}'
 
     if data_min < float('Inf') and data_max > -float('Inf'):

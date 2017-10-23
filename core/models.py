@@ -27,7 +27,7 @@ class Category(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.id:
+        if not self.pk:
             self.slug = slugify(self.title)
 
         super(Category, self).save(force_insert, force_update,
@@ -56,6 +56,18 @@ class Polygon(MPTTModel):
 
     def __str__(self):
         return self.title
+
+    def geojson(self, data=0, path=''):
+        return '{{' \
+                '"type": "Feature", ' \
+                '"id": "{}", ' \
+                '"properties": {{' \
+                '"name": "{}", "density": {}, "path": "{}"' \
+                '}}, ' \
+                '"geometry": {}' \
+                '}}, '.format(
+                    self.pk, self.title, data, path, self.geom
+                )
 
 
 class Map(models.Model):
@@ -139,7 +151,7 @@ class Map(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.id:
+        if not self.pk:
             self.slug = self._get_unique_slug()
 
         cache.delete_pattern('*:map_view:' + self.slug)
@@ -168,6 +180,16 @@ class MapElement(models.Model):
             self.polygon.title,
             self.data,
         )
+
+    def geojson(self):
+        return '{{' \
+                '"type": "Feature", ' \
+                '"id": "{}", ' \
+                '"properties": {{"name": "{}", "density": {}}}, ' \
+                '"geometry": {}' \
+                '}}, '.format(
+                    self.pk, self.polygon.title, self.data, self.polygon.geom
+                )
 
 
 class Chart(models.Model):
@@ -202,7 +224,7 @@ class Chart(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.id:
+        if not self.pk:
             self.slug = self._get_unique_slug()
         super(Chart, self).save(force_insert, force_update,
                                 using, update_fields)
