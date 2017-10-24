@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
 from .views import (maps_view, map_view, polygons_view, add_map, get_polygons,
-                    about, charts_view, chart_view, log_in, log_out)
+                    polygon_export, about, charts_view, chart_view, log_in,
+                    log_out)
 # from .decorators import simple_cache_page
 
 
@@ -13,6 +14,8 @@ urlpatterns = [
     url(r'^map/(?P<slug>.+)$', map_view, name='map'),
     url(r'^chart/(?P<slug>.+)$', chart_view, name='chart'),
     url(r'^world/', polygons_view, name='polygons'),
+    url(r'^polygon/(?P<pk>[0-9]+)/geojson', polygon_export,
+        name='polygon_export'),
     url(r'^user/(?P<username>\w+)/maps$', maps_view, name='user_maps'),
     url(r'^user/(?P<username>\w+)/charts$', charts_view, name='user_charts'),
     url(r'^map/(?P<slug>.+)$', map_view, name='map'),

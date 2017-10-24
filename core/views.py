@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 # from django.views.decorators.http import condition
 from django.utils.translation import ugettext_lazy as _
 
@@ -235,6 +235,27 @@ def polygons_view(request):
         geojson_data=geojson_data,
         data_range=data_range
     ))
+
+
+@login_required
+def polygon_export(request, pk):
+    element = get_object_or_404(Polygon, pk=pk)
+    geojson_data = '{"type": "FeatureCollection", "features":['
+    for child in element.get_children():
+        geojson_data += child.geojson() + ','
+    geojson_data = geojson_data.rstrip(',') + ']}'
+
+    response = HttpResponse(
+        content=geojson_data,
+        content_type='text/plain'
+    )
+    response['Content-Disposition'] = 'attachment; filename={}.geojson' \
+        .format(
+        (element.title[:1].lower() + element.title[1:]).replace(
+            '.', '_'
+        )
+    )
+    return response
 
 
 @login_required

@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.http import HttpResponse
+from django.utils.html import format_html
+from django.core.urlresolvers import reverse
+
 from leaflet.admin import LeafletGeoAdmin
 from easy_select2 import select2_modelform
 from mptt.admin import MPTTModelAdmin
@@ -60,6 +63,15 @@ class MapElementAdmin(admin.ModelAdmin):
 class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
     search_fields = ['title']
     actions = [export_as_geojson_action()]
+    list_display = ('title', 'export')
+
+    @staticmethod
+    def export(obj):
+        return format_html(
+            '<a href="{}" class="button" style="float: right;">{}</a>',
+            reverse('core:polygon_export', args=[obj.pk]),
+            'Export to geojson'
+        )
 
 
 class ChartAdmin(admin.ModelAdmin):
