@@ -249,12 +249,12 @@ def polygon_export(request, pk):
         content=geojson_data,
         content_type='text/plain'
     )
-    response['Content-Disposition'] = 'attachment; filename={}.geojson' \
+    response['Content-Disposition'] = 'attachment; filename={}.geojson'\
         .format(
-        (element.title[:1].lower() + element.title[1:]).replace(
-            '.', '_'
+            (element.title[:1].lower() + element.title[1:]).replace(
+                '.', '_'
+            )
         )
-    )
     return response
 
 
