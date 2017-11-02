@@ -7,6 +7,32 @@ from django.core.management import BaseCommand
 from core.models import Polygon
 
 
+def map_name(feature):
+    name = ''
+    if 'name:en' in feature['properties']:
+        name = feature['properties']['name:en']
+    elif 'name' in feature['properties']:
+        name = feature['properties']['name']
+    elif 'nom' in feature['properties']:
+        name = feature['properties']['nom']
+    elif 'namelsad' in feature['properties']:
+        name = feature['properties']['namelsad']
+    elif 'provincia' in feature['properties']:
+        # for argentina.geojson
+        name = feature['properties']['provincia']
+    elif 'DEPARTAMTO' in feature['properties']:
+        # for argentina.geojson
+        name = feature['properties']['DEPARTAMTO']
+    elif 'prefecture' in feature['properties']:
+        # for mongolia.geojson
+        name = feature['properties']['prefecture']
+    elif 'REGION' in feature['properties']:
+        # for nepal.geojson
+        name = feature['properties']['REGION']
+
+    return name
+
+
 # The class must be named Command, and subclass BaseCommand
 class Command(BaseCommand):
     # Show this when the user types help
@@ -66,27 +92,7 @@ class Command(BaseCommand):
                 with open(join(root, json_file)) as f:
                     data = json.load(f)
                     for feature in data['features']:
-                        name = ''
-                        if 'name:en' in feature['properties']:
-                            name = feature['properties']['name:en']
-                        elif 'name' in feature['properties']:
-                            name = feature['properties']['name']
-                        elif 'nom' in feature['properties']:
-                            name = feature['properties']['nom']
-                        elif 'namelsad' in feature['properties']:
-                            name = feature['properties']['namelsad']
-                        elif 'provincia' in feature['properties']:
-                            # for argentina.geojson
-                            name = feature['properties']['provincia']
-                        elif 'DEPARTAMTO' in feature['properties']:
-                            # for argentina.geojson
-                            name = feature['properties']['DEPARTAMTO']
-                        elif 'prefecture' in feature['properties']:
-                            # for mongolia.geojson
-                            name = feature['properties']['prefecture']
-                        elif 'REGION' in feature['properties']:
-                            # for nepal.geojson
-                            name = feature['properties']['REGION']
+                        name = map_name(feature)
                         _, created = Polygon.objects.get_or_create(
                             title=name[0].capitalize() + name[1:],
                             parent=parent,
