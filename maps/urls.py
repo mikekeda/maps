@@ -19,6 +19,8 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'),
     url(r'^admin/', admin.site.urls),
 ]
+urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
 admin.site.site_header = _('Maps administration')
 
 if settings.DEBUG:
