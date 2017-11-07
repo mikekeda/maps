@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.http import HttpResponse
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 
@@ -11,31 +10,6 @@ from .models import Map, Polygon, MapElement, Category, Chart
 
 MapElementForm = select2_modelform(MapElement)
 MapForm = select2_modelform(Map)
-
-
-def export_as_geojson_action():
-    """This function returns an export geojson action"""
-    def export_as_geojson(modeladmin, request, queryset):
-        elements = list(queryset)[0]
-        geojson_data = '{"type": "FeatureCollection", "features":['
-        for element in elements.get_children():
-            geojson_data += element.geojson() + ','
-        geojson_data = geojson_data.rstrip(',') + ']}'
-
-        response = HttpResponse(
-            content=geojson_data,
-            content_type='text/plain'
-        )
-        response['Content-Disposition'] = 'attachment; filename={}.geojson'\
-            .format(
-                (elements.title[:1].lower() + elements.title[1:]).replace(
-                    '.', '_'
-                )
-            )
-        return response
-
-    export_as_geojson.short_description = "Export to geojson (just one file)"
-    return export_as_geojson
 
 
 class MapElementInline(admin.TabularInline):
@@ -62,7 +36,6 @@ class MapElementAdmin(admin.ModelAdmin):
 
 class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
     search_fields = ['title']
-    actions = [export_as_geojson_action()]
     list_display = ('title', 'export')
 
     @staticmethod

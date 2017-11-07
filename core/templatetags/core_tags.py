@@ -1,5 +1,4 @@
 from django.template.defaulttags import register
-
 from widget_tweaks.templatetags.widget_tweaks import set_attr
 
 

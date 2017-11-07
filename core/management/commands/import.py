@@ -76,15 +76,17 @@ class Command(BaseCommand):
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
-                parent_title = splitext(json_file)[0]
-                parent_title = parent_title[0].capitalize() + parent_title[1:]
-                parent = Polygon.objects.filter(title=parent_title)
+                # Get parent title.
+                parent = splitext(json_file)[0]
+                parent = parent[0].capitalize() + parent[1:]
+
+                # Get parent.
+                parent = Polygon.objects.filter(title=parent)
                 if len(parent) > 1:
-                    level = len(root.split('/')) - 1
                     parent = [
                         candidate
                         for candidate in parent
-                        if candidate.level == level - 1
+                        if candidate.level == len(root.split('/')) - 2
                     ]
 
                 if len(parent) > 1:
