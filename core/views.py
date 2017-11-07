@@ -27,6 +27,10 @@ def range_data(map_obj):
 
     if map_obj['data_min'] < float('Inf') and \
             map_obj['data_max'] > -float('Inf'):
+        red = {}
+        green = {}
+        blue = {}
+
         # Get value step
         if map_obj['logarithmic_scale']:
             addition = 1 - map_obj['data_min']
@@ -38,29 +42,32 @@ def range_data(map_obj):
                    / map_obj['grades']
 
         # Convert colors to int
-        start_red = int(map_obj['start_color'][:2], 16)
-        start_green = int(map_obj['start_color'][2:4], 16)
-        start_blue = int(map_obj['start_color'][4:], 16)
+        red['start'] = int(map_obj['start_color'][:2], 16)
+        green['start'] = int(map_obj['start_color'][2:4], 16)
+        blue['start'] = int(map_obj['start_color'][4:], 16)
 
-        end_red = int(map_obj['end_color'][:2], 16)
-        end_green = int(map_obj['end_color'][2:4], 16)
-        end_blue = int(map_obj['end_color'][4:], 16)
+        red['end'] = int(map_obj['end_color'][:2], 16)
+        green['end'] = int(map_obj['end_color'][2:4], 16)
+        blue['end'] = int(map_obj['end_color'][4:], 16)
 
         # Get color steps
-        red_step = (end_red - start_red) / map_obj['grades']
-        green_step = (end_green - start_green) / map_obj['grades']
-        blue_step = (end_blue - start_blue) / map_obj['grades']
+        red['step'] = (red['end'] - red['start']) / map_obj['grades']
+        green['step'] = (green['end'] - green['start']) / map_obj['grades']
+        blue['step'] = (blue['end'] - blue['start']) / map_obj['grades']
 
         for i in reversed(range(map_obj['grades'])):
             # Get current colors
-            red = hex(start_red + int(red_step * i))[2:]
-            green = hex(start_green + int(green_step * i))[2:]
-            blue = hex(start_blue + int(blue_step * i))[2:]
+            red['value'] = hex(red['start'] + int(red['step'] * i))[2:]
+            green['value'] = hex(green['start'] + int(green['step'] * i))[2:]
+            blue['value'] = hex(blue['start'] + int(blue['step'] * i))[2:]
 
             # Fix current colors (we need 2 digits)
-            red = red if len(red) == 2 else '0' + red
-            green = green if len(green) == 2 else '0' + green
-            blue = blue if len(blue) == 2 else '0' + blue
+            if len(red['value']) != 2:
+                red['value'] = '0' + red['value']
+            if len(green['value']) != 2:
+                green['value'] = '0' + green['value']
+            if len(blue['value']) != 2:
+                blue['value'] = '0' + blue['value']
 
             if map_obj['logarithmic_scale']:
                 key = math.log(map_obj['data_max'] + addition)\
@@ -69,7 +76,10 @@ def range_data(map_obj):
                 key -= addition
             else:
                 key = map_obj['data_max'] - step * (i + 1)
-            data_range.append([key, red + green + blue])
+            data_range.append([
+                key,
+                red['value'] + green['value'] + blue['value']
+            ])
 
     return data_range
 
