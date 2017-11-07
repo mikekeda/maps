@@ -71,9 +71,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Started Polygons import")
-        need_process = get_files('geojson', options['file'])
 
-        for root, _, files in need_process:
+        for root, _, files in get_files('geojson', options['file']):
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
@@ -96,9 +95,9 @@ class Command(BaseCommand):
                             break
                 else:
                     parent = parent[0] if parent else None
+
                 with open(join(root, json_file)) as f:
-                    data = json.load(f)
-                    for feature in data['features']:
+                    for feature in json.load(f).get('features', []):
                         name = map_name(feature)
                         _, created = Polygon.objects.get_or_create(
                             title=name[0].capitalize() + name[1:],
