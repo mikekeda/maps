@@ -22,6 +22,58 @@ def map_latest_entry(request, slug):
     return get_object_or_404(Map, slug=slug).changed
 
 
+def range_data(map_obj):
+    data_range = []
+
+    if map_obj['data_min'] < float('Inf') and \
+            map_obj['data_max'] > -float('Inf'):
+        # Get value step
+        if map_obj['logarithmic_scale']:
+            addition = 1 - map_obj['data_min']
+            step = math.log(map_obj['data_max'] + addition)
+            step -= math.log(map_obj['data_min'] + addition)
+            step /= map_obj['grades']
+        else:
+            step = (map_obj['data_max'] - map_obj['data_min'])\
+                   / map_obj['grades']
+
+        # Convert colors to int
+        start_red = int(map_obj['start_color'][:2], 16)
+        start_green = int(map_obj['start_color'][2:4], 16)
+        start_blue = int(map_obj['start_color'][4:], 16)
+
+        end_red = int(map_obj['end_color'][:2], 16)
+        end_green = int(map_obj['end_color'][2:4], 16)
+        end_blue = int(map_obj['end_color'][4:], 16)
+
+        # Get color steps
+        red_step = (end_red - start_red) / map_obj['grades']
+        green_step = (end_green - start_green) / map_obj['grades']
+        blue_step = (end_blue - start_blue) / map_obj['grades']
+
+        for i in reversed(range(map_obj['grades'])):
+            # Get current colors
+            red = hex(start_red + int(red_step * i))[2:]
+            green = hex(start_green + int(green_step * i))[2:]
+            blue = hex(start_blue + int(blue_step * i))[2:]
+
+            # Fix current colors (we need 2 digits)
+            red = red if len(red) == 2 else '0' + red
+            green = green if len(green) == 2 else '0' + green
+            blue = blue if len(blue) == 2 else '0' + blue
+
+            if map_obj['logarithmic_scale']:
+                key = math.log(map_obj['data_max'] + addition)\
+                      - step * (i + 1)
+                key = math.pow(math.e, key)
+                key -= addition
+            else:
+                key = map_obj['data_max'] - step * (i + 1)
+            data_range.append([key, red + green + blue])
+
+    return data_range
+
+
 def maps_view(request, username=None):
     """Maps."""
     if username:
@@ -72,7 +124,6 @@ def map_view(request, slug):
         slug=slug
     )
 
-    data_range = []
     data_min = float('Inf')
     data_max = -float('Inf')
 
@@ -84,53 +135,14 @@ def map_view(request, slug):
         geojson_data += element.geojson()
     geojson_data += ']}'
 
-    if data_min < float('Inf') and data_max > -float('Inf'):
-        # Get value step
-        if map_obj.logarithmic_scale:
-            addition = 1 - data_min
-            step = math.log(data_max + addition)
-            step -= math.log(data_min + addition)
-            step /= map_obj.grades
-        else:
-            step = (data_max - data_min) / map_obj.grades
-
-        # Convert colors to int
-        start_red = int(map_obj.start_color[:2], 16)
-        start_green = int(map_obj.start_color[2:4], 16)
-        start_blue = int(map_obj.start_color[4:], 16)
-
-        end_red = int(map_obj.end_color[:2], 16)
-        end_green = int(map_obj.end_color[2:4], 16)
-        end_blue = int(map_obj.end_color[4:], 16)
-
-        # Get color steps
-        red_step = (end_red - start_red) / map_obj.grades
-        green_step = (end_green - start_green) / map_obj.grades
-        blue_step = (end_blue - start_blue) / map_obj.grades
-
-        for i in reversed(range(map_obj.grades)):
-            # Get current colors
-            red = hex(start_red + int(red_step * i))[2:]
-            green = hex(start_green + int(green_step * i))[2:]
-            blue = hex(start_blue + int(blue_step * i))[2:]
-
-            # Fix current colors (we need 2 digits)
-            red = red if len(red) == 2 else '0' + red
-            green = green if len(green) == 2 else '0' + green
-            blue = blue if len(blue) == 2 else '0' + blue
-
-            if map_obj.logarithmic_scale:
-                key = math.log(data_max + addition) - step * (i + 1)
-                key = math.pow(math.e, key)
-                key -= addition
-            else:
-                key = data_max - step * (i + 1)
-            data_range.append([key, red + green + blue])
+    map_obj = map_obj.__dict__
+    map_obj['data_min'] = data_min
+    map_obj['data_max'] = data_max
 
     return render(request, 'map.html', dict(
         map=map_obj,
         geojson_data=geojson_data,
-        data_range=data_range
+        data_range=range_data(map_obj)
     ))
 
 
@@ -148,6 +160,8 @@ def polygons_view(request):
         'opacity': '0.7',
         'unit': 'polygons',
         'logarithmic_scale': True,
+        'data_min': float('Inf'),
+        'data_max': -float('Inf')
     }
 
     if level == 0:
@@ -168,16 +182,14 @@ def polygons_view(request):
             parent__title=parent_title
         ).get_children()
 
-    data_range = []
-    data_min = float('Inf')
-    data_max = -float('Inf')
-
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
     for element in elements:
         data = (element.rght - element.lft - 1) / 2
-        data_min = data if data < data_min else data_min
-        data_max = data if data > data_max else data_max
+        if data < map_obj['data_min']:
+            map_obj['data_min'] = data
+        if data > map_obj['data_max']:
+            map_obj['data_max'] = data
 
         path = request.path
         if path[-1] != '/':
@@ -187,53 +199,10 @@ def polygons_view(request):
         geojson_data += element.geojson(data, path)
     geojson_data += ']}'
 
-    if data_min < float('Inf') and data_max > -float('Inf'):
-        # Get value step
-        if map_obj['logarithmic_scale']:
-            addition = 1 - data_min
-            step = math.log(data_max + addition)
-            step -= math.log(data_min + addition)
-            step /= map_obj['grades']
-        else:
-            step = (data_max - data_min) / map_obj['grades']
-
-        # Convert colors to int
-        start_red = int(map_obj['start_color'][:2], 16)
-        start_green = int(map_obj['start_color'][2:4], 16)
-        start_blue = int(map_obj['start_color'][4:], 16)
-
-        end_red = int(map_obj['end_color'][:2], 16)
-        end_green = int(map_obj['end_color'][2:4], 16)
-        end_blue = int(map_obj['end_color'][4:], 16)
-
-        # Get color steps
-        red_step = (end_red - start_red) / map_obj['grades']
-        green_step = (end_green - start_green) / map_obj['grades']
-        blue_step = (end_blue - start_blue) / map_obj['grades']
-
-        for i in reversed(range(map_obj['grades'])):
-            # Get current colors
-            red = hex(start_red + int(red_step * i))[2:]
-            green = hex(start_green + int(green_step * i))[2:]
-            blue = hex(start_blue + int(blue_step * i))[2:]
-
-            # Fix current colors (we need 2 digits)
-            red = red if len(red) == 2 else '0' + red
-            green = green if len(green) == 2 else '0' + green
-            blue = blue if len(blue) == 2 else '0' + blue
-
-            if map_obj['logarithmic_scale']:
-                key = math.log(data_max + addition) - step * (i + 1)
-                key = math.pow(math.e, key)
-                key -= addition
-            else:
-                key = data_max - step * (i + 1)
-            data_range.append([key, red + green + blue])
-
     return render(request, 'map.html', dict(
         map=map_obj,
         geojson_data=geojson_data,
-        data_range=data_range
+        data_range=range_data(map_obj)
     ))
 
 
