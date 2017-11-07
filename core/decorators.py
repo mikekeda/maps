@@ -21,7 +21,7 @@ def simple_cache_page(cache_timeout, per_user=False):
                 key += ':' + ':'.join([kwargs[key] for key in kwargs])
 
             response = cache.get(key)
-            if not response or settings.DEBUG or len(request.GET) > 0:
+            if not response or settings.DEBUG or request.GET:
                 response = func(*args, **kwargs)
                 cache.set(key, response, cache_timeout)
             return response

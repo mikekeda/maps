@@ -18,7 +18,6 @@ urlpatterns = [
         name='polygon_export'),
     url(r'^user/(?P<username>\w+)/maps$', maps_view, name='user_maps'),
     url(r'^user/(?P<username>\w+)/charts$', charts_view, name='user_charts'),
-    url(r'^map/(?P<slug>.+)$', map_view, name='map'),
     url(r'^add/map$', add_map, name='add_map'),
     url(r'^api/get-polygons/(?P<parent_id>.+)$',
         get_polygons, name='get_polygons'),
