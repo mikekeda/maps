@@ -8,6 +8,7 @@ from core.models import Polygon
 
 
 def map_name(feature):
+    """Fix title for some json files."""
     name = ''
     if 'name:en' in feature['properties']:
         name = feature['properties']['name:en']
@@ -33,6 +34,32 @@ def map_name(feature):
     return name
 
 
+def get_files(path: str, file: str):
+    """Get all files for import."""
+    if file:
+        if isfile(join(path, file)):
+            root = path
+            subdir = file.rsplit('/', 1)
+            if len(subdir) > 1:
+                root += '/' + subdir[0]
+            need_process = [(
+                root,
+                None,
+                [file.split('/')[-1]]
+            )]
+        else:
+            root = path + '/' + file
+            need_process = [(
+                root,
+                None,
+                [f for f in listdir(root) if isfile(join(root, f))]
+            )]
+    else:
+        need_process = walk(path)
+
+    return need_process
+
+
 # The class must be named Command, and subclass BaseCommand
 class Command(BaseCommand):
     # Show this when the user types help
@@ -44,29 +71,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Started Polygons import")
-        path = 'geojson'
-        if options['file']:
-            if isfile(join(path, options['file'])):
-                root = path
-                subdir = options['file'].rsplit('/', 1)
-                if len(subdir) > 1:
-                    root += '/' + subdir[0]
-                need_proccess = [(
-                    root,
-                    None,
-                    [options['file'].split('/')[-1]]
-                )]
-            else:
-                root = path + '/' + options['file']
-                need_proccess = [(
-                    root,
-                    None,
-                    [f for f in listdir(root) if isfile(join(root, f))]
-                )]
-        else:
-            need_proccess = walk(path)
+        need_process = get_files('geojson', options['file'])
 
-        for root, _, files in need_proccess:
+        for root, _, files in need_process:
             grandparent = root.split('/')[-1]
             grandparent = grandparent[0].capitalize() + grandparent[1:]
             for json_file in files:
