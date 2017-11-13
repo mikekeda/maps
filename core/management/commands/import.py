@@ -16,7 +16,7 @@ def map_name(feature):
     elif 'name' in feature['properties']:
         name = feature['properties']['name']
     elif 'nom' in feature['properties']:
-        # for for united States folder (wisconsin.geojson)
+        # for world/france.geojson
         name = feature['properties']['nom']
     elif 'namelsad' in feature['properties']:
         # for united States folder (new Jersey.geojson)

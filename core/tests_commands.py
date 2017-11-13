@@ -38,8 +38,8 @@ class MapsViewTest(TestCase):
 
         out = StringIO()
         sys.stdout = out
-        call_command('import', file='world/united States/wisconsin.geojson')
-        self.assertIn('WI was created', out.getvalue())
+        call_command('import', file='world/france.geojson')
+        self.assertIn('Corse was created', out.getvalue())
 
         out = StringIO()
         sys.stdout = out

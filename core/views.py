@@ -76,10 +76,10 @@ def range_data(map_obj):
                 key -= addition
             else:
                 key = map_obj['data_max'] - step * (i + 1)
-            data_range.append([
+            data_range.append((
                 key,
                 red['value'] + green['value'] + blue['value']
-            ])
+            ))
 
     return data_range
 
