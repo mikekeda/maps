@@ -11,7 +11,7 @@ def map_name(feature):
     """Fix title for some json files."""
     name = ''
     if 'name:en' in feature['properties']:
-        # for lovakia.geojson
+        # for slovakia.geojson
         name = feature['properties']['name:en']
     elif 'name' in feature['properties']:
         name = feature['properties']['name']

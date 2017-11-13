@@ -1,17 +1,76 @@
 import sys
+import types
+from typing import List
 
-from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.utils.six import StringIO
 from django.test import TestCase
 
 
 class MapsViewTest(TestCase):
-    def setUp(self):
-        # Create usual user.
-        test_user = User.objects.create_user(username='testuser',
-                                             password='12345')
-        test_user.save()
+    # Helpers functions.
+    def test_views_map_name(self):
+        commands = __import__(
+            'core.management.commands.import',
+            fromlist=['']
+        )
+
+        feature = {'properties': {'name:en': 'name1'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name1')
+
+        feature = {'properties': {'name': 'name2'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name2')
+
+        feature = {'properties': {'nom': 'name3'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name3')
+
+        feature = {'properties': {'namelsad': 'name4'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name4')
+
+        feature = {'properties': {'provincia': 'name5'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name5')
+
+        feature = {'properties': {'DEPARTAMTO': 'name6'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name6')
+
+        feature = {'properties': {'prefecture': 'name7'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name7')
+
+        feature = {'properties': {'REGION': 'name8'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, 'name8')
+
+        # Not existing key.
+        feature = {'properties': {'existing_key': 'name9'}}
+        result = commands.map_name(feature)
+        self.assertEqual(result, '')
+
+    def test_views_range_data(self):
+        commands = __import__(
+            'core.management.commands.import',
+            fromlist=['']
+        )
+        result = commands.get_files('geojson', '')
+        self.assertTrue(isinstance(result, types.GeneratorType))
+
+        result = commands.get_files('geojson', file='world/united States')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0][0], 'geojson/world/united States')
+        self.assertEqual(result[0][1], None)
+        self.assertTrue(isinstance(result[0][2], List))
+
+        result = commands.get_files('geojson', file='world/france.geojson')
+        self.assertListEqual(
+            result,
+            [('geojson/world', None, ['france.geojson'])]
+        )
 
     # manage.py commands.
     def test_commands_world_import(self):
@@ -28,43 +87,8 @@ class MapsViewTest(TestCase):
 
         out = StringIO()
         sys.stdout = out
-        call_command('import', file='world/united States.geojson')
-        self.assertIn('Puerto Rico already exists', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
         call_command('import', file='world/united States/new Jersey.geojson')
         self.assertIn('Bergen County was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/france.geojson')
-        self.assertIn('Corse was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/slovakia.geojson')
-        self.assertIn('Region of Trnava was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/mongolia.geojson')
-        self.assertIn('Zavkhan was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/argentina.geojson')
-        self.assertIn('Santa Cruz was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/argentina/tucuman.geojson')
-        self.assertIn('LA COCHA was created', out.getvalue())
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/nepal.geojson')
-        self.assertIn('Eastern was created', out.getvalue())
 
     def test_commands_delete(self):
         out = StringIO()
