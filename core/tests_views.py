@@ -1,13 +1,9 @@
-import sys
-
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.core.management import call_command
-from django.utils.six import StringIO
 from django.test import TestCase
 
 
-class LoanedBookInstancesByUserListViewTest(TestCase):
+class MapsViewTest(TestCase):
     def setUp(self):
         # Create usual user.
         test_user = User.objects.create_user(username='testuser',
@@ -15,71 +11,59 @@ class LoanedBookInstancesByUserListViewTest(TestCase):
         test_user.save()
 
     # Pages available for anonymous.
-    def test_home_page(self):
-        resp = self.client.get('/')
+    def test_views_home(self):
+        resp = self.client.get(reverse('core:maps'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'list-page.html')
 
-    def test_charts_page(self):
-        resp = self.client.get('/charts')
+    def test_views_charts(self):
+        resp = self.client.get(reverse('core:charts'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'list-page.html')
 
-    def test_user_maps_page(self):
+    def test_views_user_maps(self):
         resp = self.client.get(reverse('core:user_maps',
                                        kwargs={'username': 'testuser'}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'list-page.html')
 
-    def test_user_charts_page(self):
+    def test_views_user_charts(self):
         resp = self.client.get(reverse('core:user_charts',
                                        kwargs={'username': 'testuser'}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'list-page.html')
 
-    def test_world_page(self):
+    def test_views_world(self):
         resp = self.client.get('/world/')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'map.html')
 
-    def test_about_page(self):
-        resp = self.client.get('/about')
+    def test_views_about(self):
+        resp = self.client.get(reverse('core:about'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'about.html')
 
-    def test_login_page(self):
-        resp = self.client.get('/login')
+    def test_views_login(self):
+        resp = self.client.get(reverse('core:login'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'login.html')
 
-    def test_sitemap_page(self):
+    def test_views_logout(self):
+        resp = self.client.get(reverse('core:logout'))
+        self.assertRedirects(resp, '/login?next=/logout')
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:logout'))
+        self.assertRedirects(resp, reverse('core:login'))
+
+    def test_views_sitemap(self):
         resp = self.client.get('/sitemap.xml')
         self.assertEqual(resp.status_code, 200)
 
     # Pages available only for registered users.
-    def test_add_map_page(self):
-        resp = self.client.get('/add/map')
+    def test_views_add_map(self):
+        resp = self.client.get(reverse('core:add_map'))
         self.assertRedirects(resp, '/login?next=/add/map')
         self.client.login(username='testuser', password='12345')
-        resp = self.client.get('/add/map')
+        resp = self.client.get(reverse('core:add_map'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'map-form.html')
-
-    # manage.py commands.
-    def test_world_import_command(self):
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world.geojson')
-        self.assertIn('Zimbabwe was created', out.getvalue())
-
-    def test_us_import_command(self):
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/united States.geojson')
-        self.assertIn('Puerto Rico was created', out.getvalue())
-
-    def test_delete_command(self):
-        out = StringIO()
-        sys.stdout = out
-        call_command('delete')
-        self.assertIn('polygons were deleted', out.getvalue())
