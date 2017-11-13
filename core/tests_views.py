@@ -47,7 +47,7 @@ class MapsViewTest(TestCase):
             'data_max': 10,
             'logarithmic_scale': False,
             'grades': 5,
-            'start_color': '352555',
+            'start_color': '352515',
             'end_color': '000000',
         }
         result = range_data(map_obj)
@@ -55,11 +55,11 @@ class MapsViewTest(TestCase):
         result = {tuple(item) for item in result}
         self.assertEqual(len(result), 5)
         self.assertEqual(set(result), {
-            (0.0, '0b0811'),
-            (2.0, '160f22'),
-            (4.0, '201733'),
-            (6.0, '2b1e44'),
-            (8.0, '352555')
+            (0.0, '0b0805'),
+            (2.0, '160f09'),
+            (4.0, '20170d'),
+            (6.0, '2b1e11'),
+            (8.0, '352515')
         })
 
         # Logarithmic scale.
@@ -138,8 +138,29 @@ class MapsViewTest(TestCase):
                                        kwargs={'pk': polygon.pk}))
         self.assertEqual(resp.status_code, 200)
 
+    def test_views_get_polygons(self):
+        polygon = Polygon.objects.get(title='Ukraine')
+
+        resp = self.client.get(reverse('core:get_polygons',
+                                       kwargs={'parent_id': polygon.pk}))
+        self.assertRedirects(
+            resp,
+            '/login?next=/api/get-polygons/' + str(polygon.pk)
+        )
+
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:get_polygons',
+                                       kwargs={'parent_id': polygon.pk}))
+        self.assertEqual(resp.status_code, 200)
+
     def test_views_map(self):
         resp = self.client.get(reverse('core:map',
+                                       kwargs={'slug': 'not-exists'}))
+        self.assertEqual(resp.status_code, 404)
+        self.assertTemplateUsed(resp, '404.html')
+
+    def test_views_chart(self):
+        resp = self.client.get(reverse('core:chart',
                                        kwargs={'slug': 'not-exists'}))
         self.assertEqual(resp.status_code, 404)
         self.assertTemplateUsed(resp, '404.html')
