@@ -1,6 +1,5 @@
 import sys
 import types
-from typing import List
 
 from django.core.management import call_command
 from django.utils.six import StringIO
@@ -52,7 +51,7 @@ class MapsViewTest(TestCase):
         result = commands.map_name(feature)
         self.assertEqual(result, '')
 
-    def test_views_range_data(self):
+    def test_views_get_files(self):
         commands = __import__(
             'core.management.commands.import',
             fromlist=['']
@@ -64,7 +63,7 @@ class MapsViewTest(TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0][0], 'geojson/world/united States')
         self.assertEqual(result[0][1], None)
-        self.assertTrue(isinstance(result[0][2], List))
+        self.assertTrue(isinstance(result[0][2], list))
 
         result = commands.get_files('geojson', file='world/france.geojson')
         self.assertListEqual(
