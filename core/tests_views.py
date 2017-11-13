@@ -6,7 +6,6 @@ from django.core.management import call_command
 from django.utils.six import StringIO
 from django.test import TestCase
 
-from .models import Polygon
 from .views import range_data
 
 
@@ -28,6 +27,8 @@ class MapsViewTest(TestCase):
             'end_color': '331155',
         }
         result = range_data(map_obj)
+        # Convert to set.
+        result = {tuple(item) for item in result}
         self.assertEqual(len(result), 5)
         self.assertEqual(set(result), {
             (0.0, '5a3f75'),
@@ -47,6 +48,8 @@ class MapsViewTest(TestCase):
             'end_color': 'fcf8e3',
         }
         result = range_data(map_obj)
+        # Convert to set.
+        result = {tuple(item) for item in result}
         self.assertEqual(len(result), 4)
         self.assertEqual(set(result), {
             (-2.3, 'f4f6e0'),
@@ -95,7 +98,7 @@ class MapsViewTest(TestCase):
         call_command('import', file='world/ukraine.geojson')
         self.assertIn('Zhytomyr Oblast was created', out.getvalue())
 
-        # TODO: Continus working from this point.
+        # TODO: Continue working from this point.
 
     def test_views_about(self):
         resp = self.client.get(reverse('core:about'))
