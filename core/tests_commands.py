@@ -26,6 +26,21 @@ class MapsViewTest(TestCase):
         call_command('import', file='world/united States.geojson')
         self.assertIn('Puerto Rico was created', out.getvalue())
 
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/united States.geojson')
+        self.assertIn('Puerto Rico already exists', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/mongolia.geojson')
+        self.assertIn('Zavkhan was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/nepal.geojson')
+        self.assertIn('Eastern was created', out.getvalue())
+
     def test_commands_delete(self):
         out = StringIO()
         sys.stdout = out

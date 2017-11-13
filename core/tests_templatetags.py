@@ -17,3 +17,5 @@ class MapsViewTest(TestCase):
         request = resp.wsgi_request
         result = update_param(request, 'p', '1')
         self.assertEqual(result, '/?p=1')
+        result = update_param(request, 'p')
+        self.assertEqual(result, '/')
