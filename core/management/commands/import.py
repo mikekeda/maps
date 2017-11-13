@@ -11,18 +11,21 @@ def map_name(feature):
     """Fix title for some json files."""
     name = ''
     if 'name:en' in feature['properties']:
+        # for lovakia.geojson
         name = feature['properties']['name:en']
     elif 'name' in feature['properties']:
         name = feature['properties']['name']
     elif 'nom' in feature['properties']:
+        # for for united States folder (wisconsin.geojson)
         name = feature['properties']['nom']
     elif 'namelsad' in feature['properties']:
+        # for united States folder (new Jersey.geojson)
         name = feature['properties']['namelsad']
     elif 'provincia' in feature['properties']:
         # for argentina.geojson
         name = feature['properties']['provincia']
     elif 'DEPARTAMTO' in feature['properties']:
-        # for argentina.geojson
+        # for argentina folder
         name = feature['properties']['DEPARTAMTO']
     elif 'prefecture' in feature['properties']:
         # for mongolia.geojson

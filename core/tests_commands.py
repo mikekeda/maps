@@ -33,8 +33,33 @@ class MapsViewTest(TestCase):
 
         out = StringIO()
         sys.stdout = out
+        call_command('import', file='world/united States/new Jersey.geojson')
+        self.assertIn('Bergen County was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/united States/wisconsin.geojson')
+        self.assertIn('WI was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/slovakia.geojson')
+        self.assertIn('Region of Trnava was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
         call_command('import', file='world/mongolia.geojson')
         self.assertIn('Zavkhan was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/argentina.geojson')
+        self.assertIn('Santa Cruz was created', out.getvalue())
+
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/argentina/tucuman.geojson')
+        self.assertIn('LA COCHA was created', out.getvalue())
 
         out = StringIO()
         sys.stdout = out
