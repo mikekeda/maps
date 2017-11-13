@@ -57,7 +57,7 @@ class MapsViewTest(TestCase):
             fromlist=['']
         )
         result = commands.get_files('geojson', '')
-        self.assertTrue(isinstance(result, types.GeneratorType))
+        self.assertIsInstance(result, types.GeneratorType)
 
         result = commands.get_files('geojson', file='world/united States')
         self.assertEqual(len(result), 1)

@@ -3,40 +3,63 @@ import sys
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from django.http import Http404
 from django.utils.six import StringIO
 from django.test import TestCase
 
 from .models import Polygon
-from .views import range_data
+from .views import map_latest_entry, range_data
 
 
 class MapsViewTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        super(MapsViewTest, cls).setUpClass()
+
         # Create usual user.
         test_user = User.objects.create_user(username='testuser',
                                              password='12345')
         test_user.save()
 
+        # Import world.geojson
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world.geojson')
+
+        # Import ukraine.geojson
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/ukraine.geojson')
+
+        # Import argentina.geojson
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world/argentina.geojson')
+
     # Helpers functions.
+    def test_views_map_latest_entry(self):
+        with self.assertRaises(Http404):
+            map_latest_entry(None, 'not-exists')
+
     def test_views_range_data(self):
         map_obj = {
             'data_min': 0,
             'data_max': 10,
             'logarithmic_scale': False,
             'grades': 5,
-            'start_color': 'f5f5f5',
-            'end_color': '331155',
+            'start_color': '352555',
+            'end_color': '000000',
         }
         result = range_data(map_obj)
         # Convert to set.
         result = {tuple(item) for item in result}
         self.assertEqual(len(result), 5)
         self.assertEqual(set(result), {
-            (0.0, '5a3f75'),
-            (2.0, '816d95'),
-            (4.0, 'a89ab5'),
-            (6.0, 'cfc8d5'),
-            (8.0, 'f5f5f5')
+            (0.0, '0b0811'),
+            (2.0, '160f22'),
+            (4.0, '201733'),
+            (6.0, '2b1e44'),
+            (8.0, '352555')
         })
 
         # Logarithmic scale.
@@ -90,26 +113,36 @@ class MapsViewTest(TestCase):
     def test_views_polygon(self):
         # Doesn't exists yet.
         resp = self.client.get(reverse('core:polygons') + 'Ukraine')
-        self.assertEqual(resp.status_code, 404)
-        self.assertTemplateUsed(resp, '404.html')
-
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world.geojson')
-        self.assertIn('Zimbabwe was created', out.getvalue())
-
-        # Import ukraine.geojson
-        out = StringIO()
-        sys.stdout = out
-        call_command('import', file='world/ukraine.geojson')
-        self.assertIn('Zhytomyr Oblast was created', out.getvalue())
-
-        polygon = Polygon.objects.filter(title='Ukraine')
-        self.assertEqual(len(polygon), 1)
-
-        resp = self.client.get(reverse('core:polygons') + 'Ukraine')
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'map.html')
+
+    def test_views_polygon_second_lvl(self):
+        resp = self.client.get(
+            reverse('core:polygons') + 'Argentina/Buenos Aires'
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'map.html')
+
+    def test_views_polygon_export(self):
+        polygon = Polygon.objects.get(title='Ukraine')
+
+        resp = self.client.get(reverse('core:polygon_export',
+                                       kwargs={'pk': polygon.pk}))
+        self.assertRedirects(
+            resp,
+            '/login?next=/polygon/' + str(polygon.pk) + '/geojson'
+        )
+
+        self.client.login(username='testuser', password='12345')
+        resp = self.client.get(reverse('core:polygon_export',
+                                       kwargs={'pk': polygon.pk}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_views_map(self):
+        resp = self.client.get(reverse('core:map',
+                                       kwargs={'slug': 'not-exists'}))
+        self.assertEqual(resp.status_code, 404)
+        self.assertTemplateUsed(resp, '404.html')
 
     def test_views_about(self):
         resp = self.client.get(reverse('core:about'))
