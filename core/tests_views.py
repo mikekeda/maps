@@ -6,6 +6,7 @@ from django.core.management import call_command
 from django.utils.six import StringIO
 from django.test import TestCase
 
+from .models import Polygon
 from .views import range_data
 
 
@@ -92,13 +93,23 @@ class MapsViewTest(TestCase):
         self.assertEqual(resp.status_code, 404)
         self.assertTemplateUsed(resp, '404.html')
 
+        out = StringIO()
+        sys.stdout = out
+        call_command('import', file='world.geojson')
+        self.assertIn('Zimbabwe was created', out.getvalue())
+
         # Import ukraine.geojson
         out = StringIO()
         sys.stdout = out
         call_command('import', file='world/ukraine.geojson')
         self.assertIn('Zhytomyr Oblast was created', out.getvalue())
 
-        # TODO: Continue working from this point.
+        polygon = Polygon.objects.filter(title='Ukraine')
+        self.assertEqual(len(polygon), 1)
+
+        resp = self.client.get(reverse('core:polygons') + 'Ukraine')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'map.html')
 
     def test_views_about(self):
         resp = self.client.get(reverse('core:about'))
