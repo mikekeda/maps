@@ -6,9 +6,9 @@ from django.utils.six import StringIO
 from django.test import TestCase
 
 
-class MapsViewTest(TestCase):
+class MapsCommandsTest(TestCase):
     # Helpers functions.
-    def test_views_map_name(self):
+    def test_commands_map_name(self):
         commands = __import__(
             'core.management.commands.import',
             fromlist=['']
@@ -51,7 +51,7 @@ class MapsViewTest(TestCase):
         result = commands.map_name(feature)
         self.assertEqual(result, '')
 
-    def test_views_get_files(self):
+    def test_commands_get_files(self):
         commands = __import__(
             'core.management.commands.import',
             fromlist=['']
