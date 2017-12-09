@@ -48,7 +48,8 @@ class Polygon(MPTTModel):
         null=True,
         blank=True,
         related_name='children',
-        db_index=True
+        db_index=True,
+        on_delete=models.CASCADE
     )
 
     class MPTTMeta:
@@ -96,7 +97,8 @@ class Map(models.Model):
         blank=True,
         null=True,
         verbose_name=_('region'),
-        related_name='maps')
+        related_name='maps',
+        on_delete=models.CASCADE)
     categories = models.ManyToManyField(
         Category,
         blank=True,
@@ -135,7 +137,8 @@ class Map(models.Model):
         settings.AUTH_USER_MODEL,
         related_name='maps',
         verbose_name=_('user'),
-        help_text="Map owner.")
+        help_text="Map owner.",
+        on_delete=models.CASCADE)
     slug = models.SlugField(
         editable=False,
         verbose_name=_('slug'),
@@ -164,8 +167,14 @@ class Map(models.Model):
 
 class MapElement(models.Model):
     """MapElement model"""
-    map = models.ForeignKey(Map, related_name='elements')
-    polygon = models.ForeignKey(Polygon, related_name='elements')
+    map = models.ForeignKey(
+        Map,
+        related_name='elements',
+        on_delete=models.CASCADE)
+    polygon = models.ForeignKey(
+        Polygon,
+        related_name='elements',
+        on_delete=models.CASCADE)
     data = models.FloatField()
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -209,7 +218,8 @@ class Chart(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='charts',
-        help_text="Map owner.")
+        help_text="Map owner.",
+        on_delete=models.CASCADE)
     slug = models.SlugField(
         editable=False,
         help_text="The slug that will be user for urls.")

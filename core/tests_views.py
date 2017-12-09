@@ -1,11 +1,11 @@
 import sys
 
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.http import Http404
-from django.utils.six import StringIO
 from django.test import TestCase
+from django.urls import reverse
+from django.utils.six import StringIO
 
 from .models import Polygon
 from .views import map_latest_entry, range_data

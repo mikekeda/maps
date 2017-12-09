@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'mptt',
     'social_django',
     'django_jenkins',
-    'silk',
+    # 'silk',
 
     'core',
 ]
@@ -81,7 +81,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'silk.middleware.SilkyMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'maps.urls'

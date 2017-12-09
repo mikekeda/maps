@@ -1,6 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
 from django.utils.html import format_html
-from django.core.urlresolvers import reverse
 
 from leaflet.admin import LeafletGeoAdmin
 from easy_select2 import select2_modelform

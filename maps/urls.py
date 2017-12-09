@@ -1,7 +1,8 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
 from django.conf import settings
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path
 from django.utils.translation import ugettext_lazy as _
 
 from core.sitemaps import StaticViewSitemap, MapSitemap, ChartSitemap
@@ -13,13 +14,14 @@ sitemaps = {
 }
 
 urlpatterns = [
-    url(r'^', include('core.urls', namespace='core')),
-    url(r'^oauth/', include('social_django.urls', namespace='social')),
-    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap'),
-    url(r'^admin/', admin.site.urls),
+    path('', include('core.urls', namespace='core')),
+    path('oauth/', include('social_django.urls', namespace='social')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+    path('admin/', admin.site.urls),
 ]
-urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+# TODO: Uncomment this.
+# urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 admin.site.site_header = _('Maps administration')
 

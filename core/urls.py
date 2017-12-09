@@ -1,27 +1,27 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 
 from .views import (maps_view, map_view, polygons_view, add_map, get_polygons,
                     polygon_export, about, charts_view, chart_view, log_in,
                     log_out)
 # from .decorators import simple_cache_page
 
+app_name = "Maps"
 
 urlpatterns = [
-    url(r'^$', maps_view, name='maps'),
-    url(r'^charts$', charts_view, name='charts'),
-    # url(r'^map/(?P<slug>.+)$',
-    #    simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
-    url(r'^map/(?P<slug>.+)$', map_view, name='map'),
-    url(r'^chart/(?P<slug>.+)$', chart_view, name='chart'),
-    url(r'^world/', polygons_view, name='polygons'),
-    url(r'^polygon/(?P<pk>[0-9]+)/geojson', polygon_export,
-        name='polygon_export'),
-    url(r'^user/(?P<username>\w+)/maps$', maps_view, name='user_maps'),
-    url(r'^user/(?P<username>\w+)/charts$', charts_view, name='user_charts'),
-    url(r'^add/map$', add_map, name='add_map'),
-    url(r'^api/get-polygons/(?P<parent_id>.+)$',
-        get_polygons, name='get_polygons'),
-    url(r'^about$', about, name='about'),
-    url(r'^login$', log_in, name='login'),
-    url(r'^logout$', log_out, name='logout'),
+    path('', maps_view, name='maps'),
+    path('charts', charts_view, name='charts'),
+    # path('map/<str:slug>',
+    #      simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
+    path('map/<str:slug>', map_view, name='map'),
+    path('chart/<str:slug>', chart_view, name='chart'),
+    re_path('world/', polygons_view, name='polygons'),
+    path('polygon/<int:pk>/geojson', polygon_export, name='polygon_export'),
+    path('user/<str:username>/maps', maps_view, name='user_maps'),
+    path('user/<str:username>/charts', charts_view, name='user_charts'),
+    path('add/map', add_map, name='add_map'),
+    path('api/get-polygons/<str:parent_id>',
+         get_polygons, name='get_polygons'),
+    path('about', about, name='about'),
+    path('login', log_in, name='login'),
+    path('logout', log_out, name='logout'),
 ]
