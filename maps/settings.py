@@ -47,6 +47,11 @@ DEBUG = bool(get_env_var('DEBUG', True))
 
 ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', '*').split(',')
 
+INTERNAL_IPS = (
+    '0.0.0.0',
+    '127.0.0.1',
+)
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -71,6 +76,10 @@ INSTALLED_APPS = [
     'core',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -83,6 +92,9 @@ MIDDLEWARE = [
 
     # 'silk.middleware.SilkyMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'maps.urls'
 

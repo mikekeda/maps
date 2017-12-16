@@ -34,9 +34,7 @@ class Category(models.Model):
                                    using, update_fields)
 
     def __str__(self):
-        return u'%s' % (
-            self.title,
-        )
+        return self.title
 
 
 class Polygon(MPTTModel):
@@ -173,7 +171,7 @@ class MapElement(models.Model):
         on_delete=models.CASCADE)
     polygon = models.ForeignKey(
         Polygon,
-        related_name='elements',
+        related_name='polygon_elements',
         on_delete=models.CASCADE)
     data = models.FloatField()
 
@@ -184,11 +182,7 @@ class MapElement(models.Model):
                                      using, update_fields)
 
     def __str__(self):
-        return u'%s: %s: %s' % (
-            self.map.title,
-            self.polygon.title,
-            self.data,
-        )
+        return self.polygon.title
 
     def geojson(self):
         return '{{' \

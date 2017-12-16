@@ -30,6 +30,7 @@ class MapAdmin(admin.ModelAdmin):
 
 
 class MapElementAdmin(admin.ModelAdmin):
+    list_display = ('polygon', 'data')
     list_filter = ('map__title',)
     form = MapElementForm
 
