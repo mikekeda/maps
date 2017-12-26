@@ -42,7 +42,7 @@ class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
     @staticmethod
     def export(obj):
         return format_html(
-            '<a href="{}" class="button" style="float: right;">{}</a>',
+            '<a href="{}" class="button" style="float: right;"> {} </a>',
             reverse('core:polygon_export', args=[obj.pk]),
             'Export to geojson'
         )

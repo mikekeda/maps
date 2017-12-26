@@ -40,8 +40,8 @@ redis==2.10.6
 requests==2.18.4
 requests-oauthlib==0.8.0
 six==1.11.0
-social-auth-app-django==2.0.0
-social-auth-core==1.5.0
+social-auth-app-django==2.1.0
+social-auth-core==1.6.0
 sqlparse==0.2.4
 urllib3==1.22
 wrapt==1.10.11
