@@ -182,7 +182,11 @@ class MapElement(models.Model):
                                      using, update_fields)
 
     def __str__(self):
-        return self.polygon.title
+        # Check the cache first to avoid db call.
+        title = cache.get('polygon:{}:title'.format(self.polygon_id))
+        if not title:
+            title = self.polygon.title
+        return title
 
     def geojson(self):
         return '{{' \
