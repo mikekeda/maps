@@ -153,18 +153,18 @@ class MapsViewTest(TestCase):
                                        kwargs={'parent_id': polygon.pk}))
         self.assertEqual(resp.status_code, 200)
         resp = self.client.get(
-            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk})
-            + '?lvl=2'
+            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk}) +
+            '?lvl=2'
         )
         self.assertEqual(resp.status_code, 200)
         resp = self.client.get(
-            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk})
-            + '?lvl=5'
+            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk}) +
+            '?lvl=5'
         )
         self.assertEqual(resp.status_code, 200)
         resp = self.client.get(
-            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk})
-            + '?lvl=dummy'
+            reverse('core:get_polygons', kwargs={'parent_id': polygon.pk}) +
+            '?lvl=dummy'
         )
         self.assertEqual(resp.status_code, 200)
 
