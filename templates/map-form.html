@@ -66,6 +66,8 @@
       var i;
       var $elements = $('#map-elements');
       var $data_import = $('#data-import');
+      var $region = $('#region-select');
+      var $lvl = $('#id_map-level');
 
       function CSVToArray(strData, strDelimiter) {
         strDelimiter = (strDelimiter || ",");
@@ -147,9 +149,9 @@
 
       $('select').select2();
 
-      $('#region-select').change(function() {
-        if (!isNaN(this.value)) {
-          $.getJSON( "/api/get-polygons/" + this.value, function(data) {
+      function updateRegions() {
+        if (!isNaN($region.val())) {
+          $.getJSON( "/api/get-polygons/" + $region.val() + '?lvl=' + $lvl.val(), function(data) {
             items = [];
 
             $.each(JSON.parse(data.polygons), function(key, val) {
@@ -169,6 +171,8 @@
           $elements.html('');
           $data_import.hide();
         }
-      });
+      }
+      $region.change(updateRegions);
+      $lvl.change(updateRegions);
     </script>
 {% endblock script %}

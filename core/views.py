@@ -273,12 +273,24 @@ def add_map(request):
 
 @login_required
 def get_polygons(request, parent_id):
-    """Get array of polygons by region."""
+    """ Get array of polygons by region. """
+    # Get level of detail (default 1).
+    params = request.GET.copy()
+    lvl = params.get('lvl')
+    try:
+        lvl = int(lvl)
+    except (ValueError, TypeError):
+        lvl = 1
+
     if parent_id == '0':
-        polygons = Polygon.objects.filter(lft=1).order_by('title')
-    else:
-        polygons = get_object_or_404(Polygon, pk=parent_id)\
-            .get_children().order_by('title')
+        parent_id = None
+
+    # Get polygons.
+    filter_field = 'parent__' * (lvl - 1) + 'parent_id'
+    polygons = Polygon.objects.filter(
+        **{filter_field: parent_id}
+    ).order_by('title')
+
     polygons = json.dumps([
         {'pk': polygon.pk, 'title': polygon.title}
         for polygon in polygons
