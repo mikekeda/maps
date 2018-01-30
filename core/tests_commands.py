@@ -5,6 +5,8 @@ from django.core.management import call_command
 from django.utils.six import StringIO
 from django.test import TestCase
 
+from .models import Polygon
+
 
 class MapsCommandsTest(TestCase):
     # Helpers functions.
@@ -88,6 +90,10 @@ class MapsCommandsTest(TestCase):
         sys.stdout = out
         call_command('import', file='world/united States/new Jersey.geojson')
         self.assertIn('Bergen County was created', out.getvalue())
+
+        polygon_obj = Polygon.objects.filter(title="Texas").first()
+        assert polygon_obj
+        self.assertEqual(str(polygon_obj), "Texas")
 
     def test_commands_delete(self):
         out = StringIO()

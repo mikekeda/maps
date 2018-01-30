@@ -11,8 +11,18 @@ from mptt.models import MPTTModel, TreeForeignKey
 from .widgets import ColorWidget
 
 
+def get_unique_slug(cls, title):
+    """ Helper function to get unique slug. """
+    unique_slug = slug = slugify(title)
+    num = 1
+    while cls.objects.filter(slug=unique_slug).exists():
+        unique_slug = '{}-{}'.format(slug, num)
+        num += 1
+    return unique_slug
+
+
 class ColorField(models.CharField):
-    """Color field"""
+    """ Color field. """
 
     def formfield(self, **kwargs):
         kwargs['widget'] = ColorWidget
@@ -20,7 +30,7 @@ class ColorField(models.CharField):
 
 
 class Category(models.Model):
-    """Category model"""
+    """ Category model. """
     title = models.CharField(max_length=60, unique=True)
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(editable=False)
@@ -38,7 +48,7 @@ class Category(models.Model):
 
 
 class Polygon(MPTTModel):
-    """Polygon model"""
+    """ Polygon model. """
     title = models.CharField(max_length=256)
     geom = MultiPolygonField()
     parent = TreeForeignKey(
@@ -70,7 +80,7 @@ class Polygon(MPTTModel):
 
 
 class Map(models.Model):
-    """Map model"""
+    """ Map model. """
     title = models.CharField(
         max_length=256,
         verbose_name=_('title'),
@@ -142,18 +152,10 @@ class Map(models.Model):
         verbose_name=_('slug'),
         help_text="The slug that will be user for urls.")
 
-    def _get_unique_slug(self):
-        unique_slug = slug = slugify(self.title)
-        num = 1
-        while Map.objects.filter(slug=unique_slug).exists():
-            unique_slug = '{}-{}'.format(slug, num)
-            num += 1
-        return unique_slug
-
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if not self.pk:
-            self.slug = self._get_unique_slug()
+            self.slug = get_unique_slug(type(self), self.title)
 
         cache.delete_pattern('*:map_view:' + self.slug)
         cache.delete_pattern('*:maps')
@@ -164,7 +166,7 @@ class Map(models.Model):
 
 
 class MapElement(models.Model):
-    """MapElement model"""
+    """ MapElement model. """
     map = models.ForeignKey(
         Map,
         related_name='elements',
@@ -200,7 +202,7 @@ class MapElement(models.Model):
 
 
 class Chart(models.Model):
-    """Chart model"""
+    """ Chart model. """
     title = models.CharField(max_length=256)
     description = models.TextField(
         blank=True,
@@ -222,18 +224,10 @@ class Chart(models.Model):
         editable=False,
         help_text="The slug that will be user for urls.")
 
-    def _get_unique_slug(self):
-        unique_slug = slug = slugify(self.title)
-        num = 1
-        while Chart.objects.filter(slug=unique_slug).exists():
-            unique_slug = '{}-{}'.format(slug, num)
-            num += 1
-        return unique_slug
-
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if not self.pk:
-            self.slug = self._get_unique_slug()
+            self.slug = get_unique_slug(type(self), self.title)
         super(Chart, self).save(force_insert, force_update,
                                 using, update_fields)
 
