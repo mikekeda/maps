@@ -39,6 +39,12 @@ class MapAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user':
             kwargs['initial'] = request.user.id
+
+        if db_field.name == 'region':
+            # Optimize queryset to avoid loading unneeded fields.
+            kwargs['queryset'] = db_field.remote_field.model._default_manager\
+                .using(None).only('id', 'title')
+
         return db_field.formfield(**kwargs)
 
 
