@@ -30,7 +30,7 @@
                   {% else %}
                     {% url 'core:map' item.slug as item_url %}
                   {% endif %}
-                  <a href="{{ item_url }}"><h4 class="card-title">{{ item.title }}</h4></a>
+                  <a href="{{ item_url }}"><h2 class="h4 card-title">{{ item.title }}</h2></a>
                   <p class="card-text text-muted">{{ item.description }}</p>
                   {% for category in item.categories.all %}
                       <a href="?category={{ category.slug }}" class="card-link mr-2">{{ category.title }}</a>
@@ -38,7 +38,9 @@
                    {% if request.user.is_superuser %}
                       <a href="/admin/core/{{ item_name }}/{{ item.pk }}/change/" class="float-right hidden-print  ml-2">{% trans "Edit" %}</a>
                   {% endif %}
-                  <a href="?year={{ item.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ item.date_of_information|date:'Y' }}</a>
+                  {% if item.date_of_information %}
+                    <a href="?year={{ item.date_of_information|date:'Y' }}" class="card-link float-right ml-2">{{ item.date_of_information|date:'Y' }}</a>
+                  {% endif %}
                   {% if item.region %}
                     <a href="?region={{ item.region.pk }}" class="card-link float-right ml-2">{{ item.region.title }}</a>
                   {% elif item_name != 'chart' %}
