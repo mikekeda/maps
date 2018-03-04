@@ -15,7 +15,7 @@
                   {% csrf_token %}
                   {% for field in form %}
                       <div class="form-group row">
-                          <label class="col-sm-3 col-form-label">{{ field.label }}</label>
+                          <label class="col-sm-3 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
                           <div class="col-sm-9">
                               {% if field.name == 'start_color' or field.name == 'end_color' %}
                                 {{ field|add_class:"form-control jscolor" }}
@@ -31,7 +31,7 @@
                       </div>
                   {% endfor %}
                   <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">{% trans "Region" %}</label>
+                      <label class="col-sm-3 col-form-label" for="region-select">{% trans "Region" %}</label>
                       <div class="col-sm-9">
                           <select class="form-control" id="region-select">
                               <option value="_none">- {% trans "none" %} -</option>
@@ -42,7 +42,7 @@
                           </select>
                       </div>
                   </div>
-                  <label id="data-import" class="custom-file w-100 mb-3 data-import" style="display: none;">
+                  <label id="data-import" class="custom-file w-100 mb-3 data-import" for="data-import-file" style="display: none;">
                       <input type="file" id="data-import-file" class="custom-file-input">
                       <span class="custom-file-control"></span>
                   </label>
@@ -156,7 +156,7 @@
 
             $.each(JSON.parse(data.polygons), function(key, val) {
               items.push(`<div class="form-group row" data-country="` + val.title.toLowerCase() + `">
-              <label class="col-sm-3 col-form-label">` + val.title + `</label>
+              <label class="col-sm-3 col-form-label" for="id_` + val.pk + `">` + val.title + `</label>
                 <div class="col-sm-9">
                   <input type="number" step="any" name="polygon_` + val.pk + `" id="id_` + val.pk + `" class="form-control">
                 </div>
