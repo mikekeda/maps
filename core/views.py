@@ -23,6 +23,7 @@ def map_latest_entry(request, slug):
 
 
 def range_data(map_obj):
+    """ Helper function to range data """
     data_range = []
 
     if map_obj['data_min'] < float('Inf') and \
@@ -85,7 +86,7 @@ def range_data(map_obj):
 
 
 def maps_view(request, username=None):
-    """Maps."""
+    """ Maps. """
     if username:
         user = get_object_or_404(User, username=username)
         maps = Map.objects.filter(user=user)
@@ -123,7 +124,7 @@ def maps_view(request, username=None):
 
 # @condition(last_modified_func=map_latest_entry)
 def map_view(request, slug):
-    """Map."""
+    """ Map. """
     map_obj = get_object_or_404(
         Map.objects.prefetch_related(
             Prefetch(
@@ -157,7 +158,7 @@ def map_view(request, slug):
 
 
 def polygons_view(request):
-    """Polygons."""
+    """ Polygons. """
     args = request.path.split('/')[2:]
     level = len(args) - 1
     title = args[-1]
@@ -195,7 +196,7 @@ def polygons_view(request):
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
     for element in elements:
-        data = (element.rght - element.lft - 1) / 2
+        data = (element.rght - element.lft - 1) // 2
         if data < map_obj['data_min']:
             map_obj['data_min'] = data
         if data > map_obj['data_max']:
@@ -218,6 +219,7 @@ def polygons_view(request):
 
 @login_required
 def polygon_export(request, pk):
+    """ Polygon export callback. """
     element = get_object_or_404(Polygon, pk=pk)
     geojson_data = '{"type": "FeatureCollection", "features":['
     for child in element.get_children():
@@ -239,7 +241,7 @@ def polygon_export(request, pk):
 
 @login_required
 def add_map(request):
-    """Create Map."""
+    """ Create Map. """
     if request.method == 'POST':
         form = MapForm(data=request.POST, prefix='map')
         if form.is_valid():
@@ -300,13 +302,12 @@ def get_polygons(request, parent_id):
 
 
 def about(request):
-    """About page."""
-
+    """ About page. """
     return render(request, 'about.html')
 
 
 def charts_view(request, username=None):
-    """Charts."""
+    """ Charts. """
     if username:
         user = get_object_or_404(User, username=username)
         charts = Chart.objects.filter(user=user)
@@ -334,7 +335,7 @@ def charts_view(request, username=None):
 
 
 def chart_view(request, slug):
-    """Chart page."""
+    """ Chart page. """
     chart_obj = get_object_or_404(
         Chart.objects.prefetch_related(
             Prefetch('maps', queryset=Map.objects.prefetch_related(
@@ -379,6 +380,7 @@ def chart_view(request, slug):
 
 
 def log_in(request):
+    """ User login page. """
     form = AuthenticationForm()
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -391,5 +393,6 @@ def log_in(request):
 
 @login_required
 def log_out(request):
+    """ User logout callback. """
     logout(request)
     return redirect(reverse('core:login'))

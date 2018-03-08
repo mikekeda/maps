@@ -1,7 +1,8 @@
 Maps
 ======================
 
-This is site where you can build statistic interactive webmaps.
+Site where you can build statistic interactive webmaps.
+Link to the site - https://maps.mkeda.me
 
 Installation
 ------------
@@ -29,16 +30,10 @@ Installation
     # Import Polygons from geojson files
     python manage.py import
 
-
-
-
 Running
 -------
     # Locally
     python manage.py runserver
-
-
-
 
 Upgrade python packages
 -------
