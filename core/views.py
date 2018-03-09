@@ -11,15 +11,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
-# from django.views.decorators.http import condition
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Map, MapElement, Polygon, Chart
 from .forms import MapForm
-
-
-def map_latest_entry(request, slug):
-    return get_object_or_404(Map, slug=slug).changed
 
 
 def range_data(map_obj):
@@ -122,7 +117,6 @@ def maps_view(request, username=None):
     ))
 
 
-# @condition(last_modified_func=map_latest_entry)
 def map_view(request, slug):
     """ Map. """
     map_obj = get_object_or_404(

@@ -2,13 +2,12 @@ import sys
 
 from django.contrib.auth.models import User
 from django.core.management import call_command
-from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.six import StringIO
 
 from .models import Polygon
-from .views import map_latest_entry, range_data
+from .views import range_data
 
 
 class MapsViewTest(TestCase):
@@ -35,11 +34,6 @@ class MapsViewTest(TestCase):
         out = StringIO()
         sys.stdout = out
         call_command('import', file='world/argentina.geojson')
-
-    # Helpers functions.
-    def test_views_map_latest_entry(self):
-        with self.assertRaises(Http404):
-            map_latest_entry(None, 'not-exists')
 
     def test_views_range_data(self):
         map_obj = {
