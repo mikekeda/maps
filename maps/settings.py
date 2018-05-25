@@ -78,8 +78,6 @@ INSTALLED_APPS = [
 
 if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
-else:
-    INSTALLED_APPS += ['opbeat.contrib.django']
 
 
 MIDDLEWARE = [
@@ -97,9 +95,6 @@ MIDDLEWARE = [
 
 if DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
-else:
-    MIDDLEWARE = ['opbeat.contrib.django.middleware.OpbeatAPMMiddleware'] + \
-                 MIDDLEWARE
 
 ROOT_URLCONF = 'maps.urls'
 
@@ -229,9 +224,3 @@ SILKY_AUTHORISATION = True  # User must have permissions
 # SILKY_PYTHON_PROFILER = True
 # SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_INTERCEPT_PERCENT = 100
-
-OPBEAT = {
-    'ORGANIZATION_ID': get_env_var('OPBEAT_ORGANIZATION_ID'),
-    'APP_ID': get_env_var('OPBEAT_APP_ID'),
-    'SECRET_TOKEN': get_env_var('OPBEAT_SECRET_TOKEN'),
-}
