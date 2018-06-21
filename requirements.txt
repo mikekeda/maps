@@ -18,7 +18,7 @@ django-silk==3.0.0
 django-widget-tweaks==1.4.2
 gprof2dot==2017.9.19
 gunicorn==19.8.1
-idna==2.6
+idna==2.7
 isort==4.3.4
 Jinja2==2.10
 jsonfield==2.0.2
@@ -27,8 +27,8 @@ MarkupSafe==1.0
 mccabe==0.6.1
 oauthlib==2.1.0
 pep8==1.7.1
-psycopg2==2.7.4
-psycopg2-binary==2.7.4
+psycopg2==2.7.5
+psycopg2-binary==2.7.5
 pycodestyle==2.4.0
 pyflakes==2.0.0
 Pygments==2.2.0
@@ -40,7 +40,7 @@ python-dateutil==2.7.3
 python3-openid==3.1.0
 pytz==2018.4
 redis==2.10.6
-requests==2.18.4
+requests==2.19.1
 requests-oauthlib==1.0.0
 six==1.11.0
 social-auth-app-django==2.1.0

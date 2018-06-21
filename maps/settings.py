@@ -146,6 +146,8 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+CSRF_COOKIE_SECURE = not DEBUG  # True for prod
+SESSION_COOKIE_SECURE = not DEBUG  # True for prod
 
 
 # Password validation
