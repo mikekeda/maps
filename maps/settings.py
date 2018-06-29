@@ -48,9 +48,12 @@ DEBUG = bool(get_env_var('DEBUG', True))
 ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', '*').split(',')
 
 INTERNAL_IPS = (
-    '0.0.0.0',
     '127.0.0.1',
 )
+
+ADMINS = [
+    ('Mike', 'mriynuk@gmail.com')
+]
 
 
 # Application definition
