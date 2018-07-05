@@ -92,9 +92,9 @@ def maps_view(request, username=None):
     params.pop('p', None)
     if 'category' in params:
         maps = maps.filter(categories__slug=params['category'])
-    if 'year' in params:
+    if 'year' in params and params['year'].isdigit:
         maps = maps.filter(date_of_information__year=params['year'])
-    if 'region' in params:
+    if 'region' in params and params['region'].isdigit:
         region = None if params['region'] == '0' else params['region']
         maps = maps.filter(region=region)
 
