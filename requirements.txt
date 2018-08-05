@@ -4,15 +4,15 @@ certifi==2018.4.16
 chardet==3.0.4
 coverage==4.5.1
 defusedxml==0.5.0
-Django==2.0.7
+Django==2.1
 django-appconf==1.0.2
 django-debug-toolbar==1.9.1
-django-easy-select2==1.5.2
+django-easy-select2==1.5.3
 django-geojson==2.11.0
 django-jenkins==0.110.0
 django-js-asset==1.1.0
 django-leaflet==0.24.0
-django-mptt==0.9.0
+django-mptt==0.9.1
 django-redis==4.9.0
 django-silk==3.0.1
 django-widget-tweaks==1.4.2
@@ -35,7 +35,7 @@ Pygments==2.2.0
 PyJWT==1.6.4
 pylint==1.9.2
 pylint-django==0.11.1
-pylint-plugin-utils==0.3
+pylint-plugin-utils==0.4
 python-dateutil==2.7.3
 python3-openid==3.1.0
 pytz==2018.5
