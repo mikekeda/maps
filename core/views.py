@@ -20,6 +20,7 @@ from .forms import MapForm
 def range_data(map_obj):
     """ Helper function to range data """
     data_range = []
+    addition = 0
 
     if map_obj['data_min'] < float('Inf') and \
             map_obj['data_max'] > -float('Inf'):

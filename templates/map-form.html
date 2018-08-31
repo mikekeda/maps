@@ -80,7 +80,7 @@
           "gi"
           );
         var arrData = [[]];
-        var arrMatches = null;
+        var arrMatches;
         while (arrMatches = objPattern.exec(strData)) {
           var strMatchedDelimiter = arrMatches[1];
           var strMatchedValue;
@@ -115,7 +115,7 @@
       function onReaderLoad(event) {
         parsed = [];
         lines = event.target.result.split('\n');
-        if (event.target.extension == 'txt') {
+        if (event.target.extension === 'txt') {
           for (i = 0; i < lines.length; i++) {
             country = lines[i].substring(7, 58).trim();
             if (country) {
@@ -126,7 +126,7 @@
             }
           }
         }
-        else if (event.target.extension == 'csv') {
+        else if (event.target.extension === 'csv') {
           for (i = 0; i < lines.length; i++) {
               if (lines[i].length) {
                 data = CSVToArray(lines[i])[0];

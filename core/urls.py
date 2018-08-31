@@ -3,15 +3,12 @@ from django.urls import path, re_path
 from .views import (maps_view, map_view, polygons_view, add_map, get_polygons,
                     polygon_export, about, charts_view, chart_view, log_in,
                     log_out)
-# from .decorators import simple_cache_page
 
 app_name = "Maps"
 
 urlpatterns = [
     path('', maps_view, name='maps'),
     path('charts', charts_view, name='charts'),
-    # path('map/<str:slug>',
-    #      simple_cache_page(60 * 60 * 24, True)(map_view), name='map'),
     path('map/<str:slug>', map_view, name='map'),
     path('chart/<str:slug>', chart_view, name='chart'),
     re_path('world/', polygons_view, name='polygons'),
