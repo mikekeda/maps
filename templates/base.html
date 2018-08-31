@@ -72,9 +72,14 @@
             <a class="nav-link text-muted ml-2{% if request.get_full_path == user_charts_url %} active{% endif %}" href="{{ user_charts_url }}">{% trans "My charts" %}</a>
           </div>
         </li>
-        <li class="nav-item"><a href="{% url 'core:logout' %}" class="nav-link">{% trans "Logout" %}</a></li>
+        <li class="nav-item">
+          <a href="{% url 'core:logout' %}" class="nav-link">{% trans "Logout" %}</a>
+        </li>
         {% else %}
-          <li class="nav-item"><a href="{% url 'core:login' %}" class="nav-link">{% trans "Login" %}</a></li>
+          <li class="nav-item">
+            {% url 'core:login' as login_url %}
+             <a href="{{ login_url }}" class="nav-link {% if request.get_full_path == login_url %}active{% endif %}">{% trans "Login" %}</a>
+          </li>
         {% endif %}
       </ul>
     </div>
