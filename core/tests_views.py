@@ -13,7 +13,7 @@ from .views import range_data
 class MapsViewTest(TestCase):
     @classmethod
     def setUpClass(cls):
-        super(MapsViewTest, cls).setUpClass()
+        super().setUpClass()
 
         # Create usual user.
         test_user = User.objects.create_user(username='testuser',

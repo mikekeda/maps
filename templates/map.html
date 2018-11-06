@@ -31,7 +31,6 @@
     <script type="text/javascript">
         var geojson_data = {{ geojson_data|safe }};
         var data_range = {{ data_range|safe }};
-        var country;
         var data;
         var unsorted_data;
         var names;
@@ -136,7 +135,6 @@
 
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend hidden-xs-down');
-            var labels = [];
 
             // Loop through our density intervals and generate a label with a colored square for each interval.
             for (i = 0; i < data_range.length; i++) {
@@ -165,7 +163,7 @@
         for (i in geojson_data.features) {
           unsorted_data[geojson_data.features[i].properties.name] = geojson_data.features[i].properties.density;
         }
-        names = Object.keys(unsorted_data)
+        names = Object.keys(unsorted_data);
         names.sort();
         data = [];
         for (i = 0; i < names.length; i++) {

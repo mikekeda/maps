@@ -26,7 +26,7 @@ class ColorField(models.CharField):
 
     def formfield(self, **kwargs):
         kwargs['widget'] = ColorWidget
-        return super(ColorField, self).formfield(**kwargs)
+        return super().formfield(**kwargs)
 
 
 class Category(models.Model):
@@ -40,8 +40,7 @@ class Category(models.Model):
         if not self.pk:
             self.slug = slugify(self.title)
 
-        super(Category, self).save(force_insert, force_update,
-                                   using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title
@@ -159,7 +158,7 @@ class Map(models.Model):
 
         cache.delete_pattern('*:map_view:' + self.slug)
         cache.delete_pattern('*:maps')
-        super(Map, self).save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title
@@ -180,8 +179,7 @@ class MapElement(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         cache.delete_pattern('*:map_view:' + self.map.slug)
-        super(MapElement, self).save(force_insert, force_update,
-                                     using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         # Check the cache first to avoid db call.
@@ -228,8 +226,7 @@ class Chart(models.Model):
              update_fields=None):
         if not self.pk:
             self.slug = get_unique_slug(type(self), self.title)
-        super(Chart, self).save(force_insert, force_update,
-                                using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return self.title
