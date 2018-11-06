@@ -224,7 +224,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = '/home/voron/sites/cdn/maps'
 
-STATIC_URL = '/static/' if DEBUG else 'https://cdn.mkeda.me/maps/'
+STATIC_URL = 'https://storage.googleapis.com/cdn.mkeda.me/maps/'
+if DEBUG:
+    STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     ("", os.path.join(BASE_DIR, "static")),
