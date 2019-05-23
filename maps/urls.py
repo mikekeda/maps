@@ -21,8 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
-
 admin.site.site_header = _('Maps administration')
 
 if settings.DEBUG:

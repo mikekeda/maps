@@ -43,7 +43,7 @@ SECRET_KEY = get_env_var(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(get_env_var('DEBUG', True))
+DEBUG = bool(get_env_var('DEBUG', 'True'))
 
 ALLOWED_HOSTS = get_env_var('ALLOWED_HOSTS', '*').split(',')
 
@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     'mptt',
     'social_django',
     'django_jenkins',
-    'silk',
 
     'core',
 ]
@@ -92,8 +91,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'silk.middleware.SilkyMiddleware',
 ]
 
 if DEBUG:
@@ -245,9 +242,3 @@ JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',
 PROJECT_APPS = ['core', 'maps']
 
 PYLINT_LOAD_PLUGIN = ['pylint_django']
-
-SILKY_AUTHENTICATION = True  # User must login
-SILKY_AUTHORISATION = True  # User must have permissions
-# SILKY_PYTHON_PROFILER = True
-# SILKY_PYTHON_PROFILER_BINARY = True
-SILKY_INTERCEPT_PERCENT = 100
