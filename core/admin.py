@@ -7,7 +7,7 @@ from leaflet.admin import LeafletGeoAdmin
 from easy_select2 import select2_modelform
 from mptt.admin import MPTTModelAdmin
 
-from .models import Map, Polygon, MapElement, Category, Chart
+from core.models import Map, Polygon, MapElement, Category, Chart
 
 MapElementForm = select2_modelform(MapElement)
 MapForm = select2_modelform(Map)

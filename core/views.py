@@ -13,8 +13,8 @@ from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Map, MapElement, Polygon, Chart
-from .forms import MapForm
+from core.models import Map, MapElement, Polygon, Chart
+from core.forms import MapForm
 
 
 def range_data(map_obj):

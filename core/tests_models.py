@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .models import get_unique_slug, Category
+from core.models import get_unique_slug, Category
 
 
 class MapsModelsTest(TestCase):

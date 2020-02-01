@@ -2,10 +2,10 @@ import sys
 import types
 
 from django.core.management import call_command
-from django.utils.six import StringIO
 from django.test import TestCase
+from io import StringIO
 
-from .models import Polygon
+from core.models import Polygon
 
 
 class MapsCommandsTest(TestCase):

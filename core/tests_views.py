@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.six import StringIO
+from io import StringIO
 
-from .models import Polygon
-from .views import range_data
+from core.models import Polygon
+from core.views import range_data
 
 
 class MapsViewTest(TestCase):

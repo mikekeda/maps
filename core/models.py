@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
-from .widgets import ColorWidget
+from core.widgets import ColorWidget
 
 
 def get_unique_slug(cls, title):

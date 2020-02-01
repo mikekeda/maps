@@ -1,7 +1,7 @@
 from django.contrib import sitemaps
 from django.urls import reverse
 
-from .models import Map, Chart
+from core.models import Map, Chart
 
 
 class MapSitemap(sitemaps.Sitemap):

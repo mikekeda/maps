@@ -1,8 +1,8 @@
 from django.urls import path, re_path
 
-from .views import (maps_view, map_view, polygons_view, add_map, get_polygons,
-                    polygon_export, about, charts_view, chart_view, log_in,
-                    log_out)
+from core.views import (maps_view, map_view, polygons_view, add_map,
+                        get_polygons, polygon_export, about,
+                        charts_view, chart_view, log_in, log_out)
 
 app_name = "Maps"
 
