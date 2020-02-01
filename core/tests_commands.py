@@ -1,9 +1,9 @@
+from io import StringIO
 import sys
 import types
 
 from django.core.management import call_command
 from django.test import TestCase
-from io import StringIO
 
 from core.models import Polygon
 
