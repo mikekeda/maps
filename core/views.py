@@ -430,11 +430,11 @@ def covid_19_view(request, key: str = 'cases'):
     countries = Polygon.objects.filter(level=0)
 
     map_obj = {
-        'grades': 10,
+        'grades': 8,
         'end_color': 'F1DDF5',
         'start_color': 'ED1C24',
         'opacity': '0.7',
-        'unit': 'polygons',
+        'unit': key.replace('_', ' '),
         'logarithmic_scale': True,
         'data_min': float('Inf'),
         'data_max': -float('Inf'),
