@@ -425,7 +425,7 @@ def covid_19_view(request, key: str = 'cases'):
         }
 
         cache.set('covid_19_data', stats, 900)  # 15m
-        cache.set('covid_19_last_modified', res['statistic_taken_at'])
+        cache.set('covid_19_last_modified', res['statistic_taken_at'], None)
 
     countries = Polygon.objects.filter(level=0)
 
