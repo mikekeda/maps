@@ -41,3 +41,21 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
     def location(self, obj):
         return reverse(obj)
+
+
+class CovidViewSitemap(sitemaps.Sitemap):
+    priority = 0.5
+    changefreq = 'hourly'
+
+    def items(self):
+        return (
+            ('core:covid_key', 'cases'),
+            ('core:covid_key', 'deaths'),
+            ('core:covid_key', 'total_recovered'),
+            ('core:covid_key', 'new_deaths'),
+            ('core:covid_key', 'new_cases'),
+            ('core:covid_key', 'serious_critical'),
+        )
+
+    def location(self, obj):
+        return reverse(obj[0], kwargs={'key': obj[1]})

@@ -29,26 +29,26 @@
     <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
     <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=596324fed14c220014c25d99&product=sticky-share-buttons"></script>
     <script type="text/javascript">
-        var geojson_data = {{ geojson_data|safe }};
-        var data_range = {{ data_range|safe }};
-        var data;
-        var unsorted_data;
-        var names;
-        var csv_data;
-        var i;
-        var mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
-        var map = L.map('map');
-        var info = L.control();
-        var legend = L.control({ position: 'bottomright' });
+        let geojson_data = {{ geojson_data|safe }};
+        let data_range = {{ data_range|safe }};
+        let data;
+        let unsorted_data;
+        let names;
+        let csv_data;
+        let i;
+        let mapboxAccessToken = 'pk.eyJ1IjoibWtlZGEiLCJhIjoiY2oxeXV0azNpMDAwcTMzdXIxeTVxd29naCJ9.Wd5NP7lDL2j9haPE_OIuLg';
+        let map = L.map('map');
+        let info = L.control();
+        let legend = L.control({ position: 'bottomright' });
 
         function download(data, filename, type) {
-          var file = new Blob([data], {type: type});
+          let file = new Blob([data], {type: type});
           if (window.navigator.msSaveOrOpenBlob) {// IE10+
               window.navigator.msSaveOrOpenBlob(file, filename);
           }
           else { // Others
-            var a = document.createElement("a");
-            var url = URL.createObjectURL(file);
+            let a = document.createElement("a");
+            let url = URL.createObjectURL(file);
 
             a.href = url;
             a.download = filename;
@@ -82,7 +82,7 @@
         }
 
         function highlightFeature(e) {
-            var layer = e.target;
+            let layer = e.target;
 
             layer.setStyle({
                 weight: 2,
@@ -134,7 +134,7 @@
         info.addTo(map);
 
         legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend hidden-xs-down');
+            let div = L.DomUtil.create('div', 'info legend hidden-xs-down');
 
             // Loop through our density intervals and generate a label with a colored square for each interval.
             for (i = 0; i < data_range.length; i++) {

@@ -2,6 +2,9 @@ import math
 import operator
 import json
 
+import requests
+
+from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Prefetch, F
 from django.contrib.auth import login, logout
@@ -9,9 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+
+from maps.settings import get_env_var
 
 from core.models import Map, MapElement, Polygon, Chart
 from core.forms import MapForm
@@ -192,10 +197,8 @@ def polygons_view(request):
     geojson_data = '{"type": "FeatureCollection", "features":['
     for element in elements:
         data = (element.rght - element.lft - 1) // 2
-        if data < map_obj['data_min']:
-            map_obj['data_min'] = data
-        if data > map_obj['data_max']:
-            map_obj['data_max'] = data
+        map_obj['data_min'] = min([data, map_obj['data_min']])
+        map_obj['data_max'] = max([data, map_obj['data_max']])
 
         path = request.path
         if path[-1] != '/':
@@ -371,6 +374,92 @@ def chart_view(request, slug):
         titles=[title[1] for title in titles],
         data=data,
         data_min=data_min,
+    ))
+
+
+def covid_19_view(request, key: str = 'cases'):
+    """ Covid 19 map. """
+
+    if key not in ("cases", "deaths", "total_recovered", "new_deaths",
+                   "new_cases", "serious_critical"):
+        raise Http404
+
+    total = 0
+    stats = cache.get('covid_19_data')  # get from cache
+    if not stats:
+        res = requests.get(
+            "https://coronavirus-monitor.p.rapidapi.com"
+            "/coronavirus/cases_by_country.php",
+            headers={
+                "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
+                "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
+            }
+        )
+        if res.status_code != 200:
+            return HttpResponse("SERVICE TEMPORARILY UNAVAILABLE", status=503)
+
+        res = res.json()
+
+        remap = {
+            "Czechia": "Czech Republic",
+            "North Macedonia": "Macedonia",
+            "S. Korea": "South Korea",
+            "UAE": "United Arab Emirates",
+            "UK": "United Kingdom",
+            "USA": "United States",
+        }
+
+        stats = {
+            'countries_stat': {
+                remap.get(v['country_name'], v['country_name']): v
+                for v in res['countries_stat']
+            },
+            'statistic_taken_at': res['statistic_taken_at'],
+        }
+
+        cache.set('covid_19_data', stats, 900)  # 15m
+
+    countries = Polygon.objects.filter(level=0)
+
+    map_obj = {
+        'grades': 10,
+        'end_color': 'F1DDF5',
+        'start_color': 'ED1C24',
+        'opacity': '0.7',
+        'unit': 'polygons',
+        'logarithmic_scale': True,
+        'data_min': float('Inf'),
+        'data_max': -float('Inf'),
+        'description': "Covid 19 interactive map, updates every 15m"
+    }
+
+    # Get geojson data.
+    geojson_data = '{"type": "FeatureCollection", "features":['
+    for country in countries:
+        if country.title not in stats['countries_stat']:
+            continue
+
+        data = int(stats['countries_stat'][country.title][
+                       key].replace(',', ''))
+        total += data
+        map_obj['data_min'] = min([data, map_obj['data_min']])
+        map_obj['data_max'] = max([data, map_obj['data_max']])
+
+        path = request.path
+        if path[-1] != '/':
+            path += '/'
+        path += country.title
+
+        geojson_data += country.geojson(data, path)
+    geojson_data += ']}'
+
+    map_obj['title'] = f"Covid 19 ({total} {key.replace('_', ' ')}, " \
+                       f"{stats['statistic_taken_at'][:10]})"
+
+    return render(request, 'map.html', dict(
+        map=map_obj,
+        geojson_data=geojson_data,
+        data_range=range_data(map_obj)
     ))
 
 

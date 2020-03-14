@@ -5,12 +5,14 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 from django.utils.translation import ugettext_lazy as _
 
-from core.sitemaps import StaticViewSitemap, MapSitemap, ChartSitemap
+from core.sitemaps import (StaticViewSitemap, MapSitemap, ChartSitemap,
+                           CovidViewSitemap)
 
 sitemaps = {
     'maps': MapSitemap,
     'charts': ChartSitemap,
     'static': StaticViewSitemap,
+    'covid': CovidViewSitemap,
 }
 
 urlpatterns = [
