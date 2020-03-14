@@ -378,7 +378,7 @@ def chart_view(request, slug):
 
 
 def covid_19_view(request, key: str = 'cases'):
-    """ Covid 19 map. """
+    """ COVID-19 map. """
 
     if key not in ("cases", "deaths", "total_recovered", "new_deaths",
                    "new_cases", "serious_critical"):
@@ -430,7 +430,7 @@ def covid_19_view(request, key: str = 'cases'):
         'logarithmic_scale': True,
         'data_min': float('Inf'),
         'data_max': -float('Inf'),
-        'description': "Covid 19 interactive map, updates every 15m"
+        'description': "COVID-19 (coronavirus) interactive map, updates every 15m"
     }
 
     # Get geojson data.
@@ -453,7 +453,7 @@ def covid_19_view(request, key: str = 'cases'):
         geojson_data += country.geojson(data, path)
     geojson_data += ']}'
 
-    map_obj['title'] = f"Covid 19 ({total} {key.replace('_', ' ')}, " \
+    map_obj['title'] = f"COVID-19 ({total} {key.replace('_', ' ')}, " \
                        f"{stats['statistic_taken_at'][:10]})"
 
     return render(request, 'map.html', dict(
