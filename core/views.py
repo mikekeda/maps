@@ -13,7 +13,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse, HttpResponse, Http404
+from django.views.decorators.http import last_modified
 from django.urls import reverse
+from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
 
 from maps.settings import get_env_var
@@ -377,6 +379,14 @@ def chart_view(request, slug):
     ))
 
 
+def covid_19_data_last_modified(*_, **__):
+    """ Check when data was modified. """
+    modified = cache.get('covid_19_last_modified')
+    if modified:
+        return parse_datetime(modified)
+
+
+@last_modified(covid_19_data_last_modified)
 def covid_19_view(request, key: str = 'cases'):
     """ COVID-19 map. """
 
@@ -410,14 +420,12 @@ def covid_19_view(request, key: str = 'cases'):
         }
 
         stats = {
-            'countries_stat': {
-                remap.get(v['country_name'], v['country_name']): v
-                for v in res['countries_stat']
-            },
-            'statistic_taken_at': res['statistic_taken_at'],
+            remap.get(v['country_name'], v['country_name']): v
+            for v in res['countries_stat']
         }
 
         cache.set('covid_19_data', stats, 900)  # 15m
+        cache.set('covid_19_last_modified', res['statistic_taken_at'])
 
     countries = Polygon.objects.filter(level=0)
 
@@ -436,24 +444,18 @@ def covid_19_view(request, key: str = 'cases'):
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
     for country in countries:
-        if country.title not in stats['countries_stat']:
+        if country.title not in stats:
             continue
 
-        data = int(stats['countries_stat'][country.title][key].replace(',', ''))
+        data = int(stats[country.title][key].replace(',', ''))
         total += data
         map_obj['data_min'] = min([data, map_obj['data_min']])
         map_obj['data_max'] = max([data, map_obj['data_max']])
 
-        path = request.path
-        if path[-1] != '/':
-            path += '/'
-        path += country.title
-
-        geojson_data += country.geojson(data, path)
+        geojson_data += country.geojson(data)
     geojson_data += ']}'
 
-    map_obj['title'] = f"COVID-19 ({total} {key.replace('_', ' ')}, " \
-                       f"{stats['statistic_taken_at'][:10]})"
+    map_obj['title'] = f"COVID-19 ({total} {key.replace('_', ' ')}, {cache.get('covid_19_last_modified')[:10]})"
 
     return render(request, 'map.html', dict(
         map=map_obj,
