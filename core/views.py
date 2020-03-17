@@ -1,10 +1,6 @@
-import math
 import operator
 import json
 
-import requests
-
-from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Prefetch, F
 from django.contrib.auth import login, logout
@@ -12,80 +8,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse, HttpResponse, Http404
-from django.views.decorators.http import last_modified
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
-from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext_lazy as _
 
-from maps.settings import get_env_var
+from maps.utils import range_data
 
 from core.models import Map, MapElement, Polygon, Chart
 from core.forms import MapForm
-
-
-def range_data(map_obj):
-    """ Helper function to range data """
-    data_range = []
-    addition = 0
-
-    if map_obj['data_min'] < float('Inf') and \
-            map_obj['data_max'] > -float('Inf'):
-        red = {}
-        green = {}
-        blue = {}
-
-        # Get value step
-        if map_obj['logarithmic_scale']:
-            addition = 1 - map_obj['data_min']
-            step = math.log(map_obj['data_max'] + addition)
-            step -= math.log(map_obj['data_min'] + addition)
-            step /= map_obj['grades']
-        else:
-            step = (map_obj['data_max'] - map_obj['data_min'])\
-                   / map_obj['grades']
-
-        # Convert colors to int
-        red['start'] = int(map_obj['start_color'][:2], 16)
-        green['start'] = int(map_obj['start_color'][2:4], 16)
-        blue['start'] = int(map_obj['start_color'][4:], 16)
-
-        red['end'] = int(map_obj['end_color'][:2], 16)
-        green['end'] = int(map_obj['end_color'][2:4], 16)
-        blue['end'] = int(map_obj['end_color'][4:], 16)
-
-        # Get color steps
-        red['step'] = (red['end'] - red['start']) / map_obj['grades']
-        green['step'] = (green['end'] - green['start']) / map_obj['grades']
-        blue['step'] = (blue['end'] - blue['start']) / map_obj['grades']
-
-        for i in reversed(range(map_obj['grades'])):
-            # Get current colors
-            red['value'] = hex(red['start'] + int(red['step'] * i))[2:]
-            green['value'] = hex(green['start'] + int(green['step'] * i))[2:]
-            blue['value'] = hex(blue['start'] + int(blue['step'] * i))[2:]
-
-            # Fix current colors (we need 2 digits)
-            if len(red['value']) != 2:
-                red['value'] = '0' + red['value']
-            if len(green['value']) != 2:
-                green['value'] = '0' + green['value']
-            if len(blue['value']) != 2:
-                blue['value'] = '0' + blue['value']
-
-            if map_obj['logarithmic_scale']:
-                key = math.log(map_obj['data_max'] + addition)\
-                      - step * (i + 1)
-                key = math.pow(math.e, key)
-                key -= addition
-            else:
-                key = map_obj['data_max'] - step * (i + 1)
-            data_range.append([
-                key,
-                red['value'] + green['value'] + blue['value']
-            ])
-
-    return data_range
 
 
 def maps_view(request, username=None):
@@ -376,91 +306,6 @@ def chart_view(request, slug):
         titles=[title[1] for title in titles],
         data=data,
         data_min=data_min,
-    ))
-
-
-def covid_19_data_last_modified(*_, **__):
-    """ Check when data was modified. """
-    modified = cache.get('covid_19_last_modified')
-    if modified:
-        return parse_datetime(modified)
-
-
-@last_modified(covid_19_data_last_modified)
-def covid_19_view(request, key: str = 'cases'):
-    """ COVID-19 map. """
-
-    if key not in ("cases", "deaths", "total_recovered", "new_deaths",
-                   "new_cases", "serious_critical"):
-        raise Http404
-
-    total = 0
-    stats = cache.get('covid_19_data')  # get from cache
-    if not stats:
-        res = requests.get(
-            "https://coronavirus-monitor.p.rapidapi.com"
-            "/coronavirus/cases_by_country.php",
-            headers={
-                "x-rapidapi-host": "coronavirus-monitor.p.rapidapi.com",
-                "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
-            }
-        )
-        if res.status_code != 200:
-            return HttpResponse("SERVICE TEMPORARILY UNAVAILABLE", status=503)
-
-        res = res.json()
-
-        remap = {
-            "Czechia": "Czech Republic",
-            "North Macedonia": "Macedonia",
-            "S. Korea": "South Korea",
-            "UAE": "United Arab Emirates",
-            "UK": "United Kingdom",
-            "USA": "United States",
-        }
-
-        stats = {
-            remap.get(v['country_name'], v['country_name']): v
-            for v in res['countries_stat']
-        }
-
-        cache.set('covid_19_data', stats, 900)  # 15m
-        cache.set('covid_19_last_modified', res['statistic_taken_at'], None)
-
-    countries = Polygon.objects.filter(level=0)
-
-    map_obj = {
-        'grades': 8,
-        'end_color': 'F1DDF5',
-        'start_color': 'ED1C24',
-        'opacity': '0.7',
-        'unit': key.replace('_', ' '),
-        'logarithmic_scale': True,
-        'data_min': float('Inf'),
-        'data_max': -float('Inf'),
-        'description': "COVID-19 (coronavirus) interactive map, updates every 15m"
-    }
-
-    # Get geojson data.
-    geojson_data = '{"type": "FeatureCollection", "features":['
-    for country in countries:
-        if country.title not in stats:
-            continue
-
-        data = int(stats[country.title][key].replace(',', ''))
-        total += data
-        map_obj['data_min'] = min([data, map_obj['data_min']])
-        map_obj['data_max'] = max([data, map_obj['data_max']])
-
-        geojson_data += country.geojson(data)
-    geojson_data += ']}'
-
-    map_obj['title'] = f"COVID-19 ({total} {key.replace('_', ' ')}, {cache.get('covid_19_last_modified')[:10]})"
-
-    return render(request, 'map.html', dict(
-        map=map_obj,
-        geojson_data=geojson_data,
-        data_range=range_data(map_obj)
     ))
 
 

@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from core.sitemaps import (StaticViewSitemap, MapSitemap, ChartSitemap,
                            CovidViewSitemap)
 
+from covid.views import covid_19_view
+
 sitemaps = {
     'maps': MapSitemap,
     'charts': ChartSitemap,
@@ -17,6 +19,8 @@ sitemaps = {
 
 urlpatterns = [
     path('', include('core.urls', namespace='core')),
+    path('covid', covid_19_view, name='covid'),
+    path('covid/<str:key>', covid_19_view, name='covid_key'),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),

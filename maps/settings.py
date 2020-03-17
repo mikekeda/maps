@@ -89,8 +89,10 @@ INSTALLED_APPS = [
     'mptt',
     'social_django',
     'django_jenkins',
+    'djcelery',
 
     'core',
+    'covid',
 ]
 
 if DEBUG:
@@ -249,6 +251,14 @@ MEDIA_URL = '/media/'
 LOGIN_URL = '/login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# CELERY STUFF
+CELERY_BROKER_URL = 'redis://localhost:6379/20'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/9'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',
                  'django_jenkins.tasks.run_pep8',

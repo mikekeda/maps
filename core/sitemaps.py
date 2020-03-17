@@ -49,12 +49,12 @@ class CovidViewSitemap(sitemaps.Sitemap):
 
     def items(self):
         return (
-            ('core:covid_key', 'cases'),
-            ('core:covid_key', 'deaths'),
-            ('core:covid_key', 'total_recovered'),
-            ('core:covid_key', 'new_deaths'),
-            ('core:covid_key', 'new_cases'),
-            ('core:covid_key', 'serious_critical'),
+            ('covid_key', 'cases'),
+            ('covid_key', 'deaths'),
+            ('covid_key', 'total_recovered'),
+            ('covid_key', 'new_deaths'),
+            ('covid_key', 'new_cases'),
+            ('covid_key', 'serious_critical'),
         )
 
     def location(self, obj):

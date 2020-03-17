@@ -2,15 +2,12 @@ from django.urls import path, re_path
 
 from core.views import (maps_view, map_view, polygons_view, add_map,
                         get_polygons, polygon_export, about,
-                        charts_view, chart_view, log_in, log_out,
-                        covid_19_view)
+                        charts_view, chart_view, log_in, log_out)
 
 app_name = "Maps"
 
 urlpatterns = [
     path('', maps_view, name='maps'),
-    path('covid', covid_19_view, name='covid'),
-    path('covid/<str:key>', covid_19_view, name='covid_key'),
     path('charts', charts_view, name='charts'),
     path('map/<str:slug>', map_view, name='map'),
     path('chart/<str:slug>', chart_view, name='chart'),

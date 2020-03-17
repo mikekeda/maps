@@ -16,7 +16,7 @@ def get_unique_slug(cls, title):
     unique_slug = slug = slugify(title)
     num = 1
     while cls.objects.filter(slug=unique_slug).exists():
-        unique_slug = '{}-{}'.format(slug, num)
+        unique_slug = f'{slug}-{num}'
         num += 1
     return unique_slug
 
