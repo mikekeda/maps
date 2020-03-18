@@ -253,8 +253,8 @@ LOGIN_URL = '/login'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # CELERY STUFF
-CELERY_BROKER_URL = 'redis://localhost:6379/20'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/9'
+CELERY_BROKER_URL = 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

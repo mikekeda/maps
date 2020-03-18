@@ -35,3 +35,26 @@ def get_covid_data():
         cache.set('covid_19_last_modified', res['statistic_taken_at'], None)
 
         return stats
+
+
+def get_covid_country_data(country):
+    res = requests.get(
+        "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats",
+        headers={
+            "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
+            "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
+        },
+        params={"country": country}
+    )
+    if res.status_code == 200:
+        res = res.json()
+
+        stats = {
+            v['province']: v
+            for v in res['data']['covid19Stats']
+        }
+
+        cache.set(f'covid_19_{country}_data', stats, 900)  # 15m
+        cache.set(f'covid_19_{country}_last_modified', res['data']['lastChecked'], None)
+
+        return stats
