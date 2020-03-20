@@ -91,7 +91,9 @@ def covid_19_chart_view(request, key: str = 'cases'):
                 if value:
                     data_per_country[country][d.added.isoformat()[:10]] = value
 
-    return render(request, 'covid-chart.html', {'data': dict(data_per_country), 'key': key.replace('_', ' ')})
+    data_per_country = {k: data_per_country[k] for k in sorted(data_per_country.keys())}
+
+    return render(request, 'covid-chart.html', {'data': data_per_country, 'key': key.replace('_', ' ')})
 
 
 def covid_19_country_data_last_modified(*_, country, **__):

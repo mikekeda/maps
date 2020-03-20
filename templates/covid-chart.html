@@ -11,10 +11,16 @@
 {% block content %}
 <div class="chart-page container mt-9">
     <h1 class="display-5 text-center col-sm"><wbr>{% blocktrans %} COVID-19 {{ key }} chart {% endblocktrans %}</h1>
+    <select name="country-filter" id="country-filter">
+        <option value="">All</option>
+        {% for country in data %}
+            <option value="{{ country }}">{{ country }}</option>
+        {% endfor %}
+    </select>
     <div class="row">
         <div class="tab-content col-sm-12" id="charts-content">
             <div class="tab-pane fade show active" id="chart">
-                <canvas id="chart-canv" width="400" height="300"></canvas>
+                <canvas id="chart-canv" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
@@ -26,6 +32,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         let stats_wiki = {{ data|safe }};
         let ctx_stats_wiki = document.getElementById('chart-canv').getContext('2d');
+        let chartObj;
 
         function chart(ctx, data) {
             let country;
@@ -56,12 +63,19 @@
                 });
             }
 
-            Chart.Line(ctx, {
+            if (chartObj !== undefined) {
+                chartObj.destroy();
+            }
+            chartObj = new Chart(ctx, {
+                type: 'line',
                 data: lineChartData,
                 options: {
                     responsive: true,
                     hoverMode: 'index',
                     stacked: false,
+                    legend: {
+                        display: false
+                    },
                     scales: {
                         xAxes: [{
                             type: 'time',
@@ -89,7 +103,25 @@
             });
         }
 
-        chart(ctx_stats_wiki, stats_wiki);
+        $("#country-filter").change(function() {
+            let selected = $(this).val();
+
+            if (selected) {
+                chart(ctx_stats_wiki, [stats_wiki[selected]]);
+            }
+            else {
+                chart(ctx_stats_wiki, stats_wiki);
+            }
+            window.location.hash = selected;
+        });
+
+        if (window.location.hash) {
+            console.log(window.location.hash);
+            $("#country-filter").val(window.location.hash.substring(1)).trigger('change');
+        }
+        else {
+            chart(ctx_stats_wiki, stats_wiki);
+        }
     });
 </script>
 {% endblock script %}
