@@ -86,9 +86,10 @@ def covid_19_chart_view(request, key: str = 'cases'):
     data_per_country = defaultdict(dict)
     for d in data:
         for country, v in d.data.items():
-            value = int(v[key].replace(',', ''))
-            if value:
-                data_per_country[country][d.added.isoformat()[:10]] = value
+            if key in v:
+                value = int(v[key].replace(',', ''))
+                if value:
+                    data_per_country[country][d.added.isoformat()[:10]] = value
 
     return render(request, 'covid-chart.html', {'data': dict(data_per_country), 'key': key.replace('_', ' ')})
 

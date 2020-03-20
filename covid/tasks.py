@@ -8,5 +8,5 @@ def daily_covid_data():
     """ Update youtube info for League and Team weekly. """
     data = get_covid_data()
 
-    category_obj = Data(slug="covid", data=data)
-    category_obj.save()
+    data_obj = Data(slug="covid", data=data)
+    data_obj.save()
