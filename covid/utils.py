@@ -1,7 +1,11 @@
+from datetime import datetime
 import requests
+
+from bs4 import BeautifulSoup
 
 from django.core.cache import cache
 
+from core.models import Polygon
 from maps.settings import get_env_var
 
 
@@ -38,23 +42,72 @@ def get_covid_data():
 
 
 def get_covid_country_data(country):
-    res = requests.get(
-        "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats",
-        headers={
-            "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
-            "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
-        },
-        params={"country": country}
-    )
-    if res.status_code == 200:
-        res = res.json()
+    stats = {}
 
-        stats = {
-            v['province']: v
-            for v in res['data']['covid19Stats']
+    if country == 'Ukraine':
+        mapping = {
+            'Чернівецька': 'Chernivtsi Oblast',
+            'Житомирська': 'Zhytomyr Oblast',
+            'Київська': 'Kiev Oblast',
+            'Донецька': 'Donetsk Oblast',
+            'Дніпропетровська': 'Dnipropetrovsk Oblast',
+            'Івано-Франківська': 'Ivano-Frankivsk Oblast',
+            'Львівська': 'Lviv Oblast',
+            'Тернопільська': 'Ternopil Oblast',
+            'Харківська': 'Kharkiv Oblast',
         }
 
+        country = Polygon.objects.filter(level=0, title='Ukraine').first()
+        provinces = Polygon.objects.filter(parent=country)
+        for province in provinces:
+            stats[province.title] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
+
+        url = "https://moz.gov.ua/article/news" \
+              "/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
+
+        res = requests.get(url)
+        if res.status_code == 200:
+            soup = BeautifulSoup(res.content, 'html.parser')
+            for li in soup.select('.medical__vacancy-desc ul:first-of-type > li'):
+                data = li.text.split()
+                province = data[0]
+                data = [int(node.strip('(').strip('-')) for node in data if node.strip('(').strip('-').isdigit()]
+                data = [data[0] if data else 0, data[1] if len(data) > 1 else 0, data[2] if len(data) > 2 else 0]
+
+                if province in mapping:
+                    stats[mapping[province]] = {
+                        'confirmed': data[0],
+                        'deaths': data[1],
+                        'recovered': data[2],
+                    }
+                elif province == 'м.':
+                    stats['Kiev Oblast'] = {
+                        'confirmed': stats['Kiev Oblast'].get('confirmed', 0) + data[0],
+                        'deaths': stats['Kiev Oblast'].get('deaths', 0) + data[1],
+                        'recovered': stats['Kiev Oblast'].get('recovered', 0) + data[2],
+                    }
+
+            cache.set(f'covid_19_{country}_last_modified', datetime.now().isoformat(), None)
+
+    else:
+        res = requests.get(
+            "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats",
+            headers={
+                "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
+                "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
+            },
+            params={"country": country}
+        )
+        if res.status_code == 200:
+            res = res.json()
+
+            stats = {
+                v['province']: v
+                for v in res['data']['covid19Stats']
+            }
+            cache.set(f'covid_19_{country}_last_modified', res['data']['lastChecked'], None)
+
+    if stats:
         cache.set(f'covid_19_{country}_data', stats, 900)  # 15m
-        cache.set(f'covid_19_{country}_last_modified', res['data']['lastChecked'], None)
 
         return stats
