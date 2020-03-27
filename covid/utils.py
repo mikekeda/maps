@@ -63,6 +63,8 @@ def get_covid_country_data(country):
             'Одеська': 'Odessa Oblast',
             'Херсонська': 'Kherson Oblast',
             'Черкаська': 'Cherkasy Oblast',
+            'Рівненська': 'Rivne Oblast',
+            'Закарпатська': 'Zakarpattia Oblast',
         }
 
         country = Polygon.objects.filter(level=0, title='Ukraine').first()
@@ -76,7 +78,7 @@ def get_covid_country_data(country):
         res = requests.get(url)
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for li in soup.select('.medical__vacancy-desc p'):
+            for li in soup.select('.medical__vacancy-desc  ul:first-of-type > li'):
                 data = li.text.split()
                 if not data:
                     continue
