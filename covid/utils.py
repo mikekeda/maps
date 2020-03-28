@@ -65,6 +65,11 @@ def get_covid_country_data(country):
             'Черкаська': 'Cherkasy Oblast',
             'Рівненська': 'Rivne Oblast',
             'Закарпатська': 'Zakarpattia Oblast',
+            'Миколаївська': 'Mykolaiv Oblast',
+            'Полтавська': 'Poltava Oblast',
+            'Сумська': 'Sumy Oblast',
+            'Хмельницька': 'Khmelnytskyi Oblast',
+            'Чернігівська': 'Chernihiv Oblast',
         }
 
         country = Polygon.objects.filter(level=0, title='Ukraine').first()
@@ -72,22 +77,22 @@ def get_covid_country_data(country):
         for province in provinces:
             stats[province.title] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
 
-        url = "https://moz.gov.ua/article/news" \
-              "/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
+        url = "https://phc.org.ua" \
+              "/kontrol-zakhvoryuvan/inshi-infekciyni-zakhvoryuvannya/koronavirusna-infekciya-covid-19"
 
         res = requests.get(url)
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for li in soup.select('.medical__vacancy-desc  ul:first-of-type > li'):
+            for li in soup.select('.full-news-content ul:first-of-type > li'):
                 data = li.text.split()
                 if not data:
                     continue
 
                 province = data[0]
                 data = [
-                    int(node.strip('(').strip('-').strip(';'))
+                    int(node.strip('(').strip('-').strip(';').strip('.'))
                     for node in data
-                    if node.strip('(').strip('-').strip(';').isdigit()
+                    if node.strip('(').strip('-').strip(';').strip('.').isdigit()
                 ]
                 data = [data[0] if data else 0, data[1] if len(data) > 1 else 0, data[2] if len(data) > 2 else 0]
 
@@ -131,7 +136,7 @@ def get_covid_country_data(country):
 
             cache.set(f'covid_19_{country}_last_modified', res['data']['lastChecked'], None)
 
-    if stats:
+    if any(stats[k]['confirmed'] for k in stats):
         cache.set(f'covid_19_{country}_data', stats, 900)  # 15m
 
         return stats
