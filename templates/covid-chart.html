@@ -11,7 +11,7 @@
 {% block content %}
 <div class="chart-page container mt-9">
     <h1 class="display-5 text-center col-sm"><wbr>{% blocktrans %} COVID-19 {{ key }} chart {% endblocktrans %}</h1>
-    <select name="country-filter" id="country-filter">
+    <select multiple name="country-filter" id="country-filter">
         <option value="">All</option>
         {% for country in data %}
             <option value="{{ country }}">{{ country }}</option>
@@ -33,6 +33,7 @@
         let stats_wiki = {{ data|safe }};
         let ctx_stats_wiki = document.getElementById('chart-canv').getContext('2d');
         let chartObj;
+        let $country_filter = $("#country-filter");
 
         function chart(ctx, data) {
             let country;
@@ -103,21 +104,20 @@
             });
         }
 
-        $("#country-filter").change(function() {
+        $country_filter.change(function() {
             let selected = $(this).val();
+            let selected_stats = stats_wiki;
 
-            if (selected) {
-                chart(ctx_stats_wiki, [stats_wiki[selected]]);
+            if (!selected.includes("")) {
+                selected_stats = [];
+                selected.forEach(country => selected_stats.push(stats_wiki[country]));
             }
-            else {
-                chart(ctx_stats_wiki, stats_wiki);
-            }
+            chart(ctx_stats_wiki, selected_stats);
             window.location.hash = selected;
         });
 
         if (window.location.hash) {
-            console.log(window.location.hash);
-            $("#country-filter").val(window.location.hash.substring(1)).trigger('change');
+            $country_filter.val(window.location.hash.substring(1)).trigger('change');
         }
         else {
             chart(ctx_stats_wiki, stats_wiki);
