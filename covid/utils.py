@@ -29,6 +29,9 @@ def get_covid_data():
             "UAE": "United Arab Emirates",
             "UK": "United Kingdom",
             "USA": "United States",
+            "DRC": "Democratic Republic of the Congo",
+            "CAR": "Central African Republic",
+            "Congo": "Republic of the Congo",
         }
 
         stats = {
@@ -70,6 +73,7 @@ def get_covid_country_data(country):
             'Сумська': 'Sumy Oblast',
             'Хмельницька': 'Khmelnytskyi Oblast',
             'Чернігівська': 'Chernihiv Oblast',
+            'Кіровоградська': 'Kirovohrad Oblast',
         }
 
         country = Polygon.objects.filter(level=0, title='Ukraine').first()
@@ -77,14 +81,20 @@ def get_covid_country_data(country):
         for province in provinces:
             stats[province.title] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
 
-        url = "https://phc.org.ua" \
-              "/kontrol-zakhvoryuvan/inshi-infekciyni-zakhvoryuvannya/koronavirusna-infekciya-covid-19"
+        url = "https://moz.gov.ua" \
+              "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
 
         res = requests.get(url)
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for li in soup.select('.full-news-content ul:first-of-type > li'):
-                data = li.text.split()
+            ul = []
+            for ul in soup.select('.medical__vacancy-desc > div > p'):
+                ul = ul.text.split('\n')
+                if len(ul) > 10:
+                    break
+
+            for li in ul:
+                data = li.split()
                 if not data:
                     continue
 
