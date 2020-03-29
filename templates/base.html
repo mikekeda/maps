@@ -59,6 +59,17 @@
             <a class="nav-link text-muted ml-2" href="{% url 'covid_key' 'serious_critical' %}">{% trans "serious critical" %}</a>
           </div>
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{% trans "COVID-19 charts" %}</a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'cases' %}">{% trans "cases" %}</a>
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'deaths' %}">{% trans "deaths" %}</a>
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'total_recovered' %}">{% trans "total recovered" %}</a>
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'new_deaths' %}">{% trans "new deaths" %}</a>
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'new_cases' %}">{% trans "new cases" %}</a>
+            <a class="nav-link text-muted ml-2" href="{% url 'covid_chart_key' 'serious_critical' %}">{% trans "serious critical" %}</a>
+          </div>
+        </li>
         {% url 'core:polygons' as polygons_url %}
         <li class="nav-item {% if request.get_full_path == polygons_url %}active{% endif %}">
           <a class="nav-link" href="{{ polygons_url }}">
