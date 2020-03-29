@@ -60,8 +60,8 @@ def covid_19_view(request, key: str = 'cases'):
 
         remaped_key = {"cases": "confirmed", "deaths": "deaths", "total_recovered": "recovered"}
 
-        path = None
-        if key in remaped_key:
+        path = ''
+        if key in remaped_key and country.title in {'United States', 'Canada', 'Australia', 'China', 'Ukraine'}:
             path = reverse('covid_country_key', kwargs={'country': country.title, 'key': remaped_key[key]})
 
         geojson_data += country.geojson(data, path)
