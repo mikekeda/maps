@@ -1,8 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
-import requests
 
 from bs4 import BeautifulSoup
+import requests
 
 from django.core.cache import cache
 
@@ -98,7 +98,7 @@ def get_covid_country_data(country):
                 if not data:
                     continue
 
-                province = data[0]
+                province = data[0].strip('▪️')
                 data = [
                     int(node.strip('(').strip('-').strip(';').strip('.'))
                     for node in data
