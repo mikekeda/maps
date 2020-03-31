@@ -11,8 +11,8 @@
 {% block content %}
 <div class="chart-page container mt-9">
     <h1 class="display-5 text-center col-sm"><wbr>{% blocktrans %} COVID-19 {{ key }} chart {% endblocktrans %}</h1>
-    <select multiple name="country-filter" id="country-filter">
-        <option value="">All</option>
+    <select multiple="multiple" name="country-filter" id="country-filter">
+        <option value="" selected>All</option>
         {% for country in data %}
             <option value="{{ country }}">{{ country }}</option>
         {% endfor %}
@@ -41,6 +41,8 @@
             let _date;
             let stats_per_country;
             let lineChartData = {datasets: []};
+
+            $('select').select2();
 
             for (country in data) {
                 stats_per_country = [];

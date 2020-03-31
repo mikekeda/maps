@@ -57,21 +57,21 @@
 {% block script %}
     <script type="text/javascript" src="{% static 'js/jscolor.min.js' %}"></script>
     <script defer>
-      var items;
-      var reader;
-      var lines;
-      var parsed;
-      var country;
-      var data;
-      var i;
-      var $elements = $('#map-elements');
-      var $data_import = $('#data-import');
-      var $region = $('#region-select');
-      var $lvl = $('#id_map-level');
+      let items;
+      let reader;
+      let lines;
+      let parsed;
+      let country;
+      let data;
+      let i;
+      let $elements = $('#map-elements');
+      let $data_import = $('#data-import');
+      let $region = $('#region-select');
+      let $lvl = $('#id_map-level');
 
       function CSVToArray(strData, strDelimiter) {
         strDelimiter = (strDelimiter || ",");
-        var objPattern = new RegExp(
+        let objPattern = new RegExp(
           (
             "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
             "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
@@ -79,11 +79,11 @@
           ),
           "gi"
           );
-        var arrData = [[]];
-        var arrMatches;
+        let arrData = [[]];
+        let arrMatches;
         while (arrMatches = objPattern.exec(strData)) {
-          var strMatchedDelimiter = arrMatches[1];
-          var strMatchedValue;
+          let strMatchedDelimiter = arrMatches[1];
+          let strMatchedValue;
           if (strMatchedDelimiter.length
             && strMatchedDelimiter !== strDelimiter) {
             arrData.push([]);
