@@ -6,7 +6,6 @@ import requests
 
 from django.core.cache import cache
 
-from core.models import Polygon
 from maps.settings import get_env_var
 
 
@@ -45,7 +44,7 @@ def get_covid_data():
         return stats
 
 
-def get_covid_country_data(country):
+def get_covid_country_data(country: str) -> dict:
     stats = {}
 
     if country == 'Ukraine':
@@ -74,12 +73,11 @@ def get_covid_country_data(country):
             'Хмельницька': 'Khmelnytskyi Oblast',
             'Чернігівська': 'Chernihiv Oblast',
             'Кіровоградська': 'Kirovohrad Oblast',
+            'Крим': 'Autonomous Republic of Crimea',
         }
 
-        country = Polygon.objects.filter(level=0, title='Ukraine').first()
-        provinces = Polygon.objects.filter(parent=country)
-        for province in provinces:
-            stats[province.title] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
+        for province in mapping.values():
+            stats[province] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
 
         url = "https://moz.gov.ua" \
               "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"

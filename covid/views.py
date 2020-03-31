@@ -1,8 +1,9 @@
 from collections import defaultdict
 
 from django.core.cache import cache
-from django.shortcuts import render
 from django.http import Http404
+from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import last_modified
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
@@ -21,6 +22,7 @@ def covid_19_data_last_modified(*_, **__):
         return parse_datetime(modified)
 
 
+@cache_page(60 * 15)
 @last_modified(covid_19_data_last_modified)
 def covid_19_view(request, key: str = 'cases'):
     """ COVID-19 map. """
@@ -76,6 +78,8 @@ def covid_19_view(request, key: str = 'cases'):
     ))
 
 
+@cache_page(60 * 15)
+@last_modified(covid_19_data_last_modified)
 def covid_19_chart_view(request, key: str = 'cases'):
     """ COVID-19 chart. """
     if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical"}:
@@ -103,25 +107,21 @@ def covid_19_country_data_last_modified(*_, country, **__):
         return parse_datetime(modified)
 
 
+@cache_page(60 * 15)
 @last_modified(covid_19_country_data_last_modified)
 def covid_19_country_view(request, country, key: str = 'confirmed'):
     if key not in {"confirmed", "deaths", "recovered"}:
         raise Http404
 
-    countries = Polygon.objects.filter(level=0)
-    for c in countries:
-        if c.title == country:
-            country = c
-            break
-    else:
+    total = 0
+    stats = cache.get(f'covid_19_{country}_data')  # get from cache
+    if not stats:
+        stats = get_covid_country_data(country)
+
+    if not stats:
         raise Http404
 
-    total = 0
-    stats = cache.get(f'covid_19_{country.title}_data')  # get from cache
-    if not stats:
-        stats = get_covid_country_data(country.title)
-
-    provinces = Polygon.objects.filter(parent=country)
+    provinces = Polygon.objects.filter(parent__title=country)
 
     map_obj = {
         'grades': 8,
@@ -132,7 +132,7 @@ def covid_19_country_view(request, country, key: str = 'confirmed'):
         'logarithmic_scale': True,
         'data_min': float('Inf'),
         'data_max': -float('Inf'),
-        'description': f"COVID-19 (coronavirus) {country.title} interactive map, updates every 15m"
+        'description': f"COVID-19 (coronavirus) {country} interactive map, updates every 15m"
     }
 
     # Get geojson data.
@@ -149,7 +149,7 @@ def covid_19_country_view(request, country, key: str = 'confirmed'):
         geojson_data += province.geojson(data)
     geojson_data += ']}'
 
-    map_obj['title'] = f"COVID-19 {country.title} ({total} {key.replace('_', ' ')}, " \
+    map_obj['title'] = f"COVID-19 {country} ({total} {key.replace('_', ' ')}, " \
                        f"{cache.get(f'covid_19_{country}_last_modified')[:10]})"
 
     return render(request, 'map.html', dict(
