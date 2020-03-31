@@ -113,7 +113,7 @@ class Map(models.Model):
         related_name='maps')
     grades = models.PositiveSmallIntegerField(
         default=8,
-        verbose_name=_('title'),
+        verbose_name=_('grades'),
         help_text="How many grades you would like to have")
     logarithmic_scale = models.BooleanField(
         default=False,

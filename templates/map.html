@@ -164,7 +164,7 @@
           unsorted_data[geojson_data.features[i].properties.name] = geojson_data.features[i].properties.density;
         }
         names = Object.keys(unsorted_data);
-        names.sort();
+        names.sort(function(a, b){return unsorted_data[b] - unsorted_data[a]});
         data = [];
         for (i = 0; i < names.length; i++) {
             data[names[i]] = unsorted_data[names[i]];
