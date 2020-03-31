@@ -87,14 +87,11 @@ def get_covid_country_data(country):
         res = requests.get(url)
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            ul = []
-            for ul in soup.select('.medical__vacancy-desc > div > p'):
-                ul = ul.text.split('\n')
-                if len(ul) > 10:
-                    break
+            for li in soup.select('.medical__vacancy-desc > div > p'):
+                if not li:
+                    continue
 
-            for li in ul:
-                data = li.split()
+                data = li.text.split()
                 if not data:
                     continue
 
