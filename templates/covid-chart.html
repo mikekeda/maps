@@ -111,15 +111,15 @@
             let selected_stats = stats_wiki;
 
             if (!selected.includes("")) {
-                selected_stats = [];
-                selected.forEach(country => selected_stats.push(stats_wiki[country]));
+                selected_stats = {};
+                selected.forEach(country => selected_stats[country] = stats_wiki[country]);
             }
             chart(ctx_stats_wiki, selected_stats);
             window.location.hash = selected;
         });
 
         if (window.location.hash) {
-            $country_filter.val(window.location.hash.substring(1)).trigger('change');
+            $country_filter.val(window.location.hash.substring(1).split(',')).trigger('change');
         }
         else {
             chart(ctx_stats_wiki, stats_wiki);
