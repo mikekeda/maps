@@ -26,9 +26,9 @@
   </div>
 {% endblock content %}
 {% block script %}
-    <script type="text/javascript" src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=596324fed14c220014c25d99&product=sticky-share-buttons"></script>
-    <script type="text/javascript">
+    <script src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=596324fed14c220014c25d99&product=inline-share-buttons' async='async'></script>
+    <script>
         let geojson_data = {{ geojson_data|safe }};
         let data_range = {{ data_range|safe }};
         let data;
