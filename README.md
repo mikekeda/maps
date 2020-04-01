@@ -2,7 +2,7 @@ Maps
 ======================
 
 Site where you can build statistic interactive webmaps.
-Link to the site - https://maps.mkeda.me
+Link to the site - <https://maps.mkeda.me>
 
 Installation
 ------------

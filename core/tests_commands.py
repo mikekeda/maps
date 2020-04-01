@@ -92,7 +92,7 @@ class MapsCommandsTest(TestCase):
         self.assertIn('Bergen County was created', out.getvalue())
 
         polygon_obj = Polygon.objects.filter(title="Texas").first()
-        assert polygon_obj
+        self.assertTrue(polygon_obj)
         self.assertEqual(str(polygon_obj), "Texas")
 
     def test_commands_delete(self):
