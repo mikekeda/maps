@@ -1,6 +1,5 @@
 from collections import defaultdict
 from datetime import datetime
-from typing import Optional
 
 from bs4 import BeautifulSoup
 import requests
@@ -45,7 +44,7 @@ def get_covid_data():
         return stats
 
 
-def get_covid_country_data(country: str) -> Optional[dict]:
+def get_covid_country_data(country: str) -> dict:
     stats = {}
 
     if country == 'Ukraine':
@@ -96,9 +95,9 @@ def get_covid_country_data(country: str) -> Optional[dict]:
 
                 province = data[0].strip('▪️')
                 data = [
-                    int(node.strip('(').strip('-').strip(';').strip('.'))
+                    int(node.strip('(').strip('-').strip('—').strip(';').strip('.'))
                     for node in data
-                    if node.strip('(').strip('-').strip(';').strip('.').isdigit()
+                    if node.strip('(').strip('-').strip('—').strip(';').strip('.').isdigit()
                 ]
                 data += [0] * (3 - len(data))
 
@@ -145,4 +144,4 @@ def get_covid_country_data(country: str) -> Optional[dict]:
     if any(stats[k]['confirmed'] for k in stats):
         cache.set(f'covid_19_{country}_data', stats, 900)  # 15m
 
-        return stats
+    return stats
