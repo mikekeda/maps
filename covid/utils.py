@@ -85,34 +85,39 @@ def get_covid_country_data(country: str) -> dict:
         res = requests.get(url)
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for li in soup.select('.medical__vacancy-desc > div > p'):
+            for ul in soup.select('.medical__vacancy-desc > div > p'):
+                if not ul:
+                    continue
+
+                li = ul.text.split('\n')
                 if not li:
                     continue
 
-                data = li.text.split()
-                if not data:
-                    continue
+                for data in li:
+                    data = data.split()
+                    if not data:
+                        continue
 
-                province = data[0].strip('▪️')
-                data = [
-                    int(node.strip('(').strip('-').strip('—').strip(';').strip('.'))
-                    for node in data
-                    if node.strip('(').strip('-').strip('—').strip(';').strip('.').isdigit()
-                ]
-                data += [0] * (3 - len(data))
+                    province = data[0].strip('▪️')
+                    data = [
+                        int(node.strip('(').strip('-').strip('—').strip(';').strip('.'))
+                        for node in data
+                        if node.strip('(').strip('-').strip('—').strip(';').strip('.').isdigit()
+                    ]
+                    data += [0] * (3 - len(data))
 
-                if province in mapping:
-                    stats[mapping[province]] = {
-                        'confirmed': stats.get(mapping[province], {}).get('confirmed', 0) + data[0],
-                        'deaths': stats.get(mapping[province], {}).get('deaths', 0) + data[1],
-                        'recovered': stats.get(mapping[province], {}).get('recovered', 0) + data[2],
-                    }
-                elif province == 'м.':
-                    stats['Kiev Oblast'] = {
-                        'confirmed': stats['Kiev Oblast'].get('confirmed', 0) + data[0],
-                        'deaths': stats['Kiev Oblast'].get('deaths', 0) + data[1],
-                        'recovered': stats['Kiev Oblast'].get('recovered', 0) + data[2],
-                    }
+                    if province in mapping:
+                        stats[mapping[province]] = {
+                            'confirmed': stats.get(mapping[province], {}).get('confirmed', 0) + data[0],
+                            'deaths': stats.get(mapping[province], {}).get('deaths', 0) + data[1],
+                            'recovered': stats.get(mapping[province], {}).get('recovered', 0) + data[2],
+                        }
+                    elif province == 'м.':
+                        stats['Kiev Oblast'] = {
+                            'confirmed': stats['Kiev Oblast'].get('confirmed', 0) + data[0],
+                            'deaths': stats['Kiev Oblast'].get('deaths', 0) + data[1],
+                            'recovered': stats['Kiev Oblast'].get('recovered', 0) + data[2],
+                        }
 
             cache.set(f'covid_19_{country}_last_modified', datetime.now().isoformat(), None)
 
