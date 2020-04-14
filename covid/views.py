@@ -55,7 +55,11 @@ def covid_19_view(request, key: str = 'cases'):
         if country.title not in stats:
             continue
 
-        data = int(stats[country.title][key].replace(',', ''))
+        try:
+            data = int(stats[country.title][key].replace(',', ''))
+        except ValueError:
+            continue
+
         total += data
         map_obj['data_min'] = min([data, map_obj['data_min']])
         map_obj['data_max'] = max([data, map_obj['data_max']])

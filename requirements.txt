@@ -1,6 +1,6 @@
-beautifulsoup4==4.8.2
+beautifulsoup4==4.9.0
 celery==4.4.2
-Django==3.0.4
+Django==3.0.5
 django-appconf==1.0.4
 django-celery==3.3.1
 django-easy-select2==1.5.6
@@ -13,9 +13,9 @@ django-redis==4.11.0
 django-widget-tweaks==1.4.8
 jsonfield==3.1.0
 gunicorn==20.0.4
-psycopg2-binary==2.8.4
+psycopg2-binary==2.8.5
 requests==2.23.0
 social-auth-app-django==3.1.0
-social-auth-core==3.3.2
+social-auth-core==3.3.3
 
 anyjson==0.3.3
