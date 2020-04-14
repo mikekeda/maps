@@ -95,7 +95,10 @@ def covid_19_chart_view(request, key: str = 'cases'):
     for d in data:
         for country, v in d.data.items():
             if key in v:
-                value = int(v[key].replace(',', ''))
+                try:
+                    value = int(v[key].replace(',', ''))
+                except ValueError:
+                    continue
                 if value:
                     data_per_country[country][d.added.isoformat()[:10]] = value
 
