@@ -25,9 +25,8 @@ urlpatterns = [
     path('covid-country/<str:country>/<str:key>', covid_19_country_view, name='covid_country_key'),
     path('plot/covid', covid_19_chart_view, name='covid_chart'),
     path('plot/covid/<str:key>', covid_19_chart_view, name='covid_chart_key'),
-    path('oauth/', include('social_django.urls', namespace='social')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
-         name='django.contrib.sitemaps.views.sitemap'),
+    path('accounts/', include('allauth.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('admin/', admin.site.urls),
 ]
 

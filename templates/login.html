@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load widget_tweaks %}
+{% load socialaccount %}
 
 {% block title %}{% trans 'Login' %}{% endblock title %}
 {% block description %}{% trans 'Login or register to create your own maps and charts' %}{% endblock description %}
@@ -29,7 +30,6 @@
     {% endif %}
     <button type="submit" class="btn btn-primary float-right">{% trans "Log in" %}</button>
   </form>
-
-  <a href="{% url 'social:begin' 'facebook' %}">{% trans "Login with Facebook" %}</a>
+  <a href="{% provider_login_url "facebook" %}">{% trans "Login with Facebook" %}</a>
   </div>
 {% endblock content %}

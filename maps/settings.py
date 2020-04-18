@@ -6,20 +6,23 @@ import os
 import requests
 from django.utils.translation import ugettext_lazy as _
 
-from django_jenkins.tasks import run_pylint
+try:
+    from django_jenkins.tasks import run_pylint
 
 
-class Lint:
-    """
-    Monkey patch to fix
-    TypeError: __init__() got an unexpected keyword argument 'exit'.
-    """
-    class Run(run_pylint.lint.Run):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, do_exit=kwargs.pop("exit"), **kwargs)
+    class Lint:
+        """
+        Monkey patch to fix
+        TypeError: __init__() got an unexpected keyword argument 'exit'.
+        """
+        class Run(run_pylint.lint.Run):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, do_exit=kwargs.pop("exit"), **kwargs)
 
 
-run_pylint.lint = Lint
+    run_pylint.lint = Lint
+except ImportError:
+    run_pylint = None
 
 SITE_ENV_PREFIX = 'MAPS'
 
@@ -81,14 +84,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django.contrib.sitemaps',
+    'django.contrib.sites',
 
     'leaflet',
     'djgeojson',
     'easy_select2',
     'widget_tweaks',
     'mptt',
-    'social_django',
-    'django_jenkins',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
     'djcelery',
 
     'core',
@@ -96,7 +102,7 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar']
+    INSTALLED_APPS += ['django_jenkins', 'debug_toolbar']
 
 
 MIDDLEWARE = [
@@ -128,9 +134,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -195,14 +198,41 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'core:maps'
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-SOCIAL_AUTH_FACEBOOK_KEY = get_env_var('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = get_env_var('SOCIAL_AUTH_FACEBOOK_SECRET')
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+SITE_ID = 1
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'VERIFIED_EMAIL': True,
+        'VERSION': 'v6.0',
+    }
+}
 
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 2525
