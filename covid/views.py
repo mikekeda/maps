@@ -27,7 +27,7 @@ def covid_19_data_last_modified(*_, **__):
 def covid_19_view(request, key: str = 'cases'):
     """ COVID-19 map. """
 
-    if key not in ("cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical"):
+    if key not in ("cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical", "active_cases"):
         raise Http404
 
     total = 0
@@ -56,7 +56,13 @@ def covid_19_view(request, key: str = 'cases'):
             continue
 
         try:
-            data = int(stats[country.title][key].replace(',', ''))
+            if key == "active_cases":
+                cases = int(stats[country.title]["cases"].replace(',', ''))
+                total_recovered = int(stats[country.title]["total_recovered"].replace(',', ''))
+                deaths = int(stats[country.title]["deaths"].replace(',', ''))
+                data = cases - total_recovered - deaths
+            else:
+                data = int(stats[country.title][key].replace(',', ''))
         except ValueError:
             continue
 
@@ -64,7 +70,8 @@ def covid_19_view(request, key: str = 'cases'):
         map_obj['data_min'] = min([data, map_obj['data_min']])
         map_obj['data_max'] = max([data, map_obj['data_max']])
 
-        remaped_key = {"cases": "confirmed", "deaths": "deaths", "total_recovered": "recovered"}
+        remaped_key = {"cases": "confirmed", "deaths": "deaths", "total_recovered": "recovered",
+                       "active_cases": "active_cases"}
 
         path = ''
         if key in remaped_key and country.title in {'United States', 'Canada', 'Australia', 'China', 'Ukraine'}:
@@ -86,7 +93,7 @@ def covid_19_view(request, key: str = 'cases'):
 @last_modified(covid_19_data_last_modified)
 def covid_19_chart_view(request, key: str = 'cases'):
     """ COVID-19 chart. """
-    if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical"}:
+    if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical", "active_cases"}:
         raise Http404
 
     data = Data.objects.filter(slug='covid').order_by('added')
@@ -101,6 +108,16 @@ def covid_19_chart_view(request, key: str = 'cases'):
                     continue
                 if value:
                     data_per_country[country][d.added.isoformat()[:10]] = value
+            elif key == "active_cases":
+                try:
+                    cases = int(v["cases"].replace(',', ''))
+                    total_recovered = int(v["total_recovered"].replace(',', ''))
+                    deaths = int(v["deaths"].replace(',', ''))
+                except ValueError:
+                    continue
+
+                if cases:
+                    data_per_country[country][d.added.isoformat()[:10]] = cases - total_recovered - deaths
 
     data_per_country = {k: data_per_country[k] for k in sorted(data_per_country.keys())}
 
@@ -117,7 +134,7 @@ def covid_19_country_data_last_modified(*_, country, **__):
 @cache_page(60 * 15)
 @last_modified(covid_19_country_data_last_modified)
 def covid_19_country_view(request, country, key: str = 'confirmed'):
-    if key not in {"confirmed", "deaths", "recovered"}:
+    if key not in {"confirmed", "deaths", "recovered", "active_cases"}:
         raise Http404
 
     total = 0
@@ -148,7 +165,13 @@ def covid_19_country_view(request, country, key: str = 'confirmed'):
         if province.title not in stats:
             continue
 
-        data = stats[province.title][key]
+        if key == "active_cases":
+            confirmed = stats[province.title]["confirmed"]
+            deaths = stats[province.title]["deaths"]
+            recovered = stats[province.title]["recovered"]
+            data = confirmed - recovered - deaths
+        else:
+            data = stats[province.title][key]
         total += data
         map_obj['data_min'] = min([data, map_obj['data_min']])
         map_obj['data_max'] = max([data, map_obj['data_max']])
