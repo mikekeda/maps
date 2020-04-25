@@ -107,7 +107,11 @@ def get_covid_country_data(country: str) -> dict:
         url = "https://moz.gov.ua" \
               "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
 
-        res = requests.get(url)
+        try:
+            res = requests.get(url, timeout=30)
+        except requests.exceptions.ReadTimeout:
+            return stats
+
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
             for li in soup.select('.medical__vacancy-desc > div > ul > li'):
@@ -152,9 +156,9 @@ def get_covid_country_data(country: str) -> dict:
 
             stats = defaultdict(lambda: {'confirmed': 0, 'deaths': 0, 'recovered': 0})
             for v in res['data']['covid19Stats']:
-                stats[v['province']]['confirmed'] += v['confirmed']
-                stats[v['province']]['deaths'] += v['deaths']
-                stats[v['province']]['recovered'] += v['recovered']
+                stats[v['province']]['confirmed'] += v['confirmed'] or 0
+                stats[v['province']]['deaths'] += v['deaths'] or 0
+                stats[v['province']]['recovered'] += v['recovered'] or 0
 
             stats = dict(stats)
 
