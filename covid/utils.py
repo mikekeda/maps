@@ -105,7 +105,7 @@ def get_covid_country_data(country: str) -> dict:
             stats[province] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
 
         url = "https://moz.gov.ua" \
-              "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
+              "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-1"
 
         try:
             res = requests.get(url, timeout=30)
