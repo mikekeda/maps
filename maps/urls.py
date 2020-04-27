@@ -5,16 +5,17 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 from django.utils.translation import ugettext_lazy as _
 
-from core.sitemaps import (StaticViewSitemap, MapSitemap, ChartSitemap,
-                           CovidViewSitemap)
+from core.sitemaps import (StaticPagesSitemap, MapsSitemap, ChartsSitemap,
+                           CovidMapsSitemap, CovidChartsSitemap)
 
 from covid.views import covid_19_view, covid_19_country_view, covid_19_chart_view
 
 sitemaps = {
-    'maps': MapSitemap,
-    'charts': ChartSitemap,
-    'static': StaticViewSitemap,
-    'covid': CovidViewSitemap,
+    'maps': MapsSitemap,
+    'charts': ChartsSitemap,
+    'static_pages': StaticPagesSitemap,
+    'covid_maps': CovidMapsSitemap,
+    'covid_charts': CovidChartsSitemap,
 }
 
 urlpatterns = [

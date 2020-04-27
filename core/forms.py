@@ -12,7 +12,8 @@ class MapForm(forms.ModelForm):
 
     class Meta:
         model = Map
-        exclude = ('region', 'user', 'slug',)
+        fields = ('title', 'description', 'unit', 'date_of_information', 'categories', 'grades',
+                  'logarithmic_scale', 'end_color', 'start_color', 'opacity')
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
         }
