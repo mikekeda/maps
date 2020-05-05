@@ -11,10 +11,10 @@ Installation
     # Install Redis
     sudo apt install redis-server
     # Install postgresql
-    sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
     sudo apt-get update
-    sudo apt-get install postgresql-9.6
+    sudo apt-get install postgresql-12
     # Configure database
     sudo su - postgres
     psql

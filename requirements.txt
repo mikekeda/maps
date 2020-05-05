@@ -1,10 +1,10 @@
 beautifulsoup4==4.9.0
 celery==4.4.2
-Django==3.0.5
+Django==3.0.6
 django-allauth==0.41.0
 django-appconf==1.0.4
 django-celery==3.3.1
-django-easy-select2==1.5.6
+django-easy-select2==1.5.7
 django-geojson==3.0.0
 django-jsonfield==1.4.0
 django-js-asset==1.2.2
