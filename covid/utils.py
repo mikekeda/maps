@@ -140,16 +140,13 @@ def get_covid_country_data(country: str) -> dict:
             cache.set(f'covid_19_{country}_last_modified', datetime.now().isoformat(), None)
 
     else:
-        if country == 'United States':
-            country = 'US'
-
         res = requests.get(
             "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats",
             headers={
                 "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
                 "x-rapidapi-key": get_env_var("X_RAPIDAPI_KEY"),
             },
-            params={"country": country}
+            params={"country": country if country != 'United States' else 'US'}
         )
         if res.status_code == 200:
             res = res.json()
