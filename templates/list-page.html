@@ -25,12 +25,14 @@
       <div class="row">
           <div class="card my-2 col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 col-md-12">
               <div class="card-block">
-                  {% if item_name == 'chart' %}
+                  {% if item_name == 'plot' %}
+                    {% url 'core:plot' item.slug as item_url %}
+                  {% elif item_name == 'chart' %}
                     {% url 'core:chart' item.slug as item_url %}
                   {% else %}
                     {% url 'core:map' item.slug as item_url %}
                   {% endif %}
-                  <a href="{{ item_url }}"><h2 class="h4 card-title">{{ item.title }}</h2></a>
+                  <a href="{{ item_url }}"><h2 class="h4 card-title">{% if item.title %}{{ item.title }}{% else %}{{ item.slug }}{% endif %}</h2></a>
                   <p class="card-text text-muted">{{ item.description }}</p>
                   {% for category in item.categories.all %}
                       <a href="?category={{ category.slug }}" class="card-link mr-2">{{ category.title }}</a>

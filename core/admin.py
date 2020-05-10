@@ -3,11 +3,12 @@ from django.core.cache import cache
 from django.urls import reverse
 from django.utils.html import format_html
 
-from leaflet.admin import LeafletGeoAdmin
+from import_export.admin import ImportExportModelAdmin
 from easy_select2 import select2_modelform
+from leaflet.admin import LeafletGeoAdmin
 from mptt.admin import MPTTModelAdmin
 
-from core.models import Map, Polygon, MapElement, Category, Chart
+from core.models import Map, Polygon, MapElement, Category, Chart, Plot
 
 MapElementForm = select2_modelform(MapElement)
 MapForm = select2_modelform(Map)
@@ -67,7 +68,7 @@ class PolygonAdmin(LeafletGeoAdmin, MPTTModelAdmin):
         )
 
 
-class ChartAdmin(admin.ModelAdmin):
+class ChartAdmin(ImportExportModelAdmin):
     list_filter = ('user__username',)
     search_fields = ['title']
 
@@ -77,8 +78,14 @@ class ChartAdmin(admin.ModelAdmin):
         return db_field.formfield(**kwargs)
 
 
+class PlotAdmin(ImportExportModelAdmin):
+    list_filter = ('user__username',)
+    search_fields = ['slug']
+
+
 admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
 admin.site.register(Category)
 admin.site.register(Chart, ChartAdmin)
+admin.site.register(Plot, PlotAdmin)

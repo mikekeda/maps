@@ -1,20 +1,21 @@
-import operator
+from collections import defaultdict
 import json
+import operator
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Prefetch, F
+from django.db.models import Prefetch, F, Max
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from maps.utils import range_data
 
-from core.models import Map, MapElement, Polygon, Chart
+from core.models import Map, MapElement, Polygon, Chart, Plot
 from core.forms import MapForm
 
 
@@ -307,6 +308,72 @@ def chart_view(request, slug):
         data=data,
         data_min=data_min,
     ))
+
+
+def plots_view(request, username=None):
+    """ Plots page. """
+    if username:
+        user = get_object_or_404(User, username=username)
+        plots = Plot.objects.values('slug', 'user').annotate(date_of_information=Max("added")).filter(user=user)
+    else:
+        plots = Plot.objects.values('slug', 'user').annotate(date_of_information=Max("added")).all()
+
+    params = request.GET.copy()
+    params.pop('p', None)
+
+    paginator = Paginator(plots.order_by('-id'), 10)
+    page = request.GET.get('p')
+    try:
+        plots = paginator.page(page)
+    except PageNotAnInteger:
+        plots = paginator.page(1)
+    except EmptyPage:
+        plots = paginator.page(paginator.num_pages)
+
+    return render(request, 'list-page.html', dict(
+        item_name='plot',
+        title=_('Plots'),
+        items=plots,
+        params=params
+    ))
+
+
+def plot_view(request, slug: str, key: str = None):
+    """ Plot page. """
+
+    if slug == 'covid':
+        key = key or 'cases'
+
+        if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases",
+                       "serious_critical", "active_cases"}:
+            raise Http404
+
+    data = Plot.objects.filter(slug=slug).order_by('added')
+
+    data_per_country = defaultdict(dict)
+    for d in data:
+        for country, v in d.data.items():
+            if key in v:
+                try:
+                    value = int(v[key].replace(',', ''))
+                except ValueError:
+                    continue
+                if value:
+                    data_per_country[country][d.added.isoformat()[:10]] = value
+            elif slug == 'covid' and key == "active_cases":
+                try:
+                    cases = int(v["cases"].replace(',', ''))
+                    total_recovered = int(v["total_recovered"].replace(',', ''))
+                    deaths = int(v["deaths"].replace(',', ''))
+                except ValueError:
+                    continue
+
+                if cases:
+                    data_per_country[country][d.added.isoformat()[:10]] = cases - total_recovered - deaths
+
+    data_per_country = {k: data_per_country[k] for k in sorted(data_per_country.keys())}
+
+    return render(request, 'covid-chart.html', {'data': data_per_country, 'key': key.replace('_', ' ')})
 
 
 def log_in(request):
