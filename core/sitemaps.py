@@ -69,15 +69,16 @@ class CovidChartsSitemap(sitemaps.Sitemap):
     changefreq = 'hourly'
 
     def items(self):
+        # TODO[Mike] Make it automatic.
         return (
-            ('covid_chart_key', 'cases'),
-            ('covid_chart_key', 'deaths'),
-            ('covid_chart_key', 'total_recovered'),
-            ('covid_chart_key', 'active_cases'),
-            ('covid_chart_key', 'new_deaths'),
-            ('covid_chart_key', 'new_cases'),
-            ('covid_chart_key', 'serious_critical'),
+            ('core:plot_key', 'covid', 'cases'),
+            ('core:plot_key', 'covid', 'deaths'),
+            ('core:plot_key', 'covid', 'total_recovered'),
+            ('core:plot_key', 'covid', 'active_cases'),
+            ('core:plot_key', 'covid', 'new_deaths'),
+            ('core:plot_key', 'covid', 'new_cases'),
+            ('core:plot_key', 'covid', 'serious_critical'),
         )
 
     def location(self, obj):
-        return reverse(obj[0], kwargs={'key': obj[1]})
+        return reverse(obj[0], kwargs={'slug': obj[1], 'key': obj[2]})

@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import render
@@ -11,7 +9,6 @@ from django.utils.dateparse import parse_datetime
 from maps.utils import range_data
 
 from core.models import Polygon
-from covid.models import Data
 from covid.utils import get_covid_data, get_covid_country_data
 
 
@@ -87,41 +84,6 @@ def covid_19_view(request, key: str = 'cases'):
         geojson_data=geojson_data,
         data_range=range_data(map_obj)
     ))
-
-
-@cache_page(60 * 15)
-@last_modified(covid_19_data_last_modified)
-def covid_19_chart_view(request, key: str = 'cases'):
-    """ COVID-19 chart. """
-    if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical", "active_cases"}:
-        raise Http404
-
-    data = Data.objects.filter(slug='covid').order_by('added')
-
-    data_per_country = defaultdict(dict)
-    for d in data:
-        for country, v in d.data.items():
-            if key in v:
-                try:
-                    value = int(v[key].replace(',', ''))
-                except ValueError:
-                    continue
-                if value:
-                    data_per_country[country][d.added.isoformat()[:10]] = value
-            elif key == "active_cases":
-                try:
-                    cases = int(v["cases"].replace(',', ''))
-                    total_recovered = int(v["total_recovered"].replace(',', ''))
-                    deaths = int(v["deaths"].replace(',', ''))
-                except ValueError:
-                    continue
-
-                if cases:
-                    data_per_country[country][d.added.isoformat()[:10]] = cases - total_recovered - deaths
-
-    data_per_country = {k: data_per_country[k] for k in sorted(data_per_country.keys())}
-
-    return render(request, 'covid-chart.html', {'data': data_per_country, 'key': key.replace('_', ' ')})
 
 
 def covid_19_country_data_last_modified(*_, country, **__):

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.contrib.postgres.fields import JSONField
 from django.core.cache import cache
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
@@ -231,3 +232,19 @@ class Chart(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Plot(models.Model):
+    """ Plot model. """
+    slug = models.CharField(max_length=256)
+    data = JSONField(default=dict, blank=True)
+    added = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='plots',
+        verbose_name=_('user'),
+        help_text="Plot owner.",
+        on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.slug}-{self.added}'
