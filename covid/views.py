@@ -52,16 +52,20 @@ def covid_19_view(request, key: str = 'cases'):
         if country.title not in stats:
             continue
 
-        try:
-            if key == "active_cases":
-                cases = int(stats[country.title]["cases"].replace(',', ''))
-                total_recovered = int(stats[country.title]["total_recovered"].replace(',', ''))
-                deaths = int(stats[country.title]["deaths"].replace(',', ''))
-                data = cases - total_recovered - deaths
-            else:
+        if key == "active_cases":
+            for key in ("cases", "total_recovered", "deaths"):
+                try:
+                    stats[country.title][key] = int(stats[country.title][key].replace(',', ''))
+                except ValueError:
+                    stats[country.title][key] = 0
+
+            data = stats[country.title]["cases"] - stats[country.title]["total_recovered"] - \
+                   stats[country.title]["deaths"]
+        else:
+            try:
                 data = int(stats[country.title][key].replace(',', ''))
-        except ValueError:
-            continue
+            except ValueError:
+                continue
 
         total += data
         map_obj['data_min'] = min([data, map_obj['data_min']])
