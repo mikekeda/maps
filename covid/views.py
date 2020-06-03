@@ -53,11 +53,11 @@ def covid_19_view(request, key: str = 'cases'):
             continue
 
         if key == "active_cases":
-            for key in ("cases", "total_recovered", "deaths"):
+            for field in ("cases", "total_recovered", "deaths"):
                 try:
-                    stats[country.title][key] = int(stats[country.title][key].replace(',', ''))
+                    stats[country.title][field] = int(stats[country.title][field].replace(',', ''))
                 except ValueError:
-                    stats[country.title][key] = 0
+                    stats[country.title][field] = 0
 
             data = stats[country.title]["cases"] - stats[country.title]["total_recovered"] - \
                    stats[country.title]["deaths"]
