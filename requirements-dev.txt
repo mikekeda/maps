@@ -1,5 +1,6 @@
 coverage==4.5.4
 django-debug-toolbar==2.2
+git+git://github.com/mikekeda/django-debug-toolbar-line-profiler.git#django-debug-toolbar-line-profiler
 django-jenkins==0.110.0
 pep8==1.7.1
 pyflakes==2.1.1

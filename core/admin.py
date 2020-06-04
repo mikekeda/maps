@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.core.cache import cache
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -18,24 +17,16 @@ class MapElementInline(admin.TabularInline):
     model = MapElement
     exclude = ['polygon']
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('polygon')
 
+
+@admin.register(Map)
 class MapAdmin(admin.ModelAdmin):
     list_filter = ('user__username',)
     search_fields = ['title']
     form = MapForm
     inlines = [MapElementInline]
-
-    def get_object(self, request, object_id, from_field=None):
-        obj = super().get_object(request, object_id, from_field)
-        # Get all related polygon titles and send to the cache,
-        # we will use it later in MapElement.__str__ to improve performance.
-        elements = MapElement.objects.select_related('polygon')\
-            .filter(map=obj).values_list('polygon__pk', 'polygon__title')
-        cache.set_many({
-            'polygon:{}:title'.format(element[0]): element[1]
-            for element in elements
-        }, 90)
-        return obj
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user':
@@ -83,7 +74,6 @@ class PlotAdmin(ImportExportModelAdmin):
     search_fields = ['slug']
 
 
-admin.site.register(Map, MapAdmin)
 admin.site.register(Polygon, PolygonAdmin)
 admin.site.register(MapElement, MapElementAdmin)
 admin.site.register(Category)

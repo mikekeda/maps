@@ -184,11 +184,7 @@ class MapElement(models.Model):
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        # Check the cache first to avoid db call.
-        title = cache.get('polygon:{}:title'.format(self.polygon_id))
-        if not title:
-            title = self.polygon.title
-        return title
+        return self.polygon.title
 
     def geojson(self):
         return '{{' \
