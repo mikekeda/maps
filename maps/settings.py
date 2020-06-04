@@ -103,7 +103,12 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += ['django_jenkins', 'debug_toolbar']
+    from debug_toolbar.settings import PANELS_DEFAULTS
+
+    INSTALLED_APPS += ['debug_toolbar', 'django_jenkins', 'debug_toolbar_line_profiler']
+    DEBUG_TOOLBAR_PANELS = PANELS_DEFAULTS + [
+        'debug_toolbar_line_profiler.panel.ProfilingPanel',
+    ]
 
 
 MIDDLEWARE = [
