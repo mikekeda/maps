@@ -1,6 +1,6 @@
 beautifulsoup4==4.9.0
 celery==4.4.2
-Django==3.0.5
+Django==3.0.7
 django-allauth==0.41.0
 django-appconf==1.0.4
 django-celery==3.3.1
