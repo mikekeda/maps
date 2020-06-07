@@ -163,6 +163,12 @@ class MapsViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_views_map(self):
+        resp = self.client.get(reverse('core:new_style_map',
+                                       kwargs={'slug': 'not-exists'}))
+        self.assertEqual(resp.status_code, 404)
+        self.assertTemplateUsed(resp, '404.html')
+
+    def test_views_new_style_map(self):
         resp = self.client.get(reverse('core:map',
                                        kwargs={'slug': 'not-exists'}))
         self.assertEqual(resp.status_code, 404)
