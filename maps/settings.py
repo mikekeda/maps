@@ -303,3 +303,5 @@ JENKINS_TASKS = ('django_jenkins.tasks.run_pylint',
 PROJECT_APPS = ['core', 'maps']
 
 PYLINT_LOAD_PLUGIN = ['pylint_django']
+
+GOOGLE_MAP_API_KEY = get_env_var('GOOGLE_MAP_API_KEY')

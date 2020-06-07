@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ map.title }}{% endblock title %}
+{% block description %}{{ map.description|default:_("No description provided") }}{% endblock description %}
+{% block og-title %}{{ map.title }}{% endblock og-title %}
+{% block og-description %}{{ map.description|default:_("No description provided") }}{% endblock og-description %}
+
+{% block content %}
+  <div>
+      <div class="clearfix d-flex flex-column flex-sm-row">
+        <h1 class="display-5 text-center col-sm"><wbr>{{ map.title }}</h1>
+        <a href="#" id="export-csv" class="float-right my-auto btn btn-outline-primary edit-map hidden-print hidden-sm-down">{% trans "CSV" %}</a>
+        {% if request.user.is_superuser %}
+          <a href="/admin/core/map/{{ map.id }}/change/" class="float-right my-auto btn btn-outline-primary edit-map hidden-print">{% trans "Edit" %}</a>
+        {% endif %}
+      </div>
+      <div class="row">
+          <div class="col-md-12">
+              <div id="map"></div>
+              <div id="charts" class="mt-4"></div>
+          </div>
+      </div>
+  </div>
+{% endblock content %}
+{% block script %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      let data = {{ data|safe }};
+      google.charts.load('current', {
+        'packages':['geochart', 'barchart'],
+        'mapsApiKey': '{{ google_map_api_key }}'
+      });
+      google.charts.setOnLoadCallback(drawMap);
+
+      function drawMap() {
+        let map_data = google.visualization.arrayToDataTable({{ data|safe }});
+        let options = {
+            backgroundColor: '#81d4fa',
+            colorAxis: {colors: ['#{{ map.end_color }}', '#{{ map.start_color }}']},
+        };
+
+        let map = new google.visualization.GeoChart(document.getElementById('map'));
+        map.draw(map_data, options);
+
+        let chart = new google.visualization.BarChart(document.getElementById('charts'));
+        chart.draw(map_data, {height: 20 * Object.keys(data).length});
+      }
+
+      function download(data, filename, type) {
+        let file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) {// IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        }
+        else { // Others
+          let a = document.createElement("a");
+          let url = URL.createObjectURL(file);
+
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }, 0);
+        }
+      }
+
+      $('#export-csv').click(function (e) {
+          e.preventDefault();
+          csv_data = '';
+          for (i in data) {
+            csv_data += i + ',' + data[i] + '\n';
+          }
+          download(csv_data, '{{ map.title }}'.charAt(0).toLowerCase() + '{{ map.title }}'.slice(1) + '.csv', 'txt');
+        });
+    </script>
+{% endblock script %}

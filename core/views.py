@@ -4,6 +4,7 @@ import operator
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Prefetch, F, Max
+from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -56,15 +57,35 @@ def maps_view(request, username=None):
     ))
 
 
-def map_view(request, slug):
-    """ Map. """
+def new_style_map_view(request, slug):
+    """ Google chart map. """
     map_obj = get_object_or_404(
         Map.objects.prefetch_related(
             Prefetch(
                 'elements',
-                queryset=MapElement.objects.select_related('polygon')
+                queryset=MapElement.objects.order_by('-data').select_related('polygon')
             )
         ),
+        slug=slug
+    )
+    elements = map_obj.elements.all()
+
+    return render(request, 'new-style-map.html', dict(
+        map=map_obj,
+        google_map_api_key=settings.GOOGLE_MAP_API_KEY,
+        data=[
+            ['Country', map_obj.title],
+        ] + [
+            [elem.polygon.title, elem.data]
+            for elem in elements
+        ],
+    ))
+
+
+def map_view(request, slug):
+    """ Map. """
+    map_obj = get_object_or_404(
+        Map.objects.prefetch_related('elements__polygon'),
         slug=slug
     )
 
