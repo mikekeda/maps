@@ -1,13 +1,15 @@
 from io import StringIO
 import sys
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
 from core.models import Polygon
 from core.views import range_data
+
+User = get_user_model()
 
 
 class MapsViewTest(TestCase):

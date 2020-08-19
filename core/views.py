@@ -7,7 +7,7 @@ from django.db.models import Prefetch, F, Max
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse, HttpResponse, Http404
@@ -18,6 +18,8 @@ from maps.utils import range_data
 
 from core.models import Map, MapElement, Polygon, Chart, Plot
 from core.forms import MapForm
+
+User = get_user_model()
 
 
 def maps_view(request, username=None):
