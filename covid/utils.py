@@ -43,6 +43,8 @@ def get_covid_data():
 
         return stats
 
+    return None
+
 
 def populate_stats(stats, data, mapping):
     if data:
