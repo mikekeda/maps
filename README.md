@@ -2,6 +2,7 @@ Maps
 ======================
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8a1e8f75dac9462aafa4803e9cfc5fdc)](https://app.codacy.com/manual/mikekeda/maps?utm_source=github.com&utm_medium=referral&utm_content=mikekeda/maps&utm_campaign=Badge_Grade_Dashboard)
+[![Requirements Status](https://requires.io/github/mikekeda/maps/requirements.svg?branch=master)](https://requires.io/github/mikekeda/maps/requirements/?branch=master)
 
 Site where you can build statistic interactive webmaps.
 Link to the site - <https://maps.mkeda.me>
