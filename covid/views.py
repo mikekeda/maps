@@ -18,6 +18,8 @@ def covid_19_data_last_modified(*_, **__):
     if modified:
         return parse_datetime(modified)
 
+    return None
+
 
 @cache_page(60 * 15)
 @last_modified(covid_19_data_last_modified)
@@ -96,6 +98,7 @@ def covid_19_country_data_last_modified(*_, country, **__):
     if modified:
         return parse_datetime(modified)
 
+    return None
 
 @cache_page(60 * 15)
 @last_modified(covid_19_country_data_last_modified)

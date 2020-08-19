@@ -1,70 +1,73 @@
 #map {
-    height: calc(100vh - 150px);
+  height: calc(100vh - 150px);
 }
 
 body > .navbar {
-    min-height: 55px;
+  min-height: 55px;
 }
 
 .mt-8 {
-    margin-top: 4.8rem !important;
+  margin-top: 4.8rem !important;
 }
 
 .btn.edit-map {
-    cursor: pointer;
-    line-height: normal;
-    margin-bottom: 8px;
-    z-index: 1;
+  cursor: pointer;
+  line-height: normal;
+  margin-bottom: 8px;
+  z-index: 1;
 }
+
 @media (min-width: 576px) {
-    .btn.edit-map + .btn.edit-map {
-        margin-left: 15px;
-    }
+  .btn.edit-map + .btn.edit-map {
+  margin-left: 15px;
+  }
 }
 
 .leaflet-interactive {
-    stroke-width: 1;
-    stroke-opacity: 0.7;
+  stroke-width: 1;
+  stroke-opacity: 0.7;
 }
 
 .no-padding {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 .info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
+
 .info h4 {
-    margin: 0 0 5px;
-    color: #777;
+  margin: 0 0 5px;
+  color: #777;
 }
 
 .legend {
-    line-height: 18px;
-    color: #555;
+  line-height: 18px;
+  color: #555;
 }
+
 .legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
 }
 
 .select2-container .select2-selection--single {
-    height: 38px;
-    padding: 4px 10px;
+  height: 38px;
+  padding: 4px 10px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 36px;
+  height: 36px;
 }
 
 .custom-file-control:lang(en)::after {
-    content: "Choose file to import data";
+  content: "Choose file to import data";
 }
