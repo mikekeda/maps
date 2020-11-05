@@ -3,9 +3,11 @@ node_modules/
 staticfiles/
 media/
 reports/
+.vscode/
 
 *.pyc
 
 .DS_Store
 db.sqlite3
 dump.rdb
+.coverage
