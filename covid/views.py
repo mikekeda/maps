@@ -26,7 +26,7 @@ def covid_19_data_last_modified(*_, **__):
 def covid_19_view(request, key: str = 'cases'):
     """ COVID-19 map. """
 
-    if key not in ("cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical", "active_cases"):
+    if key not in {"cases", "deaths", "total_recovered", "new_deaths", "new_cases", "serious_critical", "active_cases"}:
         raise Http404
 
     total = 0
@@ -55,7 +55,7 @@ def covid_19_view(request, key: str = 'cases'):
             continue
 
         if key == "active_cases":
-            for field in ("cases", "total_recovered", "deaths"):
+            for field in {"cases", "total_recovered", "deaths"}:
                 try:
                     stats[country.title][field] = int(stats[country.title][field].replace(',', ''))
                 except ValueError:
