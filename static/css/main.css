@@ -7,7 +7,7 @@ body > .navbar {
 }
 
 .mt-8 {
-  margin-top: 4.8rem !important;
+  margin-top: 4.8rem;
 }
 
 .btn.edit-map {
@@ -29,7 +29,7 @@ body > .navbar {
 }
 
 .no-padding {
-  padding: 0 !important;
+  padding: 0;
 }
 
 .info {
