@@ -1,9 +1,8 @@
 from collections import defaultdict
 from datetime import datetime
 
-from bs4 import BeautifulSoup
 import requests
-
+from bs4 import BeautifulSoup
 from django.core.cache import cache
 
 from maps.settings import get_env_var
@@ -46,7 +45,7 @@ def get_covid_data():
     return None
 
 
-def populate_stats(stats, data, mapping):
+def populate_stats(stats, data, mapping) -> None:
     if data:
         province = data[0]
         data = [
@@ -106,8 +105,8 @@ def get_covid_country_data(country: str) -> dict:
         for province in mapping.values():
             stats[province] = {'confirmed': 0, 'deaths': 0, 'recovered': 0}
 
-        url = "https://moz.gov.ua" \
-              "/article/news/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-ncov-"
+        url = "https://moz.gov.ua/article/news" \
+              "/operativna-informacija-pro-poshirennja-koronavirusnoi-infekcii-2019-cov19"
 
         try:
             res = requests.get(url, timeout=30)
@@ -116,28 +115,13 @@ def get_covid_country_data(country: str) -> dict:
 
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for li in soup.select('.medical__vacancy-desc > div > ul > li'):
-                if not li:
+            for tr in soup.select('.medical__vacancy-desc > .editor > table tr')[3:]:
+                if not tr:
                     continue
 
-                data = li.text.strip('▪️').strip(' ️').split()
+                data = [td.text.strip('\n') for td in tr.select('td')]
+                data = [data[0]] + data[1::2]
                 populate_stats(stats, data, mapping)
-
-            if sum([stat['confirmed'] for stat in stats.values()]) == 0:
-                for ul in soup.select('.medical__vacancy-desc > div > p'):
-                    if not ul:
-                        continue
-
-                    ul = ul.text.split('\n')
-                    if not ul:
-                        continue
-
-                    for li in ul:
-                        if not li:
-                            continue
-
-                        data = li.strip('▪️').strip(' ️').split()
-                        populate_stats(stats, data, mapping)
 
             cache.set(f'covid_19_{country}_last_modified', datetime.now().isoformat(), None)
 
