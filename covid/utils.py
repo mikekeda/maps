@@ -115,7 +115,7 @@ def get_covid_country_data(country: str) -> dict:
 
         if res.status_code == 200:
             soup = BeautifulSoup(res.content, 'html.parser')
-            for tr in soup.select('.medical__vacancy-desc > .editor > table tr')[3:]:
+            for tr in soup.select('.medical__vacancy-desc > .editor table tr')[3:]:
                 if not tr:
                     continue
 
