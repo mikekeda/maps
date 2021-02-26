@@ -18,7 +18,8 @@ class MapsViewTest(TestCase):
         super().setUpClass()
 
         # Create usual user.
-        test_user = User.objects.create_user(username="testuser", password="12345")
+        cls.password = User.objects.make_random_password()
+        test_user = User.objects.create_user(username="testuser", password=cls.password)
         test_user.save()
 
         # Import world.geojson
@@ -134,7 +135,7 @@ class MapsViewTest(TestCase):
             resp, "/login?next=/polygon/" + str(polygon.pk) + "/geojson"
         )
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(
             reverse("core:polygon_export", kwargs={"pk": polygon.pk})
         )
@@ -148,7 +149,7 @@ class MapsViewTest(TestCase):
         )
         self.assertRedirects(resp, "/login?next=/api/get-polygons/" + str(polygon.pk))
 
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(
             reverse("core:get_polygons", kwargs={"parent_id": polygon.pk})
         )
@@ -197,7 +198,7 @@ class MapsViewTest(TestCase):
     def test_views_logout(self):
         resp = self.client.get(reverse("core:logout"))
         self.assertRedirects(resp, "/login?next=/logout")
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:logout"))
         self.assertRedirects(resp, reverse("core:login"))
 
@@ -209,7 +210,7 @@ class MapsViewTest(TestCase):
     def test_views_add_map(self):
         resp = self.client.get(reverse("core:add_map"))
         self.assertRedirects(resp, "/login?next=/add/map")
-        self.client.login(username="testuser", password="12345")
+        self.client.login(username="testuser", password=self.password)
         resp = self.client.get(reverse("core:add_map"))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "map-form.html")
