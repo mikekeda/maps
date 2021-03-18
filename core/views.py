@@ -366,7 +366,7 @@ def plots_view(request, username=None):
     )
 
 
-def plot_view(request, slug: str, key: str = None):
+def plot_view(request, slug: str, key: str = ""):
     """ Plot page. """
 
     if slug == "covid":
@@ -384,6 +384,8 @@ def plot_view(request, slug: str, key: str = None):
             raise Http404
 
     data = Plot.objects.filter(slug=slug).order_by("-added")
+    if not data:
+        raise Http404
 
     data_per_country = defaultdict(dict)
     for d in data:
