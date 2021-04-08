@@ -255,6 +255,7 @@ MEDIA_URL = "/media/"
 LOGIN_URL = "/login"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # CELERY STUFF
 CELERY_BROKER_URL = "redis://localhost:6379/2"
