@@ -11,12 +11,12 @@ class MapsSitemap(sitemaps.Sitemap):
     def items(self):
         return Map.objects.all().order_by("-id")
 
-    def location(self, obj):
-        return reverse("core:map", kwargs={"slug": obj.slug})
+    def location(self, item, force_lang_code=None):
+        return reverse("core:map", kwargs={"slug": item.slug})
 
     @staticmethod
-    def lastmod(obj):
-        return obj.changed
+    def lastmod(item):
+        return item.changed
 
 
 class ChartsSitemap(sitemaps.Sitemap):
@@ -26,12 +26,12 @@ class ChartsSitemap(sitemaps.Sitemap):
     def items(self):
         return Chart.objects.all().order_by("-id")
 
-    def location(self, obj):
-        return reverse("core:chart", kwargs={"slug": obj.slug})
+    def location(self, item, force_lang_code=None):
+        return reverse("core:chart", kwargs={"slug": item.slug})
 
     @staticmethod
-    def lastmod(obj):
-        return obj.changed
+    def lastmod(item):
+        return item.changed
 
 
 class StaticPagesSitemap(sitemaps.Sitemap):
@@ -41,8 +41,8 @@ class StaticPagesSitemap(sitemaps.Sitemap):
     def items(self):
         return ["core:maps", "core:charts", "core:about"]
 
-    def location(self, obj):
-        return reverse(obj)
+    def location(self, item, force_lang_code=None):
+        return reverse(item)
 
 
 class CovidMapsSitemap(sitemaps.Sitemap):
@@ -60,8 +60,8 @@ class CovidMapsSitemap(sitemaps.Sitemap):
             ("covid_key", "serious_critical"),
         )
 
-    def location(self, obj):
-        return reverse(obj[0], kwargs={"key": obj[1]})
+    def location(self, item, force_lang_code=None):
+        return reverse(item[0], kwargs={"key": item[1]})
 
 
 class CovidChartsSitemap(sitemaps.Sitemap):
@@ -80,5 +80,5 @@ class CovidChartsSitemap(sitemaps.Sitemap):
             ("core:plot_key", "covid", "serious_critical"),
         )
 
-    def location(self, obj):
-        return reverse(obj[0], kwargs={"slug": obj[1], "key": obj[2]})
+    def location(self, item, force_lang_code=None):
+        return reverse(item[0], kwargs={"slug": item[1], "key": item[2]})
