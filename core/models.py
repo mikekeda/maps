@@ -13,7 +13,7 @@ from core.widgets import ColorWidget
 
 
 def get_unique_slug(cls, title: str) -> str:
-    """ Helper function to get unique slug. """
+    """Helper function to get unique slug."""
     unique_slug = slug = slugify(title)
     num = 1
     while cls.objects.filter(slug=unique_slug).exists():
@@ -23,7 +23,7 @@ def get_unique_slug(cls, title: str) -> str:
 
 
 class ColorField(models.CharField):
-    """ Color field. """
+    """Color field."""
 
     def formfield(self, **kwargs):
         kwargs["widget"] = ColorWidget
@@ -31,7 +31,7 @@ class ColorField(models.CharField):
 
 
 class Category(models.Model):
-    """ Category model. """
+    """Category model."""
 
     title = models.CharField(max_length=60, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -50,7 +50,7 @@ class Category(models.Model):
 
 
 class Polygon(MPTTModel):
-    """ Polygon model. """
+    """Polygon model."""
 
     title = models.CharField(max_length=256)
     geom = MultiPolygonField()
@@ -83,7 +83,7 @@ class Polygon(MPTTModel):
 
 
 class Map(models.Model):
-    """ Map model. """
+    """Map model."""
 
     title = models.CharField(
         max_length=256, verbose_name=_("title"), help_text="Map title."
@@ -180,7 +180,7 @@ class Map(models.Model):
 
 
 class MapElement(models.Model):
-    """ MapElement model. """
+    """MapElement model."""
 
     map = models.ForeignKey(Map, related_name="elements", on_delete=models.CASCADE)
     polygon = models.ForeignKey(
@@ -209,7 +209,7 @@ class MapElement(models.Model):
 
 
 class Chart(models.Model):
-    """ Chart model. """
+    """Chart model."""
 
     title = models.CharField(max_length=256)
     description = models.TextField(
@@ -243,7 +243,7 @@ class Chart(models.Model):
 
 
 class Plot(models.Model):
-    """ Plot model. """
+    """Plot model."""
 
     slug = models.CharField(max_length=256)
     data = models.JSONField(default=dict, blank=True)

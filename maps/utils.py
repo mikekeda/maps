@@ -2,7 +2,7 @@ import math
 
 
 def range_data(map_obj):
-    """ Helper function to range data """
+    """Helper function to range data"""
     data_range = []
     addition = 0
 

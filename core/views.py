@@ -23,7 +23,7 @@ User = get_user_model()
 
 
 def maps_view(request, username=None):
-    """ Maps. """
+    """Maps."""
     if username:
         user = get_object_or_404(User, username=username)
         maps = Map.objects.filter(user=user)
@@ -58,7 +58,7 @@ def maps_view(request, username=None):
 
 
 def new_style_map_view(request, slug):
-    """ Google chart map. """
+    """Google chart map."""
     map_obj = get_object_or_404(
         Map.objects.prefetch_related(
             Prefetch(
@@ -85,7 +85,7 @@ def new_style_map_view(request, slug):
 
 
 def map_view(request, slug):
-    """ Map. """
+    """Map."""
     map_obj = get_object_or_404(
         Map.objects.prefetch_related("elements__polygon"), slug=slug
     )
@@ -113,7 +113,7 @@ def map_view(request, slug):
 
 
 def polygons_view(request):
-    """ Polygons. """
+    """Polygons."""
     args = request.path.split("/")[2:]
     level = len(args) - 1
     title = args[-1]
@@ -167,7 +167,7 @@ def polygons_view(request):
 
 @login_required
 def polygon_export(request, pk):
-    """ Polygon export callback. """
+    """Polygon export callback."""
     element = get_object_or_404(Polygon, pk=pk)
     geojson_data = '{"type": "FeatureCollection", "features":['
     for child in element.get_children():
@@ -183,7 +183,7 @@ def polygon_export(request, pk):
 
 @login_required
 def add_map(request):
-    """ Create Map. """
+    """Create Map."""
     if request.method == "POST":
         form = MapForm(data=request.POST, prefix="map")
         if form.is_valid():
@@ -222,7 +222,7 @@ def add_map(request):
 
 @login_required
 def get_polygons(request, parent_id):
-    """ Get array of polygons by region. """
+    """Get array of polygons by region."""
     # Get level of detail (default 1).
     params = request.GET.copy()
     lvl = params.get("lvl")
@@ -246,12 +246,12 @@ def get_polygons(request, parent_id):
 
 
 def about(request):
-    """ About page. """
+    """About page."""
     return render(request, "about.html")
 
 
 def charts_view(request, username=None):
-    """ Charts. """
+    """Charts."""
     if username:
         user = get_object_or_404(User, username=username)
         charts = Chart.objects.filter(user=user)
@@ -278,7 +278,7 @@ def charts_view(request, username=None):
 
 
 def chart_view(request, slug):
-    """ Chart page. """
+    """Chart page."""
     chart_obj = get_object_or_404(
         Chart.objects.prefetch_related(
             Prefetch(
@@ -332,7 +332,7 @@ def chart_view(request, slug):
 
 
 def plots_view(request, username=None):
-    """ Plots page. """
+    """Plots page."""
     if username:
         user = get_object_or_404(User, username=username)
         plots = (
@@ -367,7 +367,7 @@ def plots_view(request, username=None):
 
 
 def plot_view(request, slug: str, key: str = ""):
-    """ Plot page. """
+    """Plot page."""
 
     if slug == "covid":
         key = key or "cases"
@@ -420,7 +420,7 @@ def plot_view(request, slug: str, key: str = ""):
 
 
 def log_in(request):
-    """ User login page. """
+    """User login page."""
     form = AuthenticationForm()
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -433,6 +433,6 @@ def log_in(request):
 
 @login_required
 def log_out(request):
-    """ User logout callback. """
+    """User logout callback."""
     logout(request)
     return redirect(reverse("core:login"))

@@ -13,7 +13,7 @@ from covid.utils import get_covid_data, get_covid_country_data
 
 
 def covid_19_data_last_modified(*_, **__):
-    """ Check when data was modified. """
+    """Check when data was modified."""
     modified = cache.get("covid_19_last_modified")
     if modified:
         return parse_datetime(modified)
@@ -24,7 +24,7 @@ def covid_19_data_last_modified(*_, **__):
 @cache_page(60 * 15)
 @last_modified(covid_19_data_last_modified)
 def covid_19_view(request, key: str = "cases"):
-    """ COVID-19 map. """
+    """COVID-19 map."""
 
     if key not in {
         "cases",
@@ -121,7 +121,7 @@ def covid_19_view(request, key: str = "cases"):
 
 
 def covid_19_country_data_last_modified(*_, country, **__):
-    """ Check when data was modified. """
+    """Check when data was modified."""
     modified = cache.get(f"covid_19_{country}_last_modified")
     if modified:
         return parse_datetime(modified)

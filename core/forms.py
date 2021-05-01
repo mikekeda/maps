@@ -5,7 +5,7 @@ from core.models import Map
 
 
 class MapForm(forms.ModelForm):
-    """ Add map form. """
+    """Add map form."""
 
     # For now 2 is max level of desalination.
     level = forms.IntegerField(
