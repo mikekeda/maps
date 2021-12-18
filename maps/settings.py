@@ -4,7 +4,7 @@ Django settings for maps project.
 
 import os
 import requests
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 SITE_ENV_PREFIX = "MAPS"
 
@@ -20,7 +20,7 @@ def get_env_var(name, default=""):
         else:
             res = requests.get(
                 "http://metadata.google.internal/computeMetadata/"
-                "v1/instance/attributes/{}".format(name),
+                f"v1/instance/attributes/{name}",
                 headers={"Metadata-Flavor": "Google"},
             )
             if res.status_code == 200:

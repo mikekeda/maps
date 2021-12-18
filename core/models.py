@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 from django.core.cache import cache
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from djgeojson.fields import MultiPolygonField
 from mptt.models import MPTTModel, TreeForeignKey
