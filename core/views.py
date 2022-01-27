@@ -384,6 +384,8 @@ def plot_view(request, slug: str, key: str = ""):
             raise Http404
 
     data = Plot.objects.filter(slug=slug).order_by("-added")
+    if slug == "covid":
+        data = data[:100]
     if not data:
         raise Http404
 
