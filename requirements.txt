@@ -1,4 +1,4 @@
-beautifulsoup4==4.12.1
+beautifulsoup4==4.12.2
 celery==5.2.7
 Django==4.2
 django-allauth==0.54.0
