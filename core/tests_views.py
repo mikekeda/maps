@@ -2,6 +2,7 @@ from io import StringIO
 import sys
 
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -36,6 +37,14 @@ class MapsViewTest(TestCase):
         out = StringIO()
         sys.stdout = out
         call_command("import", file="world/argentina.geojson")
+
+        current_site = Site.objects.get_current()
+        cls.SocialApp1 = current_site.socialapp_set.create(
+            provider="facebook",
+            name="facebook",
+            client_id="1234567890",
+            secret="0987654321",
+        )
 
     def test_views_range_data(self):
         map_obj = {
