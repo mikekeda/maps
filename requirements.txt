@@ -1,5 +1,5 @@
 beautifulsoup4==4.12.2
-celery==5.3.3
+celery==5.3.1
 Django==4.2.4
 django-allauth==0.55.2
 django-appconf==1.0.5
