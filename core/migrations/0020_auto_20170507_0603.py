@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -17,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='map',
             name='date_of_information',
-            field=models.DateField(blank=True, default=datetime.datetime(2017, 5, 7, 6, 3, 30, 765830, tzinfo=utc), help_text='An year or date when the information was measured.'),
+            field=models.DateField(blank=True, default=datetime.datetime(2017, 5, 7, 6, 3, 30, 765830), help_text='An year or date when the information was measured.'),
         ),
     ]
