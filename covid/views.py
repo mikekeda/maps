@@ -109,9 +109,9 @@ def covid_19_view(request, key: str = "cases"):
         geojson_data += country.geojson(data, path)
     geojson_data += "]}"
 
-    map_obj[
-        "title"
-    ] = f"COVID-19 ({total} {key.replace('_', ' ')}, {cache.get('covid_19_last_modified')[:10]})"
+    map_obj["title"] = (
+        f"COVID-19 ({total} {key.replace('_', ' ')}, {cache.get('covid_19_last_modified')[:10]})"
+    )
 
     return render(
         request,

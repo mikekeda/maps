@@ -1,6 +1,7 @@
 """
 Gunicorn config.
 """
+
 bind = "unix:/uwsgi/maps.sock"
 workers = 2
 timeout = 30
