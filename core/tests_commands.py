@@ -11,7 +11,7 @@ from core.models import Polygon
 class MapsCommandsTest(TestCase):
     # Helpers functions.
     def test_commands_map_name(self):
-        commands = __import__("core.management.commands.import", fromlist=[""])
+        commands = __import__("core.management.commands.import-polygons", fromlist=[""])
 
         feature = {"properties": {"name:en": "name1"}}
         result = commands.map_name(feature)
@@ -51,7 +51,7 @@ class MapsCommandsTest(TestCase):
         self.assertEqual(result, "")
 
     def test_commands_get_files(self):
-        commands = __import__("core.management.commands.import", fromlist=[""])
+        commands = __import__("core.management.commands.import-polygons", fromlist=[""])
         result = commands.get_files("geojson", "")
         self.assertIsInstance(result, types.GeneratorType)
 
@@ -68,18 +68,18 @@ class MapsCommandsTest(TestCase):
     def test_commands_world_import(self):
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world.geojson")
+        call_command("import-polygons", file="world.geojson")
         self.assertIn("Zimbabwe was created", out.getvalue())
 
     def test_commands_us_import(self):
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world/united States.geojson")
+        call_command("import-polygons", file="world/united States.geojson")
         self.assertIn("Puerto Rico was created", out.getvalue())
 
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world/united States/new Jersey.geojson")
+        call_command("import-polygons", file="world/united States/new Jersey.geojson")
         self.assertIn("Bergen County was created", out.getvalue())
 
         polygon_obj = Polygon.objects.filter(title="Texas").first()

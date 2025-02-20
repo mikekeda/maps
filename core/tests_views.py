@@ -19,24 +19,24 @@ class MapsViewTest(TestCase):
         super().setUpClass()
 
         # Create usual user.
-        cls.password = User.objects.make_random_password()
+        cls.password = "qwerty"
         test_user = User.objects.create_user(username="testuser", password=cls.password)
         test_user.save()
 
         # Import world.geojson
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world.geojson")
+        call_command("import-polygons", file="world.geojson")
 
         # Import ukraine.geojson
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world/ukraine.geojson")
+        call_command("import-polygons", file="world/ukraine.geojson")
 
         # Import argentina.geojson
         out = StringIO()
         sys.stdout = out
-        call_command("import", file="world/argentina.geojson")
+        call_command("import-polygons", file="world/argentina.geojson")
 
         current_site = Site.objects.get_current()
         cls.SocialApp1 = current_site.socialapp_set.create(
