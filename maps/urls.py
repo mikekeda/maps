@@ -9,30 +9,16 @@ from core.sitemaps import (
     StaticPagesSitemap,
     MapsSitemap,
     ChartsSitemap,
-    CovidMapsSitemap,
-    CovidChartsSitemap,
 )
-
-from covid.views import covid_19_view, covid_19_country_view
 
 sitemaps = {
     "maps": MapsSitemap,
     "charts": ChartsSitemap,
     "static_pages": StaticPagesSitemap,
-    "covid_maps": CovidMapsSitemap,
-    "covid_charts": CovidChartsSitemap,
 }
 
 urlpatterns = [
     path("", include("core.urls", namespace="core")),
-    path("covid", covid_19_view, name="covid"),
-    path("covid/<str:key>", covid_19_view, name="covid_key"),
-    path("covid-country/<str:country>", covid_19_country_view, name="covid_country"),
-    path(
-        "covid-country/<str:country>/<str:key>",
-        covid_19_country_view,
-        name="covid_country_key",
-    ),
     path("accounts/", include("allauth.urls")),
     path(
         "sitemap.xml",

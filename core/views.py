@@ -366,61 +366,6 @@ def plots_view(request, username=None):
     )
 
 
-def plot_view(request, slug: str, key: str = ""):
-    """Plot page."""
-
-    if slug == "covid":
-        key = key or "cases"
-
-        if key not in {
-            "cases",
-            "deaths",
-            "total_recovered",
-            "new_deaths",
-            "new_cases",
-            "serious_critical",
-            "active_cases",
-        }:
-            raise Http404
-
-    data = Plot.objects.filter(slug=slug).order_by("-added")
-    if slug == "covid":
-        data = data[:100]
-    if not data:
-        raise Http404
-
-    data_per_country = defaultdict(dict)
-    for d in data:
-        for country, v in d.data.items():
-            if slug == "covid" and key == "active_cases":
-                try:
-                    cases = int(v["cases"].replace(",", ""))
-                    total_recovered = int(v["total_recovered"].replace(",", ""))
-                    deaths = int(v["deaths"].replace(",", ""))
-                except ValueError:
-                    continue
-
-                if cases:
-                    data_per_country[country][d.added.isoformat()[:10]] = (
-                        cases - total_recovered - deaths
-                    )
-            elif key in v:
-                try:
-                    value = int(v[key].replace(",", ""))
-                except ValueError:
-                    continue
-                if value:
-                    data_per_country[country][d.added.isoformat()[:10]] = value
-
-    data_per_country = {k: data_per_country[k] for k in sorted(data_per_country.keys())}
-
-    return render(
-        request,
-        "covid-chart.html",
-        {"data": data_per_country, "key": key.replace("_", " ")},
-    )
-
-
 def log_in(request):
     """User login page."""
     form = AuthenticationForm()

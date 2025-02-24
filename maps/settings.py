@@ -73,7 +73,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.facebook",
     "import_export",
     "core",
-    "covid",
 ]
 
 if DEBUG:
