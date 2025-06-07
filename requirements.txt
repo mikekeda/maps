@@ -1,7 +1,7 @@
 beautifulsoup4==4.13.4
-celery==5.5.2
-Django==5.2.1
-django-allauth==65.8.1
+celery==5.5.3
+Django==5.2.2
+django-allauth==65.9.0
 django-appconf==1.1.0
 django-easy-select2==1.5.8
 django-geojson==4.2.0
