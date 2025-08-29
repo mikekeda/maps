@@ -1,7 +1,7 @@
-beautifulsoup4==4.13.4
+beautifulsoup4==4.13.5
 celery==5.5.3
 Django==5.2.5
-django-allauth==65.10.0
+django-allauth==65.11.1
 django-appconf==1.1.0
 django-easy-select2==1.5.8
 django-geojson==4.2.0
@@ -9,11 +9,11 @@ django-import-export==4.3.9
 django-jsonfield==1.4.1
 django-js-asset==3.1.2
 django-leaflet==0.32.0
-django-mptt==0.17.0
+django-mptt==0.18.0
 django-redis==6.0.0
 django-widget-tweaks==1.5.0
 jsonfield==3.2.0
 jwt==1.4.0
 gunicorn==23.0.0
 psycopg2-binary==2.9.10
-requests==2.32.4
+requests==2.32.5
