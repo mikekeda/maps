@@ -1,5 +1,5 @@
 beautifulsoup4==4.14.3
-celery==5.6.0
+celery==5.6.1
 Django==6.0
 django-allauth==65.13.1
 django-appconf==1.2.0
@@ -11,7 +11,7 @@ django-js-asset==3.1.2
 django-leaflet==0.33.0
 django-mptt==0.18.0
 django-redis==6.0.0
-django-widget-tweaks==1.5.0
+django-widget-tweaks==1.5.1
 jsonfield==3.2.0
 jwt==1.4.0
 gunicorn==23.0.0
