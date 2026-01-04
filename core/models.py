@@ -43,7 +43,12 @@ class Category(models.Model):
         if not self.pk:
             self.slug = slugify(self.title)
 
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def __str__(self):
         return self.title
@@ -173,7 +178,12 @@ class Map(models.Model):
 
         cache.delete_pattern("*:map_view:" + self.slug)
         cache.delete_pattern("*:maps")
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def __str__(self):
         return self.title
@@ -192,7 +202,12 @@ class MapElement(models.Model):
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         cache.delete_pattern("*:map_view:" + self.map.slug)
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def __str__(self):
         return self.polygon.title
@@ -236,7 +251,12 @@ class Chart(models.Model):
     ):
         if not self.pk:
             self.slug = get_unique_slug(type(self), self.title)
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def __str__(self):
         return self.title
