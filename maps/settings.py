@@ -256,7 +256,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = "/home/voron/sites/cdn/maps"
+STATIC_ROOT = "/home/debian/sites/cdn/maps"
 
 STATIC_URL = "https://storage.googleapis.com/cdn.mkeda.me/maps/"
 if DEBUG:
