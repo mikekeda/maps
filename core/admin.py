@@ -34,9 +34,7 @@ class MapAdmin(admin.ModelAdmin):
 
         if db_field.name == "region":
             # Optimize queryset to avoid loading unneeded fields.
-            kwargs["queryset"] = db_field.remote_field.model._default_manager.using(
-                None
-            ).only("id", "title")
+            kwargs["queryset"] = db_field.remote_field.model._default_manager.using(None).only("id", "title")
 
         return db_field.formfield(**kwargs)
 

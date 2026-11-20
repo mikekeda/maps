@@ -50,9 +50,7 @@ def get_files(path: str, file: str):
             need_process = [(root, None, [file.split("/")[-1]])]
         else:
             root = path + "/" + file
-            need_process = [
-                (root, None, [f for f in listdir(root) if isfile(join(root, f))])
-            ]
+            need_process = [(root, None, [f for f in listdir(root) if isfile(join(root, f))])]
     else:
         need_process = walk(path)
 
@@ -82,11 +80,7 @@ class Command(BaseCommand):
                 # Get parent.
                 parent = Polygon.objects.filter(title=parent)
                 if len(parent) > 1:
-                    parent = [
-                        candidate
-                        for candidate in parent
-                        if candidate.level == len(root.split("/")) - 2
-                    ]
+                    parent = [candidate for candidate in parent if candidate.level == len(root.split("/")) - 2]
 
                 if len(parent) > 1:
                     for candidate in parent:

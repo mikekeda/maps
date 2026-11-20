@@ -105,16 +105,12 @@ class MapsViewTest(TestCase):
         self.assertTemplateUsed(resp, "list-page.html")
 
     def test_views_user_maps(self):
-        resp = self.client.get(
-            reverse("core:user_maps", kwargs={"username": "testuser"})
-        )
+        resp = self.client.get(reverse("core:user_maps", kwargs={"username": "testuser"}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "list-page.html")
 
     def test_views_user_charts(self):
-        resp = self.client.get(
-            reverse("core:user_charts", kwargs={"username": "testuser"})
-        )
+        resp = self.client.get(reverse("core:user_charts", kwargs={"username": "testuser"}))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "list-page.html")
 
@@ -137,50 +133,31 @@ class MapsViewTest(TestCase):
     def test_views_polygon_export(self):
         polygon = Polygon.objects.get(title="Ukraine")
 
-        resp = self.client.get(
-            reverse("core:polygon_export", kwargs={"pk": polygon.pk})
-        )
-        self.assertRedirects(
-            resp, "/login?next=/polygon/" + str(polygon.pk) + "/geojson"
-        )
+        resp = self.client.get(reverse("core:polygon_export", kwargs={"pk": polygon.pk}))
+        self.assertRedirects(resp, "/login?next=/polygon/" + str(polygon.pk) + "/geojson")
 
         self.client.login(username="testuser", password=self.password)
-        resp = self.client.get(
-            reverse("core:polygon_export", kwargs={"pk": polygon.pk})
-        )
+        resp = self.client.get(reverse("core:polygon_export", kwargs={"pk": polygon.pk}))
         self.assertEqual(resp.status_code, 200)
 
     def test_views_get_polygons(self):
         polygon = Polygon.objects.get(title="Ukraine")
 
-        resp = self.client.get(
-            reverse("core:get_polygons", kwargs={"parent_id": polygon.pk})
-        )
+        resp = self.client.get(reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}))
         self.assertRedirects(resp, "/login?next=/api/get-polygons/" + str(polygon.pk))
 
         self.client.login(username="testuser", password=self.password)
-        resp = self.client.get(
-            reverse("core:get_polygons", kwargs={"parent_id": polygon.pk})
-        )
+        resp = self.client.get(reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}))
         self.assertEqual(resp.status_code, 200)
-        resp = self.client.get(
-            reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}) + "?lvl=2"
-        )
+        resp = self.client.get(reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}) + "?lvl=2")
         self.assertEqual(resp.status_code, 200)
-        resp = self.client.get(
-            reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}) + "?lvl=5"
-        )
+        resp = self.client.get(reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}) + "?lvl=5")
         self.assertEqual(resp.status_code, 200)
-        resp = self.client.get(
-            reverse("core:get_polygons", kwargs={"parent_id": polygon.pk})
-            + "?lvl=dummy"
-        )
+        resp = self.client.get(reverse("core:get_polygons", kwargs={"parent_id": polygon.pk}) + "?lvl=dummy")
         self.assertEqual(resp.status_code, 200)
 
     def test_views_map(self):
-        resp = self.client.get(
-            reverse("core:new_style_map", kwargs={"slug": "not-exists"})
-        )
+        resp = self.client.get(reverse("core:new_style_map", kwargs={"slug": "not-exists"}))
         self.assertEqual(resp.status_code, 404)
         self.assertTemplateUsed(resp, "404.html")
 

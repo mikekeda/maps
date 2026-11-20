@@ -86,9 +86,7 @@ def new_style_map_view(request, slug):
 
 def map_view(request, slug):
     """Map."""
-    map_obj = get_object_or_404(
-        Map.objects.prefetch_related("elements__polygon"), slug=slug
-    )
+    map_obj = get_object_or_404(Map.objects.prefetch_related("elements__polygon"), slug=slug)
 
     data_min = float("Inf")
     data_max = -float("Inf")
@@ -132,16 +130,12 @@ def polygons_view(request):
 
     if level == 0:
         if title:
-            elements = get_object_or_404(
-                Polygon, level=level, title=title
-            ).get_children()
+            elements = get_object_or_404(Polygon, level=level, title=title).get_children()
         else:
             elements = Polygon.objects.filter(level=level)
     else:
         parent_title = args[-2]
-        elements = get_object_or_404(
-            Polygon, level=level, title=title, parent__title=parent_title
-        ).get_children()
+        elements = get_object_or_404(Polygon, level=level, title=title, parent__title=parent_title).get_children()
 
     # Get geojson data.
     geojson_data = '{"type": "FeatureCollection", "features":['
@@ -206,9 +200,7 @@ def add_map(request):
     else:
         form = MapForm(prefix="map")
 
-    regions = Polygon.objects.filter(lft__lte=F("rght") - 2).order_by(
-        "tree_id", "level", "title"
-    )
+    regions = Polygon.objects.filter(lft__lte=F("rght") - 2).order_by("tree_id", "level", "title")
 
     return render(
         request,
@@ -238,9 +230,7 @@ def get_polygons(request, parent_id):
     filter_field = "parent__" * (lvl - 1) + "parent_id"
     polygons = Polygon.objects.filter(**{filter_field: parent_id}).order_by("title")
 
-    polygons = json.dumps(
-        [{"pk": polygon.pk, "title": polygon.title} for polygon in polygons]
-    )
+    polygons = json.dumps([{"pk": polygon.pk, "title": polygon.title} for polygon in polygons])
 
     return JsonResponse({"polygons": polygons})
 
@@ -335,17 +325,9 @@ def plots_view(request, username=None):
     """Plots page."""
     if username:
         user = get_object_or_404(User, username=username)
-        plots = (
-            Plot.objects.values("slug", "user")
-            .annotate(date_of_information=Max("added"))
-            .filter(user=user)
-        )
+        plots = Plot.objects.values("slug", "user").annotate(date_of_information=Max("added")).filter(user=user)
     else:
-        plots = (
-            Plot.objects.values("slug", "user")
-            .annotate(date_of_information=Max("added"))
-            .all()
-        )
+        plots = Plot.objects.values("slug", "user").annotate(date_of_information=Max("added")).all()
 
     params = request.GET.copy()
     params.pop("p", None)

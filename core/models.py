@@ -37,9 +37,7 @@ class Category(models.Model):
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(editable=False)
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.pk:
             self.slug = slugify(self.title)
 
@@ -90,9 +88,7 @@ class Polygon(MPTTModel):
 class Map(models.Model):
     """Map model."""
 
-    title = models.CharField(
-        max_length=256, verbose_name=_("title"), help_text="Map title."
-    )
+    title = models.CharField(max_length=256, verbose_name=_("title"), help_text="Map title.")
     description = models.TextField(
         blank=True,
         null=True,
@@ -119,9 +115,7 @@ class Map(models.Model):
         related_name="maps",
         on_delete=models.CASCADE,
     )
-    categories = models.ManyToManyField(
-        Category, blank=True, verbose_name=_("categories"), related_name="maps"
-    )
+    categories = models.ManyToManyField(Category, blank=True, verbose_name=_("categories"), related_name="maps")
     grades = models.PositiveSmallIntegerField(
         default=8,
         verbose_name=_("grades"),
@@ -170,9 +164,7 @@ class Map(models.Model):
         help_text="The slug that will be user for urls.",
     )
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.pk:
             self.slug = get_unique_slug(type(self), self.title)
 
@@ -193,14 +185,10 @@ class MapElement(models.Model):
     """MapElement model."""
 
     map = models.ForeignKey(Map, related_name="elements", on_delete=models.CASCADE)
-    polygon = models.ForeignKey(
-        Polygon, related_name="polygon_elements", on_delete=models.CASCADE
-    )
+    polygon = models.ForeignKey(Polygon, related_name="polygon_elements", on_delete=models.CASCADE)
     data = models.FloatField()
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         cache.delete_pattern("*:map_view:" + self.map.slug)
         super().save(
             force_insert=force_insert,
@@ -227,9 +215,7 @@ class Chart(models.Model):
     """Chart model."""
 
     title = models.CharField(max_length=256)
-    description = models.TextField(
-        blank=True, null=True, help_text="Chart description."
-    )
+    description = models.TextField(blank=True, null=True, help_text="Chart description.")
     maps = models.ManyToManyField(Map, related_name="charts")
     changed = models.DateTimeField(
         auto_now=True,
@@ -242,13 +228,9 @@ class Chart(models.Model):
         help_text="Map owner.",
         on_delete=models.CASCADE,
     )
-    slug = models.SlugField(
-        editable=False, help_text="The slug that will be user for urls."
-    )
+    slug = models.SlugField(editable=False, help_text="The slug that will be user for urls.")
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.pk:
             self.slug = get_unique_slug(type(self), self.title)
         super().save(

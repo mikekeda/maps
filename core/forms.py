@@ -8,9 +8,7 @@ class MapForm(forms.ModelForm):
     """Add map form."""
 
     # For now 2 is max level of desalination.
-    level = forms.IntegerField(
-        label=_("Level of detail"), max_value=2, min_value=1, initial=1
-    )
+    level = forms.IntegerField(label=_("Level of detail"), max_value=2, min_value=1, initial=1)
 
     class Meta:
         model = Map
